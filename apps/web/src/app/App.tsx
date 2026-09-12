@@ -1,19 +1,19 @@
-import { Button } from "@/components/ui/button"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "sonner";
+import { AuthProvider } from "@/providers";
+import { Router } from "./Router";
+
+const queryClient = new QueryClient();
 
 export function App() {
   return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Welcome to Nivara Hotels</h1>
-          <Button className="mt-2">Button</Button>
-        </div>
-        <div className="font-mono text-xs text-muted-foreground">
-          (Press <kbd>d</kbd> to toggle dark mode)
-        </div>
-      </div>
-    </div>
-  )
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <Router />
+      </AuthProvider>
+      <Toaster />
+    </QueryClientProvider>
+  );
 }
 
-export default App
+export default App;
