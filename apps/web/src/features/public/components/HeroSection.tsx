@@ -1,16 +1,24 @@
-import type { ReactNode } from "react";
-import { CalendarDays, Compass, Search, Sparkles, Users } from "lucide-react";
+import { useState } from "react";
+import { CalendarDays, Compass, Search, Sparkles } from "lucide-react";
+import { format } from "date-fns";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import HERO_IMAGE from "@/assets/hero_section.png";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
+import HERO_IMAGE from "@/assets/private_terrace.png";
 
 export function HeroSection() {
+  const [checkIn, setCheckIn] = useState<Date>();
+  const [checkOut, setCheckOut] = useState<Date>();
+
   return (
-    <section
-      id="home"
-      className="relative mb-12 w-full overflow-hidden rounded-2xl bg-primary shadow-md"
-    >
+    <section id="home" className="relative w-full bg-primary shadow-md">
       <div className="relative flex min-h-145 w-full flex-col justify-between p-6 text-primary-foreground sm:p-8 lg:p-12">
         {/* Background */}
         <div className="absolute inset-0 z-0">
@@ -48,81 +56,121 @@ export function HeroSection() {
 
           {/* Actions */}
           <div className="flex flex-wrap items-center gap-4 pt-2">
-            <Button
-              size="lg"
-              variant="secondary"
-              className="gap-2 rounded-xl px-8 shadow-md"
-            >
-              <a href="#rooms">
+            <a href="#rooms">
+              <Button
+                size="lg"
+                variant="secondary"
+                className="gap-2 rounded-xl px-8 shadow-md"
+              >
                 Browse Rooms
                 <Compass className="size-4.5" />
-              </a>
-            </Button>
-
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-primary-foreground/20 bg-primary-foreground/10 text-primary-foreground backdrop-blur-md hover:bg-primary-foreground/20 hover:text-primary-foreground"
-            >
+              </Button>
+            </a>
+            <Button size="lg">
               <a href="#about">Our Heritage Story</a>
             </Button>
           </div>
         </div>
 
         {/* Availability */}
-        <Card className="relative z-10 mt-8 grid w-full grid-cols-1 items-center gap-3 rounded-xl border-border/50 bg-card p-4 text-card-foreground shadow-xl sm:grid-cols-2 md:grid-cols-4">
-          <AvailabilityItem
-            label="Check-in"
-            value="Thu, 12 Oct"
-            icon={<CalendarDays className="size-4.5" />}
-          />
+        <Card className="relative z-10 mt-8 mr-auto w-fit rounded-2xl border border-border/60 bg-background/95 p-2 shadow-2xl shadow-black/10 backdrop-blur">
+          <div className="grid grid-cols-1 gap-2 md:grid-cols-[1fr_1fr_auto] md:gap-0">
+            {/* Check-in */}
+            <DatePicker label="Check-in" date={checkIn} onSelect={setCheckIn} />
 
-          <AvailabilityItem
-            label="Check-out"
-            value="Sun, 15 Oct"
-            icon={<CalendarDays className="size-4.5" />}
-          />
+            {/* Check-out */}
+            <DatePicker
+              label="Check-out"
+              date={checkOut}
+              onSelect={setCheckOut}
+              minDate={checkIn}
+            />
 
-          <AvailabilityItem
-            label="Guests & Rooms"
-            value="2 Adults, 1 Room"
-            icon={<Users className="size-4.5" />}
-          />
-
-          <Button
-            type="button"
-            size="lg"
-            className="h-full min-h-13 w-full gap-2 rounded-lg font-semibold shadow-sm"
-          >
-            <Search className="size-5" />
-            Check Availability
-          </Button>
+            {/* Search */}
+            <Button
+              type="button"
+              size="lg"
+              className="h-14 rounded-xl px-7 font-semibold shadow-md md:ml-2"
+              onClick={() => {
+                console.log({
+                  checkIn,
+                  checkOut,
+                });
+              }}
+            >
+              <Search className="size-5" />
+              Check Availability
+            </Button>
+          </div>
         </Card>
       </div>
     </section>
   );
 }
 
-interface AvailabilityItemProps {
+interface DatePickerProps {
   label: string;
-  value: string;
-  icon: ReactNode;
+  date?: Date;
+  onSelect: (date: Date | undefined) => void;
+  minDate?: Date;
 }
 
-function AvailabilityItem({ label, value, icon }: AvailabilityItemProps) {
+function DatePicker({ label, date, onSelect, minDate }: DatePickerProps) {
   return (
-    <button
-      type="button"
-      className="flex min-h-13 flex-col rounded-lg bg-muted px-4 py-2 text-left transition-colors hover:bg-muted/80"
-    >
-      <span className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-        {label}
-      </span>
+    <Popover>
+      <PopoverTrigger>
+        <button
+          type="button"
+          className="group flex min-h-14 w-full items-center gap-3 rounded-xl px-4 py-2.5 text-left transition-colors hover:bg-muted/70 focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none md:rounded-none md:px-5"
+        >
+          <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+            <CalendarDays className="size-4 text-primary" />
+          </div>
 
-      <span className="mt-0.5 flex items-center gap-2 text-sm font-medium text-foreground">
-        <span className="text-primary">{icon}</span>
-        {value}
-      </span>
-    </button>
+          <div className="min-w-0">
+            <div className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+              {label}
+            </div>
+
+            <div className="mt-0.5 truncate text-sm font-semibold text-foreground">
+              {date ? (
+                format(date, "EEE, dd MMM yyyy")
+              ) : (
+                <span className="font-medium text-muted-foreground">
+                  Choose a date
+                </span>
+              )}
+            </div>
+          </div>
+        </button>
+      </PopoverTrigger>
+
+      <PopoverContent className="w-auto rounded-xl p-0 shadow-xl" align="start">
+        <Calendar
+          mode="single"
+          selected={date}
+          onSelect={onSelect}
+          disabled={(day) => {
+            if (day < startOfToday()) {
+              return true;
+            }
+
+            if (minDate && day < minDate) {
+              return true;
+            }
+
+            return false;
+          }}
+        />
+      </PopoverContent>
+    </Popover>
   );
+}
+
+function startOfToday() {
+  const today = new Date();
+
+  today.setHours(0, 0, 0, 0);
+
+  return today;
 }

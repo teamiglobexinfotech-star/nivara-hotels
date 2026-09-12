@@ -56,7 +56,7 @@ const rooms = [
 
 export function RoomsSection() {
   return (
-    <section id="rooms" className="w-full py-10">
+    <section id="our-rooms" className="w-full py-10">
       {/* Section Header */}
       <div className="mx-auto mb-10 flex max-w-2xl flex-col gap-2 text-center">
         <div className="inline-flex items-center justify-center gap-2 text-primary">

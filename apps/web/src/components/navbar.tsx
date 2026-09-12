@@ -18,11 +18,11 @@ import { Accordion } from "./ui/accordion";
 
 const links = [
   {
-    to: "#hero",
+    to: "#home",
     text: "Home",
   },
   {
-    to: "#about-us",
+    to: "#about",
     text: "About Us",
   },
   {
@@ -38,15 +38,18 @@ const links = [
     text: "FAQ",
   },
   {
-    to: "#contact",
-    text: "Contact",
+    to: "#location",
+    text: "Location",
   },
 ];
 
 export const Navbar = ({ className }: { className?: string }) => {
   return (
     <section
-      className={cn("sticky top-0 z-50 bg-background px-4 py-4", className)}
+      className={cn(
+        "sticky top-0 z-50 border-b bg-background px-4 py-4",
+        className
+      )}
     >
       <div className="container mx-auto">
         {/* Desktop Menu */}
@@ -59,13 +62,13 @@ export const Navbar = ({ className }: { className?: string }) => {
             <NavigationMenu>
               <NavigationMenuList className={"gap-x-2"}>
                 {links?.map((link) => (
-                  <Link
-                    to={link.to}
+                  <a
+                    href={link.to}
                     key={link.to}
                     className="text-md font-semibold"
                   >
                     <Button variant={"ghost"}>{link.text}</Button>
-                  </Link>
+                  </a>
                 ))}
               </NavigationMenuList>
             </NavigationMenu>
@@ -103,9 +106,9 @@ export const Navbar = ({ className }: { className?: string }) => {
                 <div className="flex flex-col gap-6 p-4">
                   <Accordion className="flex w-full flex-col gap-4">
                     {links?.map((link) => (
-                      <Link to={link.to} className="text-md">
+                      <a href={link.to} className="text-md">
                         {link.text}
-                      </Link>
+                      </a>
                     ))}
                   </Accordion>
                   <div className="flex flex-col gap-3">

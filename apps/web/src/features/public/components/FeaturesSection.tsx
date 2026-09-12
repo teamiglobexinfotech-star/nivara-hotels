@@ -48,7 +48,10 @@ const amenities = [
 
 export function AmenitiesSection() {
   return (
-    <section id="amenities" className="w-full bg-card p-6 py-10 sm:p-8 md:p-12">
+    <section
+      id="amenities-facilities"
+      className="w-full bg-card p-6 py-10 sm:p-8 md:p-12"
+    >
       {/* Section heading */}
       <div className="mb-10 flex max-w-2xl flex-col gap-2">
         <span className="text-xs font-semibold tracking-widest text-primary uppercase">
@@ -72,7 +75,7 @@ export function AmenitiesSection() {
           return (
             <Card
               key={amenity.title}
-              className="border-border/50 bg-card shadow-sm transition-shadow duration-300 hover:shadow-md"
+              className="border-border/50 bg-card duration-300 hover:shadow-2xl hover:transition-shadow"
             >
               <CardContent className="flex flex-col gap-3 p-6">
                 {/* Icon */}

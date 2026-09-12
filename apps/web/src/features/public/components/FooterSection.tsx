@@ -2,10 +2,22 @@ import { Link } from "react-router-dom";
 import { Logo } from "@/components/logo";
 
 const footerLinks = [
-  { label: "Rooms", href: "#rooms" },
-  { label: "Amenities", href: "#amenities" },
-  { label: "About", href: "#about" },
-  { label: "Contact", href: "#contact" },
+  {
+    href: "#about",
+    label: "About",
+  },
+  {
+    href: "#amenities-facilities",
+    label: "Amenities",
+  },
+  {
+    href: "#our-rooms",
+    label: "Rooms",
+  },
+  {
+    href: "#location",
+    label: "Location",
+  },
   { label: "Privacy Policy", href: "#privacy" },
   { label: "Terms", href: "#terms" },
 ];

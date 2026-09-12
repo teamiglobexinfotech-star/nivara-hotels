@@ -7,6 +7,9 @@ import {
 } from "lucide-react";
 
 import { Card, CardContent } from "@/components/ui/card";
+import IMAGE_1 from "@/assets/plush_sofa.png";
+import IMAGE_2 from "@/assets/terracotta_linens.png";
+import IMAGE_3 from "@/assets/wood_king.png";
 
 const highlights = [
   {
@@ -34,8 +37,6 @@ const highlights = [
       "Dedicated personal butlers and anticipatory concierge attuned to your exact lifestyle.",
   },
 ];
-
-const image = "https://placehold.co/800?text=About+20Us&font=roboto";
 
 export function AboutSection() {
   return (
@@ -117,7 +118,7 @@ export function AboutSection() {
           <div className="flex flex-col gap-4">
             <div className="aspect-4/5 overflow-hidden rounded-xl bg-muted">
               <img
-                src={image}
+                src={IMAGE_1}
                 alt="Awadhi Architecture Arches & Courtyard"
                 className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
               />
@@ -138,7 +139,7 @@ export function AboutSection() {
           <div className="flex flex-col gap-4 pt-6">
             <div className="aspect-square overflow-hidden rounded-xl bg-muted">
               <img
-                src={image}
+                src={IMAGE_2}
                 alt="Bespoke Handcrafted Luxury Detail"
                 className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
               />
@@ -146,7 +147,7 @@ export function AboutSection() {
 
             <div className="aspect-4/5 overflow-hidden rounded-xl bg-muted">
               <img
-                src={image}
+                src={IMAGE_3}
                 alt="Courtyard Gardens and Water Pavilion"
                 className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
               />
