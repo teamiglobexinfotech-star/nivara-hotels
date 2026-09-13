@@ -7,21 +7,23 @@ import {
   LockKeyhole,
   Mail,
   ShieldCheck,
+  User,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import IMAGE_1 from "@/assets/wood_king.png";
+
 import { Link } from "react-router-dom";
 import { Logo } from "@/components/logo";
-import { useLoginFacade } from "@/features/auth/hooks/useLogin";
+import IMAGE_1 from "@/assets/wood_king.png";
+import { useSignupFacade } from "@/features/auth/hooks/useSignup";
 
-export default function LoginPage() {
+export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const { handleSubmit, submit, register, errors, isPending } =
-    useLoginFacade();
+    useSignupFacade();
 
   return (
     <main className="min-h-screen bg-background">
@@ -32,7 +34,7 @@ export default function LoginPage() {
           <div className="absolute -top-32 -left-32 h-96 w-96 rounded-full bg-primary/10 blur-3xl" />
           <div className="absolute -right-32 -bottom-32 h-96 w-96 rounded-full bg-primary/10 blur-3xl" />
 
-          {/* Image */}
+          {/* Hotel Image */}
           <div
             className="absolute inset-0 bg-cover bg-center"
             style={{
@@ -40,58 +42,69 @@ export default function LoginPage() {
             }}
           />
 
-          {/* Image overlay */}
-          <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/25 to-black/10" />
+          {/* Overlay */}
+          <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/30 to-black/10" />
 
           <div className="relative z-10 flex w-full flex-col justify-between p-10 xl:p-14">
             {/* Logo */}
+            <div>
+              <Link to="/">
+                <Logo />
+              </Link>
+            </div>
 
-            <Link to="/">
-              <Logo />
-            </Link>
-
-            {/* Bottom content */}
-            <div className="max-w-xl">
+            {/* Bottom Content */}
+            <div className="max-w-xl text-white">
               <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-xs backdrop-blur-md">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                Your journey begins here
+                Welcome to Nivara
               </div>
 
-              <h1 className="text-4xl leading-tight font-light tracking-tight text-white xl:text-6xl">
-                Stay somewhere
-                <span className="block font-medium italic">unforgettable.</span>
+              <h1 className="text-4xl leading-tight font-light tracking-tight xl:text-6xl">
+                Your next escape
+                <span className="block font-medium italic">starts here.</span>
               </h1>
 
               <p className="mt-6 max-w-md text-sm leading-6 text-white/70 xl:text-base">
-                Discover exceptional stays, thoughtful hospitality, and
-                beautifully crafted spaces designed around your journey.
+                Create your Nivara account and unlock a simpler way to discover,
+                book, and manage your stays.
               </p>
 
-              <div className="mt-8 flex items-center gap-8 text-xs text-white/60">
+              {/* Benefits */}
+              <div className="mt-8 grid grid-cols-2 gap-x-8 gap-y-5 text-sm">
                 <div>
-                  <p className="text-lg font-medium text-white">120+</p>
-                  <p>Luxury stays</p>
+                  <p className="font-medium text-white">Effortless booking</p>
+                  <p className="mt-1 text-xs text-white/50">
+                    Reserve your stay in moments
+                  </p>
                 </div>
 
-                <div className="h-8 w-px bg-white/20" />
-
                 <div>
-                  <p className="text-lg font-medium text-white">24/7</p>
-                  <p>Guest support</p>
+                  <p className="font-medium text-white">Manage your stays</p>
+                  <p className="mt-1 text-xs text-white/50">
+                    Everything in one place
+                  </p>
                 </div>
 
-                <div className="h-8 w-px bg-white/20" />
+                <div>
+                  <p className="font-medium text-white">Member benefits</p>
+                  <p className="mt-1 text-xs text-white/50">
+                    Exclusive offers & experiences
+                  </p>
+                </div>
 
                 <div>
-                  <p className="text-lg font-medium text-white">4.9/5</p>
-                  <p>Guest rating</p>
+                  <p className="font-medium text-white">Trusted hospitality</p>
+                  <p className="mt-1 text-xs text-white/50">
+                    Support whenever you need it
+                  </p>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* RIGHT — Login Panel */}
+        {/* RIGHT — Signup Panel */}
         <section className="flex min-h-screen items-center justify-center px-5 py-10 sm:px-8">
           <div className="w-full max-w-md">
             {/* Mobile Logo */}
@@ -102,23 +115,46 @@ export default function LoginPage() {
             </div>
 
             {/* Heading */}
-            <div className="mb-8">
+            <div className="mb-7">
               <h2 className="text-3xl font-semibold tracking-tight">
-                Welcome back
+                Create your account
               </h2>
 
               <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                Sign in to manage your reservations and continue your journey
-                with Nivara.
+                Join Nivara and make your next stay unforgettable.
               </p>
             </div>
 
-            {/* Login Card */}
+            {/* Signup Card */}
             <Card
               className="border-border/60 bg-card p-6 shadow-sm sm:p-8"
               onSubmit={handleSubmit(submit)}
             >
               <form className="space-y-5">
+                {/* Name */}
+                <div className="space-y-2">
+                  <Label htmlFor="name">Full name</Label>
+
+                  <div className="relative">
+                    <User className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+
+                    <Input
+                      id="name"
+                      type="text"
+                      placeholder="John Doe"
+                      autoComplete="name"
+                      className="h-11 pl-10"
+                      aria-invalid={!!errors.name}
+                      {...register("name")}
+                    />
+                  </div>
+                  {errors.name && (
+                    <p className="text-sm text-red-500">
+                      {errors.name.message}
+                    </p>
+                  )}
+                </div>
+
                 {/* Email */}
                 <div className="space-y-2">
                   <Label htmlFor="email">Email address</Label>
@@ -130,6 +166,7 @@ export default function LoginPage() {
                       id="email"
                       type="email"
                       placeholder="you@example.com"
+                      autoComplete="email"
                       className="h-11 pl-10"
                       aria-invalid={!!errors.email}
                       {...register("email")}
@@ -144,16 +181,7 @@ export default function LoginPage() {
 
                 {/* Password */}
                 <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="password">Password</Label>
-
-                    <button
-                      type="button"
-                      className="text-xs font-medium text-primary transition-colors hover:text-primary/80"
-                    >
-                      Forgot password?
-                    </button>
-                  </div>
+                  <Label htmlFor="password">Password</Label>
 
                   <div className="relative">
                     <LockKeyhole className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -161,7 +189,8 @@ export default function LoginPage() {
                     <Input
                       id="password"
                       type={showPassword ? "text" : "password"}
-                      placeholder="Enter your password"
+                      placeholder="Create a strong password"
+                      autoComplete="new-password"
                       className="h-11 pr-10 pl-10"
                       aria-invalid={!!errors.password}
                       {...register("password")}
@@ -182,6 +211,7 @@ export default function LoginPage() {
                       )}
                     </button>
                   </div>
+
                   {errors.password && (
                     <p className="text-sm text-red-500">
                       {errors.password.message}
@@ -199,7 +229,7 @@ export default function LoginPage() {
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
                     <>
-                      Sign in
+                      Sign up
                       <ArrowRight className="h-4 w-4" />
                     </>
                   )}
@@ -207,19 +237,19 @@ export default function LoginPage() {
               </form>
             </Card>
 
-            {/* Signup */}
+            {/* Login */}
             <p className="mt-7 text-center text-sm text-muted-foreground">
-              Don't have a Nivara account?{" "}
-              <Link to="/signup">
+              Already have an account?{" "}
+              <Link to={"/login"}>
                 <button className="font-medium text-foreground underline underline-offset-4 hover:text-primary">
-                  Create an account
+                  Sign in
                 </button>
               </Link>
             </p>
 
             {/* Security */}
             <div className="mt-8 flex items-center justify-center gap-2 text-xs text-muted-foreground">
-              <ShieldCheck className="h-4 w-4 text-emerald-600" />
+              <ShieldCheck className="h-4 w-4 text-primary" />
               Your information is encrypted and secure
             </div>
 
