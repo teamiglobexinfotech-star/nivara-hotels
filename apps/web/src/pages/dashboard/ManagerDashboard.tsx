@@ -1,6 +1,10 @@
 import { Plus } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { Header } from "@/components/common/Header";
+import { DashboardStats } from "@/features/manager/components/DashboardStats";
+import { DashboardTodayOperations } from "@/features/manager/components/DashboardTodayOperations";
+import { DashboardAttention } from "@/features/manager/components/DashboardAttention";
+import { DashboardStaffTasks } from "@/features/manager/components/DashboardStaffTasks";
 
 export default function ManagerDashboard() {
   const { user } = useAuth();
@@ -29,6 +33,12 @@ export default function ManagerDashboard() {
           },
         ]}
       />
+      <DashboardStats />
+      <DashboardTodayOperations />
+      <div className="flex flex-col gap-8 lg:flex-row">
+        <DashboardAttention />
+        <DashboardStaffTasks />
+      </div>
     </>
   );
 }
