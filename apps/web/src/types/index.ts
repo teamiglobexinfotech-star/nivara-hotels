@@ -10,7 +10,7 @@ export interface User {
 }
 
 export interface AuthCTX {
-  user: null;
+  user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
 }

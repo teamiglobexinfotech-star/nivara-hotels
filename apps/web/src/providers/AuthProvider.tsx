@@ -1,4 +1,4 @@
-import type { AuthCTX } from "@/types";
+import type { AuthCTX, User } from "@/types";
 import { createContext, type ReactNode } from "react";
 
 const initialCTX: AuthCTX = {
@@ -10,12 +10,19 @@ const initialCTX: AuthCTX = {
 export const AuthContext = createContext<AuthCTX>(initialCTX);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const dummyUser: User = {
+    fullName: "Alex Brown",
+    email: "alex.brown@ex.com",
+    id: "1124124",
+    role: "ADMIN",
+  };
+
   return (
     <AuthContext.Provider
       value={{
-        isAuthenticated: false,
+        isAuthenticated: true,
         isLoading: false,
-        user: null,
+        user: dummyUser,
       }}
     >
       {children}
