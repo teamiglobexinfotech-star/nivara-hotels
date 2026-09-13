@@ -1,31 +1,31 @@
-import { KpisSection } from "@/components/common/KpiSection";
 import {
   BedDouble,
-  CalendarCheck,
   CircleDollarSign,
-  Users,
+  LogInIcon,
+  LogOutIcon,
 } from "lucide-react";
+import { KpisSection } from "@/components/common/KpiSection";
 
 const dashboardKpis = [
   {
     icon: BedDouble,
     value: "78.4%",
-    label: "Occupancy Rate",
-    description: "188 of 240 rooms occupied",
+    label: "Occupancy",
+    description: "188 of 240 rooms",
     variant: "primary" as const,
   },
   {
-    icon: CalendarCheck,
+    icon: LogInIcon,
     value: "42",
-    label: "Today's Bookings",
+    label: "Today's Check-ins",
     description: "35 confirmed · 5 pending",
     variant: "secondary" as const,
   },
   {
-    icon: Users,
+    icon: LogOutIcon,
     value: "186",
-    label: "Total Guests",
-    description: "142 checked in · 28 arriving",
+    label: "Today's Check-outs",
+    description: "12 completed · 4 remaining",
     variant: "accent" as const,
   },
   {
@@ -37,6 +37,6 @@ const dashboardKpis = [
   },
 ];
 
-export function Stats() {
+export function DashboardStats() {
   return <KpisSection data={dashboardKpis} />;
 }

@@ -4,3 +4,8 @@ export const ROLES = {
   STAFF: "STAFF",
   CUSTOMER: "CUSTOMER",
 };
+
+export const CATEGORIES = {
+  RECEPTIONIST: "RECEPTIONIST",
+  HOUSEKEEPER: "HOUSEKEEPER",
+};

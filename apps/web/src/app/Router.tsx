@@ -4,7 +4,7 @@ import Layout from "@/components/layout/Layout";
 import Landing from "@/pages/public/Landing";
 import Login from "@/pages/auth/Login";
 import Signup from "@/pages/auth/Signup";
-import AdminDashboard from "@/pages/dashboard/AdminDashboard";
+import Dashboard from "@/pages/dashboard";
 
 export function Router() {
   return (
@@ -14,7 +14,7 @@ export function Router() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route element={<Layout />}>
-          <Route path="/dashboard" element={<AdminDashboard />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Route>
       </Routes>
     </BrowserRouter>

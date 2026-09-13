@@ -37,8 +37,6 @@ export interface DataTableProps<T> {
   columns: TableColumn<T>[];
 
   getRowKey: (row: T, index: number) => string;
-
-  viewAllLabel?: string;
   onViewAll?: () => void;
 
   emptyMessage?: string;
@@ -58,7 +56,6 @@ export function DataTable<T>({
   data,
   columns,
   getRowKey,
-  viewAllLabel = "View all",
   onViewAll,
   emptyMessage = "No records found.",
   page = 1,
@@ -91,7 +88,7 @@ export function DataTable<T>({
             onClick={onViewAll}
             className="shrink-0 px-0 text-sm font-semibold"
           >
-            {viewAllLabel}
+            View All
             <span aria-hidden="true">→</span>
           </Button>
         )}
