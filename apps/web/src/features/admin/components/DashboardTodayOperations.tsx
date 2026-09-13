@@ -1,6 +1,7 @@
 import { DataTable, type TableColumn } from "@/components/common/DataTable";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { getInitials } from "@/lib/getInitials";
 
 export interface TodayOperation {
   bookingId: string;
@@ -10,16 +11,6 @@ export interface TodayOperation {
   time: string;
   status: "Pending" | "Confirmed" | "Completed" | "Cancelled";
 }
-
-const getInitials = (name: string) => {
-  return name
-    .trim()
-    .split(/\s+/)
-    .map((part) => part[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-};
 
 const getStatusVariant = (
   status: TodayOperation["status"]

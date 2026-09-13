@@ -95,7 +95,7 @@ export function DataTable<T>({
       </CardHeader>
 
       {/* Table */}
-      <CardContent className="p-0">
+      <CardContent className="">
         <div className="w-full overflow-x-auto">
           <Table>
             <TableHeader>

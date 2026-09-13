@@ -1,0 +1,88 @@
+import type { Staff } from "@/pages/common/Staff";
+
+export const staffData: Staff[] = [
+  {
+    id: "STF-001",
+    name: "Amit Sharma",
+    category: "housekeeper",
+    contact: "+91 98765 43210",
+    status: "active",
+  },
+  {
+    id: "STF-002",
+    name: "Priya Verma",
+    category: "receptionist",
+    contact: "+91 87654 32109",
+    status: "active",
+  },
+  {
+    id: "STF-003",
+    name: "Rahul Singh",
+    category: "housekeeper",
+    contact: "+91 76543 21098",
+    status: "active",
+  },
+  {
+    id: "STF-004",
+    name: "Neha Gupta",
+    category: "receptionist",
+    contact: "+91 99887 76655",
+    status: "inactive",
+  },
+  {
+    id: "STF-005",
+    name: "Vikash Yadav",
+    category: "housekeeper",
+    contact: "+91 88990 11223",
+    status: "active",
+  },
+  {
+    id: "STF-006",
+    name: "Anjali Mishra",
+    category: "receptionist",
+    contact: "+91 77889 00112",
+    status: "active",
+  },
+  {
+    id: "STF-007",
+    name: "Rohit Kumar",
+    category: "housekeeper",
+    contact: "+91 90909 80808",
+    status: "inactive",
+  },
+  {
+    id: "STF-008",
+    name: "Pooja Singh",
+    category: "receptionist",
+    contact: "+91 88776 65544",
+    status: "active",
+  },
+  {
+    id: "STF-009",
+    name: "Sandeep Verma",
+    category: "manager",
+    contact: "+91 79999 12345",
+    status: "active",
+  },
+  {
+    id: "STF-010",
+    name: "Kavita Sharma",
+    category: "housekeeper",
+    contact: "+91 96666 55444",
+    status: "active",
+  },
+  {
+    id: "STF-011",
+    name: "Arjun Patel",
+    category: "receptionist",
+    contact: "+91 95555 66778",
+    status: "inactive",
+  },
+  {
+    id: "STF-012",
+    name: "Sneha Tiwari",
+    category: "housekeeper",
+    contact: "+91 84444 33221",
+    status: "active",
+  },
+];

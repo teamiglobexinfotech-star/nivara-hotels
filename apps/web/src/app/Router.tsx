@@ -5,6 +5,7 @@ import Landing from "@/pages/public/Landing";
 import Login from "@/pages/auth/Login";
 import Signup from "@/pages/auth/Signup";
 import Dashboard from "@/pages/dashboard";
+import Staff from "@/pages/common/Staff";
 
 export function Router() {
   return (
@@ -15,6 +16,7 @@ export function Router() {
         <Route path="/signup" element={<Signup />} />
         <Route element={<Layout />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/staff" element={<Staff />} />
         </Route>
       </Routes>
     </BrowserRouter>
