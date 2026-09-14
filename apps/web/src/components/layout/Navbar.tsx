@@ -86,12 +86,28 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking }) => {
           </Button>
 
           {/* Profile / Concierge quick access */}
-          <NavLink
+          {/* <NavLink
             to="/contact"
             className="hidden h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary/40 hover:text-primary sm:flex"
             title="Concierge Portal"
           >
             <User className="h-4 w-4" />
+          </NavLink> */}
+
+          <NavLink
+            to="/signup"
+            id="navbar-signup-btn"
+            className={({ isActive }) =>
+              `hidden items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs tracking-[0.16em] uppercase transition-all duration-300 sm:flex ${
+                isActive
+                  ? "border-primary bg-primary font-semibold text-primary-foreground shadow-xs"
+                  : "border-border bg-card text-foreground hover:border-primary/60 hover:text-primary"
+              }`
+            }
+            title="Customer Registration & Patron Circle"
+          >
+            <User className="h-3.5 w-3.5" />
+            <span className="text-[11px] font-medium">Sign up</span>
           </NavLink>
 
           {/* Mobile Sheet Menu using shadcn Sheet */}

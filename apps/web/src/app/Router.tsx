@@ -1,14 +1,19 @@
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
+import type { Room } from "@/types";
+
+import type { BookingSearchDetails } from "@/components/BookingBar";
+import { BookingModal } from "@/components/BookingModal";
 
 import { PublicLayout } from "@/components/layout/PublicLayout";
+import { AuthLayout } from "@/components/layout/AuthLayout";
+
 import { HomePage } from "@/pages/public/HomePage";
 import { AboutPage } from "@/pages/public/AboutPage";
 import { RoomsPage } from "@/pages/public/RoomsPage";
 import { ContactPage } from "@/pages/public/ContactPage";
-import { BookingModal } from "@/components/BookingModal";
-import type { Room } from "@/types";
-import type { BookingSearchDetails } from "@/components/BookingBar";
+import { SignupPage } from "@/pages/auth/SignupPage";
+import { LoginPage } from "@/pages/auth/LoginPage";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -50,6 +55,10 @@ export function Router() {
             element={<RoomsPage onOpenBooking={handleCloseBooking} />}
           />
           <Route path="/contact" element={<ContactPage />} />
+        </Route>
+        <Route element={<AuthLayout />}>
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/login" element={<LoginPage />} />
         </Route>
       </Routes>
       <BookingModal
