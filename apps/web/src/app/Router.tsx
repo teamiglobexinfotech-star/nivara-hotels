@@ -7,6 +7,7 @@ import { BookingModal } from "@/components/BookingModal";
 
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { AuthLayout } from "@/components/layout/AuthLayout";
+import { ProtectLayout } from "@/components/layout/ProtectLayout";
 
 import { HomePage } from "@/pages/public/HomePage";
 import { AboutPage } from "@/pages/public/AboutPage";
@@ -14,6 +15,7 @@ import { RoomsPage } from "@/pages/public/RoomsPage";
 import { ContactPage } from "@/pages/public/ContactPage";
 import { SignupPage } from "@/pages/auth/SignupPage";
 import { LoginPage } from "@/pages/auth/LoginPage";
+import { Dashboard } from "@/pages/dashboard";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -59,6 +61,9 @@ export function Router() {
         <Route element={<AuthLayout />}>
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/login" element={<LoginPage />} />
+        </Route>
+        <Route element={<ProtectLayout />}>
+          <Route path="/dashboard" element={<Dashboard />} />
         </Route>
       </Routes>
       <BookingModal

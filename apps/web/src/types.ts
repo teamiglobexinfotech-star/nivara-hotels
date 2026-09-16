@@ -71,3 +71,6 @@ export interface BookingDetails {
   guestEmail?: string;
   guestPhone?: string;
 }
+
+export type Role = "ADMIN" | "MANAGER" | "STAFF" | "CUSTOMER";
+export type StaffCategory = "RECEPTIONIST" | "HOUSEKEEPER";
