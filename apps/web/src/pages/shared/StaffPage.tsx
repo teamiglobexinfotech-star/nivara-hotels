@@ -10,6 +10,7 @@ import { IconButton } from "@/components/shared/IconButton";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { getInitials } from "@/lib/getInitials";
+import { NewStaffSheet } from "@/features/staff/components/NewStaffSheet";
 
 const staffColumns: Column<StaffMember>[] = [
   {
@@ -97,15 +98,17 @@ export function StaffPage() {
         description="Manage hotel operational personnel, room readiness teams, and front desk staff across Nivara properties."
         rightContent={
           <>
-            <Button
-              id="btn-add-staff"
-              variant="default"
-              size="sm"
-              className="h-9 gap-1.5 rounded-full bg-foreground px-4 text-xs font-medium text-background hover:bg-foreground/90"
-            >
-              <Plus className="h-3.5 w-3.5" />
-              <span>Add Staff</span>
-            </Button>
+            <NewStaffSheet>
+              <Button
+                id="btn-add-staff"
+                variant="default"
+                size="sm"
+                className="h-9 gap-1.5 rounded-full bg-foreground px-4 text-xs font-medium text-background hover:bg-foreground/90"
+              >
+                <Plus className="h-3.5 w-3.5" />
+                <span>Add Staff</span>
+              </Button>
+            </NewStaffSheet>
           </>
         }
       />
