@@ -30,27 +30,26 @@ export const STAFF_CATEGORIES = {
 
 export const ADMIN_PAGES: NavItem[] = [
   { title: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
-  { title: "Staff", icon: Users, href: "/staff" },
-  { title: "Customers", icon: UserCheck, href: "/customers" },
-  { title: "Rooms", icon: BedDouble, href: "/rooms" },
-  { title: "Bookings", icon: CalendarCheck, href: "/bookings" },
-  { title: "Maintenance", icon: Wrench, href: "/maintenance" },
-  { title: "Finance", icon: CircleDollarSign, href: "/finance" },
-  { title: "Notifications", icon: Bell, href: "/notifications" },
-  { title: "Settings", icon: ShieldCheck, href: "/settings" },
-  { title: "Profile", icon: BriefcaseBusiness, href: "/profile" },
+  { title: "Staff", icon: Users, href: "/dashboard/staff" },
+  { title: "Customers", icon: UserCheck, href: "/dashboard/customers" },
+  { title: "Rooms", icon: BedDouble, href: "/dashboard/rooms" },
+  { title: "Bookings", icon: CalendarCheck, href: "/dashboard/bookings" },
+  { title: "Maintenance", icon: Wrench, href: "/dashboard/maintenance" },
+  { title: "Finance", icon: CircleDollarSign, href: "/dashboard/finance" },
+  { title: "Notifications", icon: Bell, href: "/dashboard/notifications" },
+  { title: "Profile", icon: BriefcaseBusiness, href: "/dashboard/profile" },
 ];
 
 export const MANAGER_PAGES: NavItem[] = [
-  { title: "Dashboard", icon: LayoutDashboard, href: "/manager-dashboard" },
-  { title: "Staff", icon: Users, href: "/manager/staff" },
-  { title: "Customers", icon: UserCheck, href: "/manager/customers" },
-  { title: "Rooms", icon: BedDouble, href: "/manager/rooms" },
-  { title: "Bookings", icon: CalendarCheck, href: "/manager/bookings" },
-  { title: "Maintenance", icon: Wrench, href: "/manager/maintenance" },
-  { title: "Finance", icon: CircleDollarSign, href: "/manager/finance" },
-  { title: "Notifications", icon: Bell, href: "/manager/notifications" },
-  { title: "Profile", icon: BriefcaseBusiness, href: "/manager/profile" },
+  { title: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
+  { title: "Staff", icon: Users, href: "/dashboard/staff" },
+  { title: "Customers", icon: UserCheck, href: "/dashboard/customers" },
+  { title: "Rooms", icon: BedDouble, href: "/dashboard/rooms" },
+  { title: "Bookings", icon: CalendarCheck, href: "/dashboard/bookings" },
+  { title: "Maintenance", icon: Wrench, href: "/dashboard/maintenance" },
+  { title: "Finance", icon: CircleDollarSign, href: "/dashboard/finance" },
+  { title: "Notifications", icon: Bell, href: "/dashboard/notifications" },
+  { title: "Profile", icon: BriefcaseBusiness, href: "/dashboard/profile" },
 ];
 
 export const RECEPTIONIST_PAGES: NavItem[] = [
