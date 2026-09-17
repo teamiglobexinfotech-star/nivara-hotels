@@ -73,4 +73,6 @@ export interface BookingDetails {
 }
 
 export type Role = "ADMIN" | "MANAGER" | "STAFF" | "CUSTOMER";
-export type StaffCategory = "RECEPTIONIST" | "HOUSEKEEPER";
+export type StaffCategory =
+  "RECEPTIONIST" | "HOUSEKEEPER" | "SECURITY_GUARD" | "WAITER";
+export type Status = "ACTIVE" | "INACTIVE";

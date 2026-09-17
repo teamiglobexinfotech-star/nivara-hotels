@@ -1,5 +1,3 @@
-import { AdminDashboardPage } from "./AdminDashboardPage";
-
-export function Dashboard() {
-  return <AdminDashboardPage />;
+export function DashboardPage() {
+  return <>Dashboard</>;
 }

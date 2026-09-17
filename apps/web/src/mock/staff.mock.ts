@@ -1,0 +1,126 @@
+import { Users, UserCheck, Calendar, Search } from "lucide-react";
+import type { ApiResponse, KpiItem } from "@/types/shared.types";
+import type { StaffMember } from "@/types/staff.types";
+
+export const staffKpiData: KpiItem[] = [
+  {
+    id: 1,
+    icon: Users,
+    title: "Total Staff",
+    value: 48,
+    detail: "All registered staff",
+  },
+  {
+    id: 2,
+    icon: UserCheck,
+    title: "ACTIVE Staff",
+    value: 43,
+    detail: "Currently active accounts",
+  },
+  {
+    id: 3,
+    icon: Calendar,
+    title: "On Leave",
+    value: 3,
+    detail: "Currently unavailable",
+  },
+  {
+    id: 4,
+    icon: Search,
+    title: "Open Positions",
+    value: 2,
+    detail: "Roles requiring hiring",
+  },
+];
+
+export const staffApiResponse: ApiResponse<StaffMember> = {
+  items: [
+    {
+      id: "1",
+      name: "Priya Sharma",
+      staffId: "STF-1024",
+      avatar: "",
+      phone: "+91 98765 43210",
+      role: "HOUSEKEEPER",
+      status: "ACTIVE",
+    },
+    {
+      id: "2",
+      name: "Priya Sharma",
+      staffId: "STF-1024",
+      avatar: "",
+      phone: "+91 98765 43210",
+      role: "RECEPTIONIST",
+      status: "ACTIVE",
+    },
+    {
+      id: "3",
+      name: "Marish Tixma",
+      staffId: "STF-1024",
+      avatar: "",
+      phone: "+91 98765 43210",
+      role: "RECEPTIONIST",
+      status: "ACTIVE",
+    },
+    {
+      id: "4",
+      name: "Anm Grather",
+      staffId: "STF-1024",
+      avatar: "",
+      phone: "+91 98765 43210",
+      role: "RECEPTIONIST",
+      status: "ACTIVE",
+    },
+    {
+      id: "5",
+      name: "Karyn Smith",
+      staffId: "STF-1024",
+      avatar: "",
+      phone: "+91 98765 43210",
+      role: "RECEPTIONIST",
+      status: "ACTIVE",
+    },
+    {
+      id: "6",
+      name: "Joren Shrami",
+      staffId: "STF-1024",
+      avatar: "",
+      phone: "+91 98765 43210",
+      role: "RECEPTIONIST",
+      status: "ACTIVE",
+    },
+    {
+      id: "7",
+      name: "Jonna Shrami",
+      staffId: "STF-1024",
+      avatar: "",
+      phone: "+91 98765 43210",
+      role: "RECEPTIONIST",
+      status: "INACTIVE",
+    },
+    {
+      id: "8",
+      name: "Aaran Maritis",
+      staffId: "STF-1024",
+      avatar: "",
+      phone: "+91 98765 43210",
+      role: "HOUSEKEEPER",
+      status: "INACTIVE",
+    },
+    {
+      id: "9",
+      name: "aarav tharma",
+      staffId: "STF-1024",
+      avatar: "",
+      phone: "+91 98765 43210",
+      role: "RECEPTIONIST",
+      status: "INACTIVE",
+    },
+  ],
+  meta: {
+    page: 1,
+    limit: 10,
+    total: 48,
+    totalPages: 5,
+  },
+};
