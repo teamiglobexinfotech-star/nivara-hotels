@@ -17,6 +17,7 @@ import { SignupPage } from "@/pages/auth/SignupPage";
 import { LoginPage } from "@/pages/auth/LoginPage";
 import { DashboardPage } from "@/pages/dashboard";
 import { StaffPage } from "@/pages/shared/StaffPage";
+import { CustomersPage } from "@/pages/shared/CustomersPage";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -66,6 +67,7 @@ export function Router() {
         <Route element={<ProtectLayout />}>
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/staff" element={<StaffPage />} />
+          <Route path="/customers" element={<CustomersPage />} />
         </Route>
       </Routes>
       <BookingModal
