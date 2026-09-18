@@ -19,6 +19,7 @@ import { DashboardPage } from "@/pages/dashboard";
 import { StaffPage } from "@/pages/shared/StaffPage";
 import { CustomersPage } from "@/pages/shared/CustomersPage";
 import { RoomsPage as DRoomsPage } from "@/pages/room";
+import { BookingsPage } from "@/pages/shared/BookingsPage";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -70,6 +71,7 @@ export function Router() {
           <Route path="staff" element={<StaffPage />} />
           <Route path="customers" element={<CustomersPage />} />
           <Route path="rooms" element={<DRoomsPage />} />
+          <Route path="bookings" element={<BookingsPage />} />
         </Route>
       </Routes>
       <BookingModal

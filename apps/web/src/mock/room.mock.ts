@@ -1,5 +1,5 @@
 import { Bed, CheckCircle2, Sparkles, UserCheck } from "lucide-react";
-import type { Room } from "@/types/room.types";
+import type { AvailableRoom, Room } from "@/types/room.types";
 import type { ApiResponse, KpiItem } from "@/types/shared.types";
 
 export const roomKpisData: KpiItem[] = [
@@ -248,6 +248,45 @@ export const rooms: Room[] = [
     status: "INACTIVE",
   },
 ];
+export const availableRooms: AvailableRoom[] = [
+  {
+    id: "avail_room_201",
+    roomNumber: "201",
+    roomTypeName: "Deluxe",
+    floor: 2,
+    nightlyRate: 3500,
+    occupancyStatus: "VACANT",
+    housekeepingStatus: "CLEAN",
+  },
+  {
+    id: "avail_room_202",
+    roomNumber: "202",
+    roomTypeName: "Deluxe",
+    floor: 2,
+    nightlyRate: 3500,
+    occupancyStatus: "VACANT",
+    housekeepingStatus: "CLEAN",
+  },
+  {
+    id: "avail_room_203",
+    roomNumber: "203",
+    roomTypeName: "Deluxe",
+    floor: 2,
+    nightlyRate: 3500,
+    occupancyStatus: "VACANT",
+    housekeepingStatus: "CLEAN",
+  },
+  {
+    id: "avail_room_302",
+    roomNumber: "302",
+    roomTypeName: "Suite",
+    floor: 3,
+    nightlyRate: 5200,
+    occupancyStatus: "VACANT",
+    housekeepingStatus: "CLEAN",
+  },
+];
+
 export const roomsApiResponse: ApiResponse<Room> = {
   items: rooms,
   meta: {

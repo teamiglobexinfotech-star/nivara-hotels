@@ -13,3 +13,13 @@ export interface Room {
   housekeepingStatus: HousekeepingStatus;
   status: RoomTypesStatus;
 }
+
+export interface AvailableRoom {
+  id: string;
+  roomNumber: string;
+  roomTypeName: string;
+  floor: number;
+  nightlyRate: number;
+  occupancyStatus: OccupancyStatus;
+  housekeepingStatus: HousekeepingStatus;
+}

@@ -75,8 +75,17 @@ export function DataTable<T extends Record<string, any>>({
 
       for (const filter of filters) {
         const selectedVal = filterValues[filter.key];
-        if (selectedVal && selectedVal !== "ALL" && !onFilterChange) {
-          if (String(row[filter.key]) !== selectedVal) return false;
+        if (
+          selectedVal &&
+          selectedVal.toLowerCase() !== "all" &&
+          !onFilterChange
+        ) {
+          if (
+            String(row[filter.key] ?? "").toLowerCase() !==
+            selectedVal.toLowerCase()
+          ) {
+            return false;
+          }
         }
       }
       return true;
