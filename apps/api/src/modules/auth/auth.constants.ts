@@ -4,4 +4,5 @@ export const AUTH_ERROR_MSG = {
 };
 export const AUTH_SUCCESS_MSG = {
   LOGIN: 'Logged in successfully.',
+  LOGOUT: 'Logged out successfully.',
 };

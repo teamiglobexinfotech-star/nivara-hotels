@@ -5,9 +5,12 @@ import {
   HttpStatus,
   Post,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { ValidationPipe } from '../../common/pipes';
+import { AuthGuard } from '../../common/guards';
+import { clearCookies } from '../../common/helpers';
 import { AuthService } from './auth.service';
 import { LoginDto, LoginSchema } from './dtos/login.dto';
 import { AUTH_SUCCESS_MSG } from './auth.constants';
@@ -24,5 +27,13 @@ export class AuthController {
   ) {
     await this.authService.login(body, res);
     return { message: AUTH_SUCCESS_MSG.LOGIN };
+  }
+
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthGuard)
+  logout(@Res({ passthrough: true }) res: Response) {
+    clearCookies(res);
+    return { message: AUTH_SUCCESS_MSG.LOGOUT };
   }
 }
