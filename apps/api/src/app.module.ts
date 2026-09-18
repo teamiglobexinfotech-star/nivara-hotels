@@ -6,6 +6,7 @@ import { env } from './config';
 import { PrismaModule } from './db/prisma/prisma.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { SeedModule } from './seed/seed.module';
+import { StaffModule } from './modules/staff/staff.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { SeedModule } from './seed/seed.module';
     PrismaModule,
     AuthModule,
     SeedModule,
+    StaffModule,
   ],
   controllers: [AppController],
   providers: [AppService],
