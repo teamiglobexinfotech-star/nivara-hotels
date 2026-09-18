@@ -9,6 +9,7 @@ import { SeedModule } from './seed/seed.module';
 import { StaffModule } from './modules/staff/staff.module';
 import { CustomerModule } from './modules/customer/customer.module';
 import { AmenityModule } from './modules/amenity/amenity.module';
+import { RoomTypeModule } from './modules/room-type/room-type.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { AmenityModule } from './modules/amenity/amenity.module';
     StaffModule,
     CustomerModule,
     AmenityModule,
+    RoomTypeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
