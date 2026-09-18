@@ -1,12 +1,8 @@
-import {
-  PipeTransform,
-  ArgumentMetadata,
-  BadRequestException,
-} from '@nestjs/common';
-import { type ZodJSONSchema } from 'zod';
+import { PipeTransform, BadRequestException } from '@nestjs/common';
+import { ZodSchema } from 'zod';
 
 export class ValidationPipe implements PipeTransform {
-  constructor(private schema: ZodJSONSchema) {}
+  constructor(private schema: ZodSchema) {}
 
   async transform(value: unknown) {
     const parsedValue = await this.schema.safeParseAsync(value);

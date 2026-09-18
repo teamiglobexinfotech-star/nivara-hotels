@@ -7,6 +7,7 @@ const envSchema = z.object({
   CORS_ORIGIN: z.url(),
   HOST_NAME: z.string(),
   JWT_ACCESS_SECRET: z.string().min(32),
+  DATABASE_URL: z.url(),
 });
 
 export type Env = z.infer<typeof envSchema>;

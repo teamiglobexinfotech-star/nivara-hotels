@@ -12,15 +12,20 @@ const baseConfig: CookieOptions = {
   path: '/',
 };
 
-export function setCookies(response: Response, accessToken: string) {
+export function setCookies(
+  response: Response,
+  accessToken: string,
+  refreshToken?: string,
+) {
   response.cookie(COOKIE_NAME.ACCESS_TOKEN, accessToken, {
     ...baseConfig,
     maxAge: COOKIE_EXPIRATION.ACCESS_TOKEN,
   });
-  response.cookie(COOKIE_NAME.REFRESH_TOKEN, accessToken, {
-    ...baseConfig,
-    maxAge: COOKIE_EXPIRATION.REFRESH_TOKEN,
-  });
+  if (refreshToken)
+    response.cookie(COOKIE_NAME.REFRESH_TOKEN, accessToken, {
+      ...baseConfig,
+      maxAge: COOKIE_EXPIRATION.REFRESH_TOKEN,
+    });
 }
 
 export function clearCookies(response: Response) {
