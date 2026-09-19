@@ -14,6 +14,7 @@ import {
 import { ListResponse, UserRole, UserStatus } from '../../types';
 import { GetCustomersDto } from './dtos/get-customers.dto';
 import { CUSTOMER_ERROR_MSG } from './customer.constants';
+import { UpdateCustomerDto } from './dtos/update-customer.dto';
 
 @Injectable()
 export class CustomerService {
@@ -113,9 +114,11 @@ export class CustomerService {
         select: {
           id: true,
           fullName: true,
+          profileImage: true,
           email: true,
           phone: true,
           status: true,
+          createdAt: true,
           customerProfile: {
             select: {
               id: true,
@@ -148,10 +151,12 @@ export class CustomerService {
       select: {
         id: true,
         fullName: true,
+        profileImage: true,
         email: true,
         phone: true,
         role: true,
         status: true,
+        createdAt: true,
         customerProfile: {
           select: {
             id: true,
@@ -169,5 +174,67 @@ export class CustomerService {
     }
 
     return customer;
+  }
+
+  async updateCustomer(
+    id: string,
+    dto: UpdateCustomerDto,
+  ): Promise<{ id: string }> {
+    const customer = await this.prismaService.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        role: true,
+        customerProfile: {
+          select: { id: true },
+        },
+      },
+    });
+
+    if (!customer || customer.role !== UserRole.CUSTOMER) {
+      throw new NotFoundException(CUSTOMER_ERROR_MSG.NOT_FOUND);
+    }
+
+    if (!customer.customerProfile) {
+      throw new NotFoundException(CUSTOMER_ERROR_MSG.PROFILE_NOT_FOUND);
+    }
+
+    if (dto.email) {
+      const existingUser = await this.prismaService.user.findFirst({
+        where: {
+          email: dto.email,
+          id: { not: id },
+        },
+        select: { id: true },
+      });
+
+      if (existingUser) {
+        throw new ConflictException(CUSTOMER_ERROR_MSG.CONFLICT_EMAIL);
+      }
+    }
+
+    return this.prismaService.$transaction(async (tx) => {
+      return tx.user.update({
+        where: { id },
+        data: {
+          ...(dto.fullName !== undefined && { fullName: dto.fullName }),
+          ...(dto.email !== undefined && { email: dto.email }),
+          ...(dto.phone !== undefined && { phone: dto.phone }),
+          customerProfile: {
+            update: {
+              ...(dto.idProofNumber !== undefined && {
+                idProofNumber: dto.idProofNumber,
+              }),
+              ...(dto.address !== undefined && {
+                address: dto.address,
+              }),
+            },
+          },
+        },
+        select: {
+          id: true,
+        },
+      });
+    });
   }
 }

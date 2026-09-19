@@ -17,9 +17,11 @@ export type CreateCustomerResponse = {
 export type CustomerListItem = {
   id: string;
   fullName: string;
+  profileImage: string;
   email: string;
   phone: string;
   status: UserStatus;
+  createdAt: Date | null;
   customerProfile: {
     id: string;
     idProofNumber: string;
@@ -30,10 +32,12 @@ export type CustomerListItem = {
 export type CustomerDetailsResponse = {
   id: string;
   fullName: string;
+  profileImage: string;
   email: string;
   phone: string;
   role: UserRole;
   status: UserStatus;
+  createdAt: Date | null;
   customerProfile: {
     id: string;
     idProofImage: string;

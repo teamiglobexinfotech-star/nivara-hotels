@@ -1,10 +1,12 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Query,
   UseGuards,
@@ -20,6 +22,10 @@ import {
 } from './dtos/create-customer.dto';
 import { CUSTOMER_SUCCESS_MSG } from './customer.constants';
 import { GetCustomersDto, GetCustomersSchema } from './dtos/get-customers.dto';
+import {
+  UpdateCustomerDto,
+  UpdateCustomerSchema,
+} from './dtos/update-customer.dto';
 
 @UseGuards(AuthGuard, RoleGuard)
 @Controller('customers')
@@ -45,7 +51,7 @@ export class CustomerController {
   ) {
     const { items, pagination } =
       await this.customerService.getCustomers(query);
-    return { data: items, pagination: pagination };
+    return { items, pagination: pagination };
   }
 
   @Roles('ADMIN', 'MANAGER', 'STAFF')
@@ -54,5 +60,27 @@ export class CustomerController {
   async getCustomerById(@Param('id') id: string) {
     const data = await this.customerService.getCustomerById(id);
     return { data };
+  }
+
+  @Roles('ADMIN', 'MANAGER', 'STAFF')
+  @Patch(':id')
+  @HttpCode(HttpStatus.OK)
+  async updateCustomer(
+    @Param('id') id: string,
+    @Body(new ValidationPipe(UpdateCustomerSchema)) body: UpdateCustomerDto,
+  ) {
+    const data = await this.customerService.updateCustomer(id, body);
+
+    return {
+      data,
+      message: CUSTOMER_SUCCESS_MSG.UPDATED,
+    };
+  }
+
+  @Roles('ADMIN', 'MANAGER', 'STAFF')
+  @Delete(':id')
+  @HttpCode(HttpStatus.OK)
+  async deleteCustomer() {
+    return { message: CUSTOMER_SUCCESS_MSG.DELETED };
   }
 }
