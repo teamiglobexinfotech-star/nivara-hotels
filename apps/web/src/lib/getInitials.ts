@@ -1,4 +1,5 @@
 export function getInitials(name: string): string {
+  if (!name) return "";
   return name
     .trim()
     .split(/\s+/)

@@ -14,7 +14,8 @@ export interface KpiCard {
   className?: string;
 }
 // ============== KPI CARD END  ==============
-
+export type UserRole = "ADMIN" | "CUSTOMER" | "MANAGER" | "STAFF";
+export type UserStatus = "ACTIVE" | "INACTIVE";
 // ============== DATA TABLE START  ==============
 
 export interface Column<T> {
@@ -41,6 +42,12 @@ export interface PaginationMeta {
   total: number;
   totalPages: number;
 }
+
+export type ListParams = {
+  page?: number;
+  limit?: number;
+  search?: string;
+};
 
 export interface ApiResponse<T> {
   items: T[];

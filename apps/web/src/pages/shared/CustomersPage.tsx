@@ -8,21 +8,30 @@ import { IconButton } from "@/components/shared/IconButton";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { getInitials } from "@/lib/getInitials";
-import { customerKpisData, customersApiResponse } from "@/mock/customer.mock";
+import { customerKpisData } from "@/mock/customer.mock";
 import type { Customer } from "@/types/customer.types";
 import { NewCustomerModal } from "@/features/customer/components/NewCustomerModal";
+import { useCustomers } from "@/features/customer/hooks/useCustomers";
+import { useState } from "react";
+import { useDebounce } from "@/hooks/useDebounce";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const customerColumns: Column<Customer>[] = [
   {
     header: "Full Name",
-    key: "name",
+    key: "fullName",
     className: "flex items-center gap-x-2",
     render: (c) => (
       <>
         <Avatar>
-          <AvatarFallback>{getInitials(c.name)}</AvatarFallback>
+          <AvatarFallback>{getInitials(c.fullName)}</AvatarFallback>
         </Avatar>
-        <span>{c.name}</span>
+        <span>{c.fullName}</span>
       </>
     ),
   },
@@ -48,11 +57,7 @@ const customerColumns: Column<Customer>[] = [
   {
     header: "Action",
     key: "action",
-    render: () => (
-      <IconButton size={"sm"} variant={"ghost"}>
-        <EllipsisVertical />
-      </IconButton>
-    ),
+    render: (c) => <ActionsDropdownMenu status={c.status} />,
   },
 ];
 
@@ -68,6 +73,33 @@ export const customerFilters: FilterConfig[] = [
   },
 ];
 
+export function ActionsDropdownMenu({
+  status,
+}: {
+  status: Customer["status"];
+}) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger>
+        <IconButton size={"sm"} variant={"ghost"}>
+          <EllipsisVertical />
+        </IconButton>
+      </DropdownMenuTrigger>
+
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem>View</DropdownMenuItem>
+        <DropdownMenuItem>Edit</DropdownMenuItem>
+        <DropdownMenuItem className={"text-destructive"}>
+          Delete
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          {status == "ACTIVE" ? "Deactivate" : "Activate"}
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
 function KpiSection() {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
@@ -75,6 +107,31 @@ function KpiSection() {
         <KpiCard key={item.id} item={item} />
       ))}
     </div>
+  );
+}
+
+function ListCustomers() {
+  const [searchInput, setSearchInput] = useState("");
+  const [page, setPage] = useState(1);
+  const search = useDebounce(searchInput, 400);
+  const { items, pagination, isError, isLoading } = useCustomers({
+    page,
+    search,
+  });
+
+  return (
+    <DataTable
+      response={{ items, pagination }}
+      columns={customerColumns}
+      searchKey="name"
+      searchPlaceholder="Search products..."
+      enablePagination={true}
+      isError={isError}
+      isLoading={isLoading}
+      onPageChange={(page) => setPage(page)}
+      onSearchChange={(query) => setSearchInput(query)}
+      onFilterChange={(filters) => console.log("Applied filters:", filters)}
+    />
   );
 }
 
@@ -101,17 +158,7 @@ export function CustomersPage() {
         }
       />
       <KpiSection />
-      <DataTable
-        response={customersApiResponse}
-        columns={customerColumns}
-        searchKey="name"
-        searchPlaceholder="Search products..."
-        filters={customerFilters}
-        enablePagination={true}
-        onPageChange={(page) => console.log("Fetch page:", page)}
-        onSearchChange={(query) => console.log("Search query:", query)}
-        onFilterChange={(filters) => console.log("Applied filters:", filters)}
-      />
+      <ListCustomers />
     </>
   );
 }
