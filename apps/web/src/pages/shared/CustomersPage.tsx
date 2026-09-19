@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { getInitials } from "@/lib/getInitials";
 import { customerKpisData, customersApiResponse } from "@/mock/customer.mock";
 import type { Customer } from "@/types/customer.types";
+import { NewCustomerModal } from "@/features/customer/components/NewCustomerModal";
 
 const customerColumns: Column<Customer>[] = [
   {
@@ -82,18 +83,20 @@ export function CustomersPage() {
     <>
       <SectionHeader
         title="Customers"
-        description=""
+        description="Manage customers"
         rightContent={
           <>
-            <Button
-              id="btn-add-customer"
-              variant="default"
-              size="sm"
-              className="h-9 gap-1.5 rounded-full bg-foreground px-4 text-xs font-medium text-background hover:bg-foreground/90"
-            >
-              <Plus className="h-3.5 w-3.5" />
-              <span>New Customer</span>
-            </Button>
+            <NewCustomerModal>
+              <Button
+                id="btn-add-customer"
+                variant="default"
+                size="sm"
+                className="h-9 gap-1.5 rounded-full bg-foreground px-4 text-xs font-medium text-background hover:bg-foreground/90"
+              >
+                <Plus className="h-3.5 w-3.5" />
+                <span>New Customer</span>
+              </Button>
+            </NewCustomerModal>
           </>
         }
       />
