@@ -1,9 +1,10 @@
+import { useState } from "react";
 import { EllipsisVertical, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SectionHeader } from "@/components/shared/SectionHeader";
 import { KpiCard } from "@/components/shared/KpiCard";
 import { DataTable } from "@/components/shared/DataTable";
-import type { Column, FilterConfig } from "@/types/shared.types";
+import type { Column } from "@/types/shared.types";
 import { IconButton } from "@/components/shared/IconButton";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -12,7 +13,6 @@ import { customerKpisData } from "@/mock/customer.mock";
 import type { Customer } from "@/types/customer.types";
 import { NewCustomerModal } from "@/features/customer/components/NewCustomerModal";
 import { useCustomers } from "@/features/customer/hooks/useCustomers";
-import { useState } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
 import {
   DropdownMenu,
@@ -20,6 +20,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { UpdateCustomerModal } from "@/features/customer/components/UpdateCustomerModal";
+import { useDeleteCustomer } from "@/features/customer/hooks/useDeleteCustomer";
+import { ViewCustomerModal } from "@/features/customer/components/ViewCustomerModal";
 
 const customerColumns: Column<Customer>[] = [
   {
@@ -57,46 +60,62 @@ const customerColumns: Column<Customer>[] = [
   {
     header: "Action",
     key: "action",
-    render: (c) => <ActionsDropdownMenu status={c.status} />,
+    render: (c) => <ActionsDropdownMenu customer={c} />,
   },
 ];
 
-export const customerFilters: FilterConfig[] = [
-  {
-    key: "status",
-    placeholder: "All statuses",
-    options: [
-      { label: "All", value: "all" },
-      { label: "ACTIVE", value: "active" },
-      { label: "INACTIVE", value: "inactive" },
-    ],
-  },
-];
+function ActionsDropdownMenu({ customer }: { customer: Customer }) {
+  const [isUpdateModal, setIsUpdateModal] = useState(false);
+  const [isViewModal, setIsViewModal] = useState(false);
 
-export function ActionsDropdownMenu({
-  status,
-}: {
-  status: Customer["status"];
-}) {
+  const { deleteCustomer, isDeleting } = useDeleteCustomer();
+
+  function handleDeleteCustomer() {
+    deleteCustomer(customer.id);
+  }
+
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger>
-        <IconButton size={"sm"} variant={"ghost"}>
-          <EllipsisVertical />
-        </IconButton>
-      </DropdownMenuTrigger>
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <IconButton size={"sm"} variant={"ghost"}>
+            <EllipsisVertical />
+          </IconButton>
+        </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem>View</DropdownMenuItem>
-        <DropdownMenuItem>Edit</DropdownMenuItem>
-        <DropdownMenuItem className={"text-destructive"}>
-          Delete
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          {status == "ACTIVE" ? "Deactivate" : "Activate"}
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={() => setIsViewModal(true)}>
+            View
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setIsUpdateModal(true)}>
+            Edit
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className={"text-destructive"}
+            onClick={handleDeleteCustomer}
+            disabled={isDeleting}
+          >
+            Delete
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      {/*  */}
+      <UpdateCustomerModal
+        open={isUpdateModal}
+        onOpenChange={setIsUpdateModal}
+        customer={customer}
+      />
+
+      {/*  */}
+      {isViewModal && (
+        <ViewCustomerModal
+          onOpenChange={setIsViewModal}
+          open={isViewModal}
+          id={customer.id}
+        />
+      )}
+    </>
   );
 }
 
