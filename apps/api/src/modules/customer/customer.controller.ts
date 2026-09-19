@@ -16,7 +16,6 @@ import {
 import { AuthGuard, RoleGuard } from '../../common/guards';
 import { ValidationPipe } from '../../common/pipes';
 import { Roles } from '../../common/decorators';
-import { uploadFile } from '../../config';
 import { CustomerService } from './customer.service';
 import {
   CreateCustomerDto,
@@ -28,7 +27,7 @@ import {
   UpdateCustomerDto,
   UpdateCustomerSchema,
 } from './dtos/update-customer.dto';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 
 @UseGuards(AuthGuard, RoleGuard)
 @Controller('customers')
@@ -37,10 +36,16 @@ export class CustomerController {
 
   @Roles('ADMIN', 'MANAGER', 'STAFF')
   @Post()
-  @UseInterceptors(FilesInterceptor('files', 2))
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'idProof', maxCount: 1 },
+      { name: 'signature', maxCount: 1 },
+    ]),
+  )
   @HttpCode(HttpStatus.CREATED)
   async createCustomer(
-    @UploadedFiles() files,
+    @UploadedFiles()
+    files: { idProof; signature },
     @Body(new ValidationPipe(CreateCustomerSchema)) body: CreateCustomerDto,
   ) {
     const data = await this.customerService.createCustomer(files, body);

@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { ID } from 'node-appwrite';
 import { PrismaService } from '../../db/prisma/prisma.service';
 import { hashPassword } from '../../common/helpers';
 import { CreateCustomerDto } from './dtos/create-customer.dto';
@@ -36,13 +37,18 @@ export class CustomerService {
 
     const passwordHash = await hashPassword('secure1234');
 
-    const uploadedFilesUrls = await Promise.all(
-      files.map(async (file, index) => {
-        const fileId = (await uploadFile(file, `file-${Date.now()}-${index}`))
-          .$id;
-        return getFileUrl(fileId);
-      }),
-    );
+    const idProof = files.idProof?.[0];
+    const signature = files.signature?.[0];
+
+    const uploadedIdProof = idProof
+      ? getFileUrl((await uploadFile(idProof, `id-proof-${ID.unique()}`)).$id)
+      : '';
+
+    const uploadedSignature = signature
+      ? getFileUrl(
+          (await uploadFile(signature, `signature-${ID.unique()}`)).$id,
+        )
+      : '';
 
     const user = await this.prismaService.user.create({
       data: {
@@ -55,16 +61,17 @@ export class CustomerService {
         status: UserStatus.ACTIVE,
         customerProfile: {
           create: {
-            idProofImage: uploadedFilesUrls[0] || '',
+            idProofImage: uploadedIdProof,
             idProofNumber: dto.idProofNumber,
             address: dto.address,
-            signature: uploadedFilesUrls[1] || '',
+            signature: uploadedSignature,
           },
         },
       },
       select: {
         id: true,
         fullName: true,
+        profileImage: true,
         email: true,
         phone: true,
         role: true,
@@ -72,8 +79,10 @@ export class CustomerService {
         customerProfile: {
           select: {
             id: true,
+            idProofImage: true,
             idProofNumber: true,
             address: true,
+            signature: true,
           },
         },
       },
