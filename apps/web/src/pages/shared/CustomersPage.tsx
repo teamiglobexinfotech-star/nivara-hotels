@@ -176,7 +176,7 @@ export function CustomersPage() {
           </>
         }
       />
-      <KpiSection />
+      {/* <KpiSection /> */}
       <ListCustomers />
     </>
   );

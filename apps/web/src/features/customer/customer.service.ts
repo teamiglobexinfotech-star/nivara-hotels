@@ -13,7 +13,7 @@ export const customerService = {
     id: string,
     data: UpdateCustomer
   ): Promise<{ message: string }> =>
-    apiClient.put(`/customers/${id}`, data).then((r) => r.data),
+    apiClient.patch(`/customers/${id}`, data).then((r) => r.data),
   deleteCustomer: (id: string): Promise<{ message: string }> =>
     apiClient.delete(`/customers/${id}`).then((r) => r.data),
   getCustomerById: (id: string) =>
