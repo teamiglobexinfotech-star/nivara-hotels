@@ -38,9 +38,15 @@ importers:
       helmet:
         specifier: ^8.3.0
         version: 8.3.0
+      multer:
+        specifier: ^2.4.0
+        version: 2.4.0
       nestjs-zod:
         specifier: ^5.5.0
         version: 5.5.0(@nestjs/common@11.2.3(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1))(rxjs@7.8.2)(zod@4.6.2)
+      node-appwrite:
+        specifier: ^29.0.0
+        version: 29.0.0
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
@@ -78,6 +84,9 @@ importers:
       '@types/jest':
         specifier: ^30.0.0
         version: 30.0.0
+      '@types/multer':
+        specifier: ^2.2.0
+        version: 2.2.0
       '@types/node':
         specifier: ^24.13.4
         version: 24.13.4
@@ -1163,6 +1172,9 @@ packages:
   '@types/ms@2.1.0':
     resolution: {integrity: sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==}
 
+  '@types/multer@2.2.0':
+    resolution: {integrity: sha512-3U1troeqGV8Ntp7Q3klwf4zr23VEoqYVocYXaswm9+8z3O9UHDYAqLxjJ/h550iRADTjKdOdhhasXw6gD6kYtg==}
+
   '@types/node@24.13.4':
     resolution: {integrity: sha512-YJ7EqCstVTzIr0fMr7qul/977en+pQHrfmuKIo6Zr9i75Be21dr3MovcfvGtyvi2HAUrRerWps5sMO9I7WaxDw==}
 
@@ -1625,6 +1637,9 @@ packages:
 
   better-result@2.10.0:
     resolution: {integrity: sha512-oQhh0y1qo2/ZKdAAEvHZAqKKiHOFU5k/bW96fE2ScgQOVkJRiHwB+nOS1SgFsYqRlxMDWvefXi9Q3px7QvgNDw==}
+
+  bignumber.js@9.3.1:
+    resolution: {integrity: sha512-Ko0uX15oIUS7wJ3Rb30Fs6SkVbLmPBAKdlm7q9+ak9bbIeFf0MwuBsQV6z7+X768/cHsfg+WlysDWJcmthjsjQ==}
 
   bl@4.1.0:
     resolution: {integrity: sha512-1W07cM9gS6DcLperZfFSj+bWLtaPGSOHWhPiGzXmvVJbRLdG82sH/Kn8EtW1VqWVA54AKf2h5k5BbnIbwF3h6w==}
@@ -2641,6 +2656,9 @@ packages:
     engines: {node: '>=6'}
     hasBin: true
 
+  json-bigint@1.0.0:
+    resolution: {integrity: sha512-SiPv/8VpZuWbvLSMtTDU8hEfrZWg/mH/nV/b4o0CYbSxu1UIQPLdwKOCIyLQX+VIPO5vrLX3i8qtqFyhdPSUSQ==}
+
   json-buffer@3.0.1:
     resolution: {integrity: sha512-4bV5BfR2mqfQTJm+V5tPPdf+ZpuhiIvTuAB5g8kcrXOZpTT/QwwVRWBywX1ozr6lEuPdbHxwaJlm9G6mI2sfSQ==}
 
@@ -2845,6 +2863,10 @@ packages:
     resolution: {integrity: sha512-6rdyFg2kLrMh9Jee7/BMPuV9lEAd7lLW2YUpF9/YxR7njyoUwwQ0ZPh3TaIY50Sw6vlyD2HW3wGOkTS4P79xrQ==}
     engines: {node: '>= 10.16.0'}
 
+  multer@2.4.0:
+    resolution: {integrity: sha512-7dqa0ZcFfzbefdTuIkzOSMvZWC0J7FLqBOjJUZvDCXShIURWKxAyTT1wHhnE5q19c7jOJf43IYYKjBmZVZmvhg==}
+    engines: {node: '>= 10.16.0'}
+
   mute-stream@2.0.0:
     resolution: {integrity: sha512-WWdIxpyjEn+FhQJQQv9aQAYlHoNVdzIzUySNV1gHUPDSdZJ3yZn7pAAbQcV7B56Mvu881q9FZV+0Vx2xC44VWA==}
     engines: {node: ^18.17.0 || >=20.5.0}
@@ -2892,6 +2914,9 @@ packages:
   node-addon-api@8.9.2:
     resolution: {integrity: sha512-VijLXbi3UACN69I0JVXJsX4tjACjNoQDgv2gTF6sx2wWEi8tkSg2eX8p5gSIFi8z2+DL3oHmY6OyKce38SDolg==}
     engines: {node: ^18 || ^20 || >= 21}
+
+  node-appwrite@29.0.0:
+    resolution: {integrity: sha512-c2lkV5uiHrOXEs2VqyQYmXomEGgeHS21neCJHb0tyGfeQ0KqIPKYz9O3TQrRtRJk7YMBRoJfjorR527371TRdQ==}
 
   node-emoji@1.11.0:
     resolution: {integrity: sha512-wo2DpQkQp7Sjm2A0cq+sN7EHKO6Sl0ctXeBdFZrL9T9+UywORbufTcTZxom8YqpLQt/FqNMUkOpkZrJVYSKD3A==}
@@ -3615,6 +3640,10 @@ packages:
 
   undici-types@7.18.2:
     resolution: {integrity: sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w==}
+
+  undici@6.28.1:
+    resolution: {integrity: sha512-zWpdTVD54H48CIybL0rWQ3ukpb9d23wM7eH5RtfdmeP70cWHNjtfo7P4vZX+5CoDcO53J4Pu5uXp7lNfjc6DRA==}
+    engines: {node: '>=18.17'}
 
   universalify@2.0.1:
     resolution: {integrity: sha512-gptHNQghINnc/vTGIk0SOFGFNXw7JVrlRUtConJRlvaw6DuX0wO5Jeko9sWrMBhh+PsYAZ7oXAiOnf/UKogyiw==}
@@ -4962,6 +4991,10 @@ snapshots:
 
   '@types/ms@2.1.0': {}
 
+  '@types/multer@2.2.0':
+    dependencies:
+      '@types/express': 5.0.6
+
   '@types/node@24.13.4':
     dependencies:
       undici-types: 7.18.2
@@ -5497,6 +5530,8 @@ snapshots:
   baseline-browser-mapping@2.11.22: {}
 
   better-result@2.10.0: {}
+
+  bignumber.js@9.3.1: {}
 
   bl@4.1.0:
     dependencies:
@@ -6694,6 +6729,10 @@ snapshots:
 
   jsesc@3.1.0: {}
 
+  json-bigint@1.0.0:
+    dependencies:
+      bignumber.js: 9.3.1
+
   json-buffer@3.0.1: {}
 
   json-parse-even-better-errors@2.3.1: {}
@@ -6867,6 +6906,12 @@ snapshots:
       concat-stream: 2.0.0
       type-is: 1.6.18
 
+  multer@2.4.0:
+    dependencies:
+      append-field: 1.0.0
+      busboy: 1.6.0
+      type-is: 1.6.18
+
   mute-stream@2.0.0: {}
 
   mysql2@3.15.3:
@@ -6907,6 +6952,11 @@ snapshots:
   node-addon-api@7.1.1: {}
 
   node-addon-api@8.9.2: {}
+
+  node-appwrite@29.0.0:
+    dependencies:
+      json-bigint: 1.0.0
+      undici: 6.28.1
 
   node-emoji@1.11.0:
     dependencies:
@@ -7572,6 +7622,8 @@ snapshots:
   uint8array-extras@1.5.0: {}
 
   undici-types@7.18.2: {}
+
+  undici@6.28.1: {}
 
   universalify@2.0.1: {}
 

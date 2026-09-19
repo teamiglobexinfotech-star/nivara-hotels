@@ -15,12 +15,16 @@ import { ListResponse, UserRole, UserStatus } from '../../types';
 import { GetCustomersDto } from './dtos/get-customers.dto';
 import { CUSTOMER_ERROR_MSG } from './customer.constants';
 import { UpdateCustomerDto } from './dtos/update-customer.dto';
+import { getFileUrl, uploadFile } from '../../config';
 
 @Injectable()
 export class CustomerService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(dto: CreateCustomerDto): Promise<CreateCustomerResponse> {
+  async createCustomer(
+    files,
+    dto: CreateCustomerDto,
+  ): Promise<CreateCustomerResponse> {
     const existingUser = await this.prismaService.user.findUnique({
       where: { email: dto.email },
       select: { id: true },
@@ -31,6 +35,14 @@ export class CustomerService {
     }
 
     const passwordHash = await hashPassword('secure1234');
+
+    const uploadedFilesUrls = await Promise.all(
+      files.map(async (file, index) => {
+        const fileId = (await uploadFile(file, `file-${Date.now()}-${index}`))
+          .$id;
+        return getFileUrl(fileId);
+      }),
+    );
 
     const user = await this.prismaService.user.create({
       data: {
@@ -43,10 +55,10 @@ export class CustomerService {
         status: UserStatus.ACTIVE,
         customerProfile: {
           create: {
-            idProofImage: '',
+            idProofImage: uploadedFilesUrls[0] || '',
             idProofNumber: dto.idProofNumber,
             address: dto.address,
-            signature: '',
+            signature: uploadedFilesUrls[1] || '',
           },
         },
       },
