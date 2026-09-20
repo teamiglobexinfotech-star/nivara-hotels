@@ -1,11 +1,17 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../../db/prisma/prisma.service';
 import { CreateAmenityDto } from './dtos/create-amenity.dto';
 import {
   AmenityListItemResponse,
   CreateAmenityResponse,
+  UpdateAmenityResponse,
 } from './amenity.types';
 import { AMENITY_ERROR_MSG } from './amenity.constants';
+import { UpdateAmenityDto } from './dtos/update-amenity.dto';
 
 @Injectable()
 export class AmenityService {
@@ -18,7 +24,7 @@ export class AmenityService {
     });
 
     if (existingAmenity) {
-      throw new ConflictException(AMENITY_ERROR_MSG.CONFLICT);
+      throw new ConflictException(AMENITY_ERROR_MSG.CONFLICT_NAME);
     }
 
     return this.prismaService.amenity.create({
@@ -38,7 +44,7 @@ export class AmenityService {
     });
   }
 
-  async getAmenities(): Promise<AmenityListItemResponse[]> {
+  async getAll(): Promise<AmenityListItemResponse[]> {
     return this.prismaService.amenity.findMany({
       select: {
         id: true,
@@ -52,6 +58,72 @@ export class AmenityService {
       orderBy: {
         createdAt: 'desc',
       },
+    });
+  }
+
+  async update(
+    id: string,
+    dto: UpdateAmenityDto,
+  ): Promise<UpdateAmenityResponse> {
+    const amenity = await this.prismaService.amenity.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+
+    if (!amenity) {
+      throw new NotFoundException(AMENITY_ERROR_MSG.NOT_FOUND);
+    }
+
+    if (dto.name && dto.name !== amenity.name) {
+      const existingAmenity = await this.prismaService.amenity.findUnique({
+        where: { name: dto.name },
+        select: { id: true },
+      });
+
+      if (existingAmenity) {
+        throw new ConflictException(AMENITY_ERROR_MSG.CONFLICT_NAME);
+      }
+    }
+
+    return this.prismaService.amenity.update({
+      where: { id },
+      data: dto,
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        icon: true,
+        status: true,
+      },
+    });
+  }
+
+  async delete(id: string): Promise<void> {
+    const amenity = await this.prismaService.amenity.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        _count: {
+          select: {
+            roomTypeAmenities: true,
+          },
+        },
+      },
+    });
+
+    if (!amenity) {
+      throw new NotFoundException(AMENITY_ERROR_MSG.NOT_FOUND);
+    }
+
+    if (amenity._count.roomTypeAmenities > 0) {
+      throw new ConflictException(AMENITY_ERROR_MSG.IN_USE);
+    }
+
+    await this.prismaService.amenity.delete({
+      where: { id },
     });
   }
 }

@@ -1,18 +1,37 @@
-export type RoomTypesStatus = "ACTIVE" | "INACTIVE";
+export type RoomTypeStatus = "ACTIVE" | "INACTIVE";
 export type HousekeepingStatus = "CLEAN" | "DIRTY" | "CLEANING";
 export type OccupancyStatus =
   "VACANT" | "RESERVED" | "OCCUPIED" | "OUT_OF_ORDER";
 
 export interface Room {
   id: string;
-  name: string;
   roomNumber: string;
-  roomTypeName?: string;
+  roomTypeId: string;
   floor: number;
+  description: string | null;
   occupancyStatus: OccupancyStatus;
   housekeepingStatus: HousekeepingStatus;
-  status: RoomTypesStatus;
+  isActive: boolean;
+  roomType: {
+    id: string;
+    name: string;
+    description: string | null;
+    capacity: number;
+    basePrice: any;
+    status: RoomTypeStatus;
+  };
 }
+
+export type RoomType = {
+  id: string;
+  name: string;
+  description: string | null;
+  capacity: number;
+  basePrice: any;
+  status: RoomTypeStatus;
+  createdAt: Date;
+  updatedAt: Date;
+};
 
 export interface AvailableRoom {
   id: string;

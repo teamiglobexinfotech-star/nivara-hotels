@@ -10,9 +10,12 @@ import {
   CreateRoomResponse,
   RoomDetailsResponse,
   RoomListItemResponse,
+  RoomStatsResponse,
+  UpdateRoomResponse,
 } from './room.types';
 import { GetRoomsDto } from './dtos/get-rooms.dto';
 import { ListResponse } from '../../types';
+import { UpdateRoomDto } from './dtos/update-room.dto';
 
 @Injectable()
 export class RoomService {
@@ -70,9 +73,7 @@ export class RoomService {
     });
   }
 
-  async getRooms(
-    dto: GetRoomsDto,
-  ): Promise<ListResponse<RoomListItemResponse>> {
+  async getAll(dto: GetRoomsDto): Promise<ListResponse<RoomListItemResponse>> {
     const {
       page,
       limit,
@@ -162,7 +163,7 @@ export class RoomService {
     };
   }
 
-  async getRoomById(id: string): Promise<RoomDetailsResponse> {
+  async getById(id: string): Promise<RoomDetailsResponse> {
     const room = await this.prismaService.room.findUnique({
       where: { id },
       select: {
@@ -207,5 +208,135 @@ export class RoomService {
     }
 
     return room;
+  }
+
+  async update(id: string, dto: UpdateRoomDto): Promise<UpdateRoomResponse> {
+    const room = await this.prismaService.room.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        roomNumber: true,
+      },
+    });
+
+    if (!room) {
+      throw new NotFoundException(ROOM_ERROR_MSG.NOT_FOUND);
+    }
+
+    if (dto.roomNumber && dto.roomNumber !== room.roomNumber) {
+      const existingRoom = await this.prismaService.room.findUnique({
+        where: { roomNumber: dto.roomNumber },
+        select: { id: true },
+      });
+
+      if (existingRoom) {
+        throw new ConflictException(ROOM_ERROR_MSG.CONFLICT_ROOM_NUMBER);
+      }
+    }
+
+    if (dto.roomTypeId) {
+      const roomType = await this.prismaService.roomType.findUnique({
+        where: { id: dto.roomTypeId },
+        select: { id: true },
+      });
+
+      if (!roomType) {
+        throw new NotFoundException(ROOM_ERROR_MSG.NOT_FOUND);
+      }
+    }
+
+    return this.prismaService.room.update({
+      where: { id },
+      data: dto,
+      select: {
+        id: true,
+        roomNumber: true,
+        roomTypeId: true,
+        floor: true,
+        description: true,
+        occupancyStatus: true,
+        housekeepingStatus: true,
+        isActive: true,
+      },
+    });
+  }
+
+  async delete(id: string): Promise<void> {
+    const room = await this.prismaService.roomType.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+
+    if (!room) {
+      throw new NotFoundException(ROOM_ERROR_MSG.NOT_FOUND);
+    }
+
+    await this.prismaService.room.delete({
+      where: { id },
+    });
+  }
+
+  async getStats(): Promise<RoomStatsResponse> {
+    const [totalRoom, available, occupied, cleaning, serviceRequired] =
+      await Promise.all([
+        this.prismaService.room.count(),
+
+        this.prismaService.room.count({
+          where: {
+            occupancyStatus: 'VACANT',
+            isActive: true,
+            housekeepingStatus: 'CLEAN',
+          },
+        }),
+
+        this.prismaService.room.count({
+          where: {
+            occupancyStatus: 'OCCUPIED',
+          },
+        }),
+
+        this.prismaService.room.count({
+          where: {
+            housekeepingStatus: 'CLEANING',
+          },
+        }),
+
+        this.prismaService.room.count({
+          where: {
+            housekeepingStatus: 'DIRTY',
+          },
+        }),
+      ]);
+
+    return [
+      {
+        id: 'total-room',
+        icon: 'BedDouble',
+        title: 'Total Rooms',
+        value: totalRoom,
+        detail: 'All registered rooms',
+      },
+      {
+        id: 'available',
+        icon: 'DoorOpen',
+        title: 'Available',
+        value: available,
+        detail: 'Ready for new bookings',
+      },
+      {
+        id: 'occupied',
+        icon: 'Users',
+        title: 'Occupied',
+        value: occupied,
+        detail: 'Currently occupied',
+      },
+      {
+        id: 'housekeeping',
+        icon: 'Sparkles',
+        title: 'Housekeeping',
+        value: cleaning + serviceRequired,
+        detail: `${cleaning} cleaning, ${serviceRequired} service required`,
+      },
+    ];
   }
 }

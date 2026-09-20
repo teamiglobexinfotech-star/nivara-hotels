@@ -20,3 +20,12 @@ export type RoomTypeListItemResponse = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type UpdateRoomTypeResponse = {
+  id: string;
+  name: string;
+  description: string | null;
+  capacity: number;
+  basePrice: any;
+  status: RoomTypeStatus;
+};

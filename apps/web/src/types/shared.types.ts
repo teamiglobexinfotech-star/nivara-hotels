@@ -57,7 +57,7 @@ export type ListParams = {
 };
 
 export interface ApiResponse<T> {
-  items: T[];
+  items: T[] | [];
   meta?: PaginationMeta;
   pagination?: PaginationMeta;
 }

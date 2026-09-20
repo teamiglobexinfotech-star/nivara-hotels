@@ -5,7 +5,6 @@ export const GetRoomsSchema = z
   .object({
     search: z
       .string('Search must be a string')
-      .min(1, 'Search cannot be empty')
       .max(100, 'Search must be 100 characters or less')
       .optional(),
 

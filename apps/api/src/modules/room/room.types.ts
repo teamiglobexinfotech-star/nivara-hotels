@@ -65,3 +65,23 @@ export type RoomDetailsResponse = {
     }[];
   };
 };
+
+export type UpdateRoomResponse = {
+  id: string;
+  roomNumber: string;
+  roomTypeId: string;
+  floor: number;
+  occupancyStatus: OccupancyStatus;
+  housekeepingStatus: HousekeepingStatus;
+  isActive: boolean;
+};
+
+export type RoomStat = {
+  id: string;
+  icon: string;
+  title: string;
+  value: string | number;
+  detail: string;
+};
+
+export type RoomStatsResponse = RoomStat[];

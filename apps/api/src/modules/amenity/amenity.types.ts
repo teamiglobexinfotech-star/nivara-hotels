@@ -17,3 +17,11 @@ export type AmenityListItemResponse = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type UpdateAmenityResponse = {
+  id: string;
+  name: string;
+  description: string | null;
+  icon: string | null;
+  status: AmenityStatus;
+};

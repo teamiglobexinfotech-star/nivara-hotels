@@ -1,9 +1,12 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
+  Param,
+  Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -16,6 +19,10 @@ import {
   CreateRoomTypeSchema,
 } from './dtos/create-room-type.dto';
 import { ROOM_TYPE_SUCCESS_MSG } from './room-type.constants';
+import {
+  UpdateRoomTypeDto,
+  UpdateRoomTypeSchema,
+} from './dtos/update-room-type.dto';
 
 @UseGuards(AuthGuard, RoleGuard)
 @Controller('room-types')
@@ -37,8 +44,26 @@ export class RoomTypeController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  async getRoomTypes() {
-    const data = await this.roomTypeService.getRoomTypes();
+  async getAll() {
+    const data = await this.roomTypeService.getAll();
     return { data };
+  }
+
+  @Roles('ADMIN')
+  @Patch(':id')
+  @HttpCode(HttpStatus.OK)
+  async update(
+    @Param('id') id: string,
+    @Body(new ValidationPipe(UpdateRoomTypeSchema)) body: UpdateRoomTypeDto,
+  ) {
+    const data = await this.roomTypeService.update(id, body);
+    return { data, message: ROOM_TYPE_SUCCESS_MSG.UPDATED };
+  }
+
+  @Roles('ADMIN')
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async delete(@Param('id') roomId: string): Promise<void> {
+    await this.roomTypeService.delete(roomId);
   }
 }

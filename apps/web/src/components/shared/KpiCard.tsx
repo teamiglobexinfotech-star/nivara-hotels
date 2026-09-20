@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import type { KpiCard } from "@/types/shared.types";
+import "lucide-react";
 
 export function KpiCard({ item, className }: KpiCard) {
   const Icon = item.icon;
