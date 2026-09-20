@@ -1,16 +1,15 @@
 import { Bell } from "lucide-react";
 import { useEffect, useState } from "react";
-import { getInitials } from "@/lib/getInitials";
-import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Link, Navigate, Outlet, useLocation } from "react-router-dom";
 import { AppSidebar } from "../shadcn-space/blocks/sidebar-01/app-sidebar";
 import { SidebarProvider, SidebarTrigger } from "../ui/sidebar";
 import { useAuth } from "@/hooks/useAuth";
 import { FullScreenLoader } from "../shared/FullScreenLoader";
+import { ProfileDropdown } from "../shared/ProfileDropdown";
 
 export function ProtectLayout() {
   const [activeTab, setActiveTab] = useState("Dashboard");
-  const { user, isLoading, isAuthenticated } = useAuth();
+  const { isLoading, isAuthenticated } = useAuth();
   const location = useLocation();
 
   useEffect(() => {
@@ -51,12 +50,7 @@ export function ProtectLayout() {
                 <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-primary" />
               </button>
             </Link>
-
-            <Avatar>
-              <AvatarFallback className={"bg-primary text-background"}>
-                {getInitials(user?.fullName!)}
-              </AvatarFallback>
-            </Avatar>
+            <ProfileDropdown />
           </div>
         </header>
 

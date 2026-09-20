@@ -85,7 +85,7 @@ export class AuthService {
       where: {
         userId,
         tokenHash: refreshTokenHash,
-        revokedAt: new Date(),
+        expiresAt: { gt: new Date() },
       },
       select: {
         id: true,
