@@ -1,19 +1,16 @@
 import { useMutation } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import { notifyError } from "@/lib/notification";
 import { authService } from "../auth.service";
 import { LoginSchema, type Login } from "../schema/login.schema";
 
 export function useLogin() {
-  const navigate = useNavigate();
-
   const mutation = useMutation({
     mutationKey: ["auth", "login"],
     mutationFn: authService.login,
     onSuccess: () => {
-      navigate("/dashboard");
+      window.location.href = "/dashboard";
     },
     onError: notifyError,
   });

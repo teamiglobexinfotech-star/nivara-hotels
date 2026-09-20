@@ -21,11 +21,11 @@ export function setCookies(
     ...baseConfig,
     maxAge: COOKIE_EXPIRATION.ACCESS_TOKEN,
   });
-  if (refreshToken)
-    response.cookie(COOKIE_NAME.REFRESH_TOKEN, accessToken, {
-      ...baseConfig,
-      maxAge: COOKIE_EXPIRATION.REFRESH_TOKEN,
-    });
+
+  response.cookie(COOKIE_NAME.REFRESH_TOKEN, refreshToken, {
+    ...baseConfig,
+    maxAge: COOKIE_EXPIRATION.REFRESH_TOKEN,
+  });
 }
 
 export function clearCookies(response: Response) {

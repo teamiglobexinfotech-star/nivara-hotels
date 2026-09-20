@@ -1,15 +1,24 @@
 import { JwtService } from '@nestjs/jwt';
-import type { Response } from 'express';
+import type { Request, Response } from 'express';
 import {
   ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from '../../db/prisma/prisma.service';
-import { comparePassword, setCookies } from '../../common/helpers';
+import {
+  clearCookies,
+  comparePassword,
+  generateRandomStr,
+  hashRandomStr,
+  setCookies,
+} from '../../common/helpers';
 import { LoginDto } from './dtos/login.dto';
 import { JwtPayload } from './auth.types';
 import { AUTH_ERROR_MSG } from './auth.constants';
+import { UserRole } from '../../types';
+import { env } from '../../config';
+import { COOKIE_EXPIRATION, COOKIE_NAME } from '../../common/constants';
 
 @Injectable()
 export class AuthService {
@@ -43,7 +52,7 @@ export class AuthService {
     }
 
     if (user.status === 'INACTIVE') {
-      throw new ForbiddenException(AUTH_ERROR_MSG.ACCOUNT_INACTIVE);
+      throw new ForbiddenException(AUTH_ERROR_MSG.ACCOUNT_NOT_ACTIVE);
     }
 
     const isPasswordValid = await comparePassword(
@@ -55,15 +64,132 @@ export class AuthService {
       throw new UnauthorizedException(AUTH_ERROR_MSG.INVALID_CREDENTIALS);
     }
 
+    const { accessToken, refreshToken } = await this.generateTokens(
+      user.id,
+      user.email,
+      user.role,
+    );
+
+    setCookies(res, accessToken, refreshToken);
+  }
+
+  async logout(userId: string, req: Request, res: Response): Promise<void> {
+    const refreshToken = req.cookies[COOKIE_NAME.REFRESH_TOKEN] as string;
+    if (!refreshToken) {
+      throw new UnauthorizedException(AUTH_ERROR_MSG.INVALID_REFRESH_TOKEN);
+    }
+
+    const refreshTokenHash = hashRandomStr(refreshToken);
+
+    const session = await this.prismaService.refreshToken.findFirst({
+      where: {
+        userId,
+        tokenHash: refreshTokenHash,
+        revokedAt: new Date(),
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!session) {
+      throw new UnauthorizedException(AUTH_ERROR_MSG.INVALID_REFRESH_TOKEN);
+    }
+
+    await this.prismaService.refreshToken.update({
+      where: { id: session.id },
+      data: {
+        revokedAt: new Date(),
+      },
+    });
+
+    clearCookies(res);
+  }
+
+  async refresh(req: Request, res: Response): Promise<void> {
+    const refreshToken = req.cookies[COOKIE_NAME.REFRESH_TOKEN] as string;
+    if (!refreshToken) {
+      throw new UnauthorizedException(AUTH_ERROR_MSG.INVALID_REFRESH_TOKEN);
+    }
+
+    const refreshTokenHash = hashRandomStr(refreshToken);
+
+    const session = await this.prismaService.refreshToken.findUnique({
+      where: { tokenHash: refreshTokenHash },
+      select: {
+        id: true,
+        userId: true,
+        tokenHash: true,
+        expiresAt: true,
+        user: {
+          select: {
+            id: true,
+            role: true,
+            email: true,
+          },
+        },
+      },
+    });
+
+    if (!session || session.expiresAt <= new Date()) {
+      throw new UnauthorizedException(AUTH_ERROR_MSG.INVALID_REFRESH_TOKEN);
+    }
+
+    const newRefreshToken = generateRandomStr();
+    const newRefreshTokenHash = hashRandomStr(newRefreshToken);
+
     const payload: JwtPayload = {
-      sub: user.id,
-      email: user.email,
-      role: user.role,
-      category: user?.staff?.category,
+      sub: session.userId,
+      email: session.user.email,
+      role: session.user.role,
     };
 
-    const accessToken = await this.jwtService.signAsync(payload);
+    const newAccessToken = await this.jwtService.signAsync(payload, {
+      secret: env.JWT_ACCESS_SECRET,
+      expiresIn: '1h',
+    });
 
-    setCookies(res, accessToken);
+    await this.prismaService.$transaction([
+      this.prismaService.refreshToken.update({
+        where: { id: session.id },
+        data: {
+          expiresAt: new Date(Date.now() + COOKIE_EXPIRATION.REFRESH_TOKEN),
+          tokenHash: newRefreshTokenHash,
+          usedAt: new Date(),
+        },
+      }),
+    ]);
+
+    setCookies(res, newAccessToken, newRefreshToken);
+  }
+
+  private async generateTokens(
+    userId: string,
+    email: string,
+    role: UserRole,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
+    const payload: JwtPayload = {
+      sub: userId,
+      email,
+      role,
+    };
+
+    const accessToken = await this.jwtService.signAsync(payload, {
+      secret: env.JWT_ACCESS_SECRET,
+      expiresIn: '1h',
+    });
+
+    const refreshToken = generateRandomStr();
+    const refreshTokenHash = hashRandomStr(refreshToken);
+
+    await this.prismaService.refreshToken.create({
+      data: {
+        expiresAt: new Date(Date.now() + COOKIE_EXPIRATION.REFRESH_TOKEN),
+        tokenHash: refreshTokenHash,
+        userId: userId,
+      },
+    });
+
+    return { accessToken, refreshToken };
   }
 }
