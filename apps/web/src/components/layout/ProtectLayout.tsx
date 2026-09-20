@@ -2,19 +2,25 @@ import { Bell } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getInitials } from "@/lib/getInitials";
 import { Avatar, AvatarFallback } from "../ui/avatar";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Navigate, Outlet, useLocation } from "react-router-dom";
 import { AppSidebar } from "../shadcn-space/blocks/sidebar-01/app-sidebar";
 import { SidebarProvider, SidebarTrigger } from "../ui/sidebar";
+import { useAuth } from "@/hooks/useAuth";
+import { FullScreenLoader } from "../shared/FullScreenLoader";
 
 export function ProtectLayout() {
   const [activeTab, setActiveTab] = useState("Dashboard");
+  const { user, isLoading, isAuthenticated } = useAuth();
   const location = useLocation();
-  const fullName = "Alex Brown";
 
   useEffect(() => {
     const pathname = location.pathname?.split("/")[1];
     setActiveTab(pathname);
   }, [location]);
+
+  if (isLoading) return <FullScreenLoader />;
+
+  if (!isAuthenticated) return <Navigate to={"/login"} />;
 
   return (
     <SidebarProvider>
@@ -48,7 +54,7 @@ export function ProtectLayout() {
 
             <Avatar>
               <AvatarFallback className={"bg-primary text-background"}>
-                {getInitials(fullName)}
+                {getInitials(user?.fullName!)}
               </AvatarFallback>
             </Avatar>
           </div>

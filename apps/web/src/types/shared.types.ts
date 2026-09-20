@@ -1,4 +1,11 @@
 import type { LucideIcon } from "lucide-react";
+import type { UserProfile } from "./user.types";
+
+export type AuthCTX = {
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  user: UserProfile | null;
+};
 
 // ============== KPI CARD START  ==============
 export interface KpiItem {

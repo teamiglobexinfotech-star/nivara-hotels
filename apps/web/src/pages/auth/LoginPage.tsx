@@ -4,9 +4,13 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Spinner } from "@/components/ui/spinner";
+import { useLoginFacade } from "@/features/auth/hooks/useLogin";
 
 export function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const { handleSubmit, submit, register, errors, isPending } =
+    useLoginFacade();
 
   return (
     <>
@@ -25,7 +29,11 @@ export function LoginPage() {
         Sign in to review existing reservations, unlock private villa bookings,
         or tailor your arrival rituals.
       </p>
-      <form id="customer-registration-form" className="space-y-5" noValidate>
+      <form
+        id="customer-registration-form"
+        className="space-y-5"
+        onSubmit={handleSubmit(submit)}
+      >
         {/* 2. EMAIL FIELD */}
         <div id="form-field-email-group" className="space-y-2">
           <div className="flex items-center justify-between">
@@ -43,13 +51,21 @@ export function LoginPage() {
             </div>
             <Input
               id="customer-email"
-              name="email"
               type="email"
               placeholder="eleanor@sanctuary.luxury"
               className="h-12 rounded-xl border-border bg-card/60 pl-10 text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:ring-1 focus:ring-primary"
               autoComplete="email"
+              aria-invalid={!!errors.email}
+              aria-describedby={errors.email ? "email-error" : undefined}
+              {...register("email")}
+              disabled={isPending}
             />
           </div>
+          {errors?.email && (
+            <span id="email-error" className="text-sm text-destructive">
+              {errors.email.message}
+            </span>
+          )}
         </div>
 
         {/* 3. PASSWORD FIELD */}
@@ -79,11 +95,14 @@ export function LoginPage() {
             </div>
             <Input
               id="customer-password"
-              name="password"
               type={showPassword ? "text" : "password"}
               placeholder={"Create a secure password (8+ chars)"}
               className="h-12 rounded-xl border-border bg-card/60 pr-11 pl-10 text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:ring-1 focus:ring-primary"
               autoComplete={"new-password"}
+              aria-invalid={!!errors.password}
+              aria-describedby={errors.password ? "password-error" : undefined}
+              {...register("password")}
+              disabled={isPending}
             />
             <button
               type="button"
@@ -100,6 +119,12 @@ export function LoginPage() {
               )}
             </button>
           </div>
+
+          {errors?.password && (
+            <span id="fullName-error" className="text-sm text-destructive">
+              {errors.password.message}
+            </span>
+          )}
         </div>
 
         {/* 5. SUBMIT BUTTON */}
@@ -110,11 +135,16 @@ export function LoginPage() {
             variant="luxury"
             size="luxuryLg"
             className="h-12 w-full justify-center text-xs sm:text-sm"
+            disabled={isPending}
           >
-            <span className="flex items-center gap-2">
-              <span>Log in</span>
-              <ArrowRight className="h-4 w-4" />
-            </span>
+            {isPending ? (
+              <Spinner className="size-4" />
+            ) : (
+              <span className="flex items-center gap-2">
+                <span>Log in</span>
+                <ArrowRight className="h-4 w-4" />
+              </span>
+            )}
           </Button>
         </div>
       </form>

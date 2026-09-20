@@ -12,6 +12,7 @@ import { AmenityModule } from './modules/amenity/amenity.module';
 import { RoomModule } from './modules/room/room.module';
 import { RoomTypeModule } from './modules/room-type/room-type.module';
 import { Project } from 'node-appwrite';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { Project } from 'node-appwrite';
     AmenityModule,
     RoomModule,
     RoomTypeModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [

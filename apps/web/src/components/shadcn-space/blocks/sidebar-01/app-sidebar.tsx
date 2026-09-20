@@ -1,5 +1,4 @@
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
 import {
   Sidebar,
   SidebarContent,
@@ -10,14 +9,39 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { NavMain } from "@/components/shadcn-space/blocks/sidebar-01/nav-main";
 import { Logo } from "@/components/shared/Logo";
-import { ADMIN_PAGES, ROLES } from "@/constants";
+import {
+  ADMIN_PAGES,
+  CUSTOMER_PAGES,
+  HOUSEKEEPER_PAGES,
+  MANAGER_PAGES,
+  RECEPTIONIST_PAGES,
+} from "@/constants";
 import { ArrowUpRight, ExternalLink, Shield } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { getInitials } from "@/lib/getInitials";
+import { useAuth } from "@/hooks/useAuth";
 
 export function AppSidebar() {
-  const fullName = "Alex Brown";
-  const currentRole = ROLES.ADMIN;
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const getLinks = () => {
+    switch (user?.role) {
+      case "ADMIN":
+        return ADMIN_PAGES;
+      case "MANAGER":
+        return MANAGER_PAGES;
+      case "CUSTOMER":
+        return CUSTOMER_PAGES;
+      case "STAFF":
+        return user?.category == "RECEPTIONIST"
+          ? RECEPTIONIST_PAGES
+          : HOUSEKEEPER_PAGES;
+      default:
+        navigate("/");
+    }
+  };
+  const links = getLinks();
 
   return (
     <Sidebar className="h-full bg-muted px-0 **:data-[slot=sidebar-inner]:h-full">
@@ -34,9 +58,7 @@ export function AppSidebar() {
 
         <SidebarContent className="overflow-hidden">
           <ScrollArea className="relative h-[calc(100vh-150px)] md:h-[calc(100vh-100px)]">
-            <div className="px-4">
-              <NavMain items={ADMIN_PAGES} />
-            </div>
+            <div className="px-4">{links && <NavMain items={links} />}</div>
             <div className="absolute bottom-0 w-full space-y-3 border-t border-border/80 p-4 pb-0">
               <Link
                 to="/"
@@ -52,15 +74,15 @@ export function AppSidebar() {
               <div className="flex items-center gap-3 rounded-xl border border-border/50 bg-muted/10 px-3 py-2">
                 <Avatar>
                   <AvatarFallback className={"bg-primary text-background"}>
-                    {getInitials(fullName)}
+                    {getInitials(user?.fullName!)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-xs font-semibold text-foreground">
-                    {fullName}
+                    {user?.fullName}
                   </p>
                   <p className="truncate text-[10px] text-muted-foreground">
-                    {currentRole}
+                    {user?.role}
                   </p>
                 </div>
                 <Shield className="h-3.5 w-3.5 shrink-0 text-primary" />
