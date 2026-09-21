@@ -1,4 +1,5 @@
 import type { LucideIcon } from "lucide-react";
+
 import type { UserProfile } from "./user.types";
 
 export type AuthCTX = {
@@ -7,13 +8,20 @@ export type AuthCTX = {
   user: UserProfile | null;
 };
 
+export type HousekeepingStatus = "CLEAN" | "DIRTY" | "CLEANING";
+export type OccupancyStatus =
+  "VACANT" | "RESERVED" | "OCCUPIED" | "OUT_OF_ORDER";
+
+export type UserRole = "ADMIN" | "MANAGER" | "STAFF" | "CUSTOMER";
+export type StaffCategory =
+  "RECEPTIONIST" | "HOUSEKEEPER" | "SECURITY_GUARD" | "WAITER";
 // ============== KPI CARD START  ==============
 export interface KpiItem {
   id: string | number;
-  icon: LucideIcon;
+  iconKey: LucideIcon;
   title: string;
   value: string | number;
-  detail: string;
+  details: string;
 }
 
 export interface KpiCard {
@@ -21,8 +29,7 @@ export interface KpiCard {
   className?: string;
 }
 // ============== KPI CARD END  ==============
-export type UserRole = "ADMIN" | "CUSTOMER" | "MANAGER" | "STAFF";
-export type UserStatus = "ACTIVE" | "INACTIVE";
+
 // ============== DATA TABLE START  ==============
 
 export interface Column<T> {

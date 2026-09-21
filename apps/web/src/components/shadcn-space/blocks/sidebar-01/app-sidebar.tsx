@@ -1,4 +1,10 @@
+import { ArrowUpRight, ExternalLink, Shield } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+
+import { NavMain } from "@/components/shadcn-space/blocks/sidebar-01/nav-main";
+import { Logo } from "@/components/shared/Logo";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Sidebar,
   SidebarContent,
@@ -6,9 +12,6 @@ import {
   SidebarMenu,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { NavMain } from "@/components/shadcn-space/blocks/sidebar-01/nav-main";
-import { Logo } from "@/components/shared/Logo";
 import {
   ADMIN_PAGES,
   CUSTOMER_PAGES,
@@ -16,10 +19,8 @@ import {
   MANAGER_PAGES,
   RECEPTIONIST_PAGES,
 } from "@/constants";
-import { ArrowUpRight, ExternalLink, Shield } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { getInitials } from "@/lib/getInitials";
 import { useAuth } from "@/hooks/useAuth";
+import { getInitials } from "@/lib/getInitials";
 
 export function AppSidebar() {
   const navigate = useNavigate();
@@ -44,7 +45,7 @@ export function AppSidebar() {
   const links = getLinks();
 
   return (
-    <Sidebar className="h-full bg-muted px-0 **:data-[slot=sidebar-inner]:h-full">
+    <Sidebar className="bg-muted px-0 **:data-[slot=sidebar-inner]:h-full">
       <div className="flex flex-col gap-6">
         <SidebarHeader className="border-b p-3">
           <SidebarMenu>
@@ -74,7 +75,7 @@ export function AppSidebar() {
               <div className="flex items-center gap-3 rounded-xl border border-border/50 bg-muted/10 px-3 py-2">
                 <Avatar>
                   <AvatarFallback className={"bg-primary text-background"}>
-                    {getInitials(user?.fullName!)}
+                    {user && getInitials(user?.fullName)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="min-w-0 flex-1">

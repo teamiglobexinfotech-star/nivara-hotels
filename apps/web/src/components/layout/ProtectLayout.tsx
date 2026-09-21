@@ -1,11 +1,13 @@
 import { Bell } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, Navigate, Outlet, useLocation } from "react-router-dom";
-import { AppSidebar } from "../shadcn-space/blocks/sidebar-01/app-sidebar";
-import { SidebarProvider, SidebarTrigger } from "../ui/sidebar";
+
 import { useAuth } from "@/hooks/useAuth";
+
+import { AppSidebar } from "../shadcn-space/blocks/sidebar-01/app-sidebar";
 import { FullScreenLoader } from "../shared/FullScreenLoader";
 import { ProfileDropdown } from "../shared/ProfileDropdown";
+import { SidebarProvider, SidebarTrigger } from "../ui/sidebar";
 
 export function ProtectLayout() {
   const [activeTab, setActiveTab] = useState("Dashboard");

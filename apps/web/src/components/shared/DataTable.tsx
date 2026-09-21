@@ -1,14 +1,14 @@
-import * as React from "react";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
+  AlertCircle,
+  ChevronLeft,
+  ChevronRight,
+  Inbox,
+  Search,
+} from "lucide-react";
+import * as React from "react";
+
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -17,12 +17,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  Search,
-  AlertCircle,
-  Inbox,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import type { DataTable } from "@/types/shared.types";
 
 export function DataTable<T extends Record<string, any>>({

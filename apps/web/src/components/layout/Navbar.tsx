@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from "react";
+import { Menu, PhoneCall, User } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { Menu, User, PhoneCall } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
-  SheetTrigger,
   SheetContent,
   SheetHeader,
+  SheetTrigger,
 } from "@/components/ui/sheet";
-import { HOTEL_CONTACT } from "../../data";
+import { HOTEL_CONTACT } from "@/mock/app.mock";
+
 import { Logo } from "../shared/Logo";
 
 interface NavbarProps {

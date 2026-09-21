@@ -1,14 +1,15 @@
 import React from "react";
+
 import type { BookingSearchDetails } from "@/components/BookingBar";
-import { AmenitiesSection } from "@/components/home/AmenitiesSection";
-import { BookingCTA } from "@/components/home/BookingCTA";
-import { ContactPreview } from "@/components/home/ContactPreview";
-import { FAQSection } from "@/components/home/FAQSection";
-import { FeaturedRooms } from "@/components/home/FeaturedRooms";
-import { HeroSection } from "@/components/home/HeroSection";
-import { HotelIntroduction } from "@/components/home/HotelIntroduction";
-import { TestimonialsSection } from "@/components/home/TestimonialsSection";
-import { WhyNivara } from "@/components/home/WhyNivara";
+import { AmenitiesSection } from "@/features/public/components/AmenitiesSection";
+import { BookingCTA } from "@/features/public/components/BookingCTA";
+import { ContactPreview } from "@/features/public/components/ContactPreview";
+import { FAQSection } from "@/features/public/components/FAQSection";
+import { FeaturedRooms } from "@/features/public/components/FeaturedRooms";
+import { HeroSection } from "@/features/public/components/HeroSection";
+import { HotelIntroduction } from "@/features/public/components/HotelIntroduction";
+import { TestimonialsSection } from "@/features/public/components/TestimonialsSection";
+import { WhyNivara } from "@/features/public/components/WhyNivara";
 import type { Room } from "@/types";
 
 interface HomePageProps {

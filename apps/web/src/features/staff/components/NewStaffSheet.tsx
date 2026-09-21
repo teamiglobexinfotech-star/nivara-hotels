@@ -1,16 +1,18 @@
+import { type ReactNode,useState } from "react";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetDescription,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-  SheetFooter,
-  SheetClose,
 } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import { useState, type ReactNode } from "react";
-import { Input } from "@/components/ui/input";
+
 import { useCreateStaffFacade } from "../hooks/useCreateStaff";
 
 export function NewStaffSheet({ children }: { children: ReactNode }) {

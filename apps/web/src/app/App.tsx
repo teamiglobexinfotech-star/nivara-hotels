@@ -1,6 +1,8 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "sonner";
+
 import { AuthProvider } from "@/providers/AuthProvider";
+
 import { Router } from "./Router";
 
 const queryClient = new QueryClient({

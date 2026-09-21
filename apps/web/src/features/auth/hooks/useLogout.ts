@@ -1,5 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
+
 import { notifyError } from "@/lib/notification";
+
 import { authService } from "../auth.service";
 
 export function useLogout() {

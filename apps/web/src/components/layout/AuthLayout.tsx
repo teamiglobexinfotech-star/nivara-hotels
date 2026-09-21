@@ -1,6 +1,8 @@
+import { Check, HeartHandshake,Sparkles, Star } from "lucide-react";
 import { Navigate, Outlet } from "react-router-dom";
-import { Check, Sparkles, Star, HeartHandshake } from "lucide-react";
+
 import { useAuth } from "@/hooks/useAuth";
+
 import { FullScreenLoader } from "../shared/FullScreenLoader";
 
 export const AuthLayout = () => {

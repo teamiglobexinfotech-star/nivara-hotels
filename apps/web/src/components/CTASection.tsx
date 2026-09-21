@@ -1,6 +1,7 @@
+import { ArrowRight } from 'lucide-react';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
 
 interface CTASectionProps {

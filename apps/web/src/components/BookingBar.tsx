@@ -1,5 +1,6 @@
-import React, { useState, useRef } from 'react';
-import { Calendar, Users, BedDouble, Search, ChevronDown } from 'lucide-react';
+import { BedDouble, Calendar, ChevronDown,Search, Users } from 'lucide-react';
+import React, { useRef,useState } from 'react';
+
 import { Button } from '@/components/ui/button';
 
 export interface BookingSearchDetails {

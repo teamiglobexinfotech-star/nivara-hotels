@@ -1,5 +1,6 @@
-import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
+import * as React from "react";
+
 import { cn } from "@/lib/utils";
 
 const cardVariants = cva(
@@ -92,4 +93,4 @@ const CardFooter = React.forwardRef<
 ));
 CardFooter.displayName = "CardFooter";
 
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent, cardVariants };
+export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, cardVariants };

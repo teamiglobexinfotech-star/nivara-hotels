@@ -1,9 +1,11 @@
+import { CheckCircle2 } from "lucide-react";
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { CheckCircle2 } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { HOTEL_CONTACT } from "../../data";
+import { HOTEL_CONTACT } from "@/mock/app.mock";
+
 import { Logo } from "../shared/Logo";
 
 export const Footer: React.FC = () => {

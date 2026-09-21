@@ -1,4 +1,4 @@
-import { useId, type ReactNode } from "react";
+import { type ReactNode, useId } from "react";
 
 interface SectionHeaderProps {
   eyebrow?: string;
@@ -18,7 +18,7 @@ export function SectionHeader({
   return (
     <section id={id} className="space-y-2">
       {eyebrow && (
-        <p className="text-[10px] font-semibold tracking-[0.2em] text-muted-foreground uppercase sm:text-xs">
+        <p className="text-[10px] font-semibold tracking-[0.2em] text-primary uppercase sm:text-xs">
           {eyebrow}
         </p>
       )}

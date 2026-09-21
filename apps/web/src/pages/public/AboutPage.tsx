@@ -1,16 +1,17 @@
-import React from "react";
 import {
-  Sparkles,
+  Award,
   Compass,
-  ShieldCheck,
+  Droplets,
   Heart,
   Leaf,
+  ShieldCheck,
+  Sparkles,
   Sun,
-  Droplets,
-  Award,
 } from "lucide-react";
-import { SectionHeading } from "@/components/SectionHeading";
+import React from "react";
+
 import { CTASection } from "@/components/CTASection";
+import { SectionHeading } from "@/components/shared/SectionHeading";
 
 interface AboutPageProps {
   onOpenBooking: () => void;

@@ -1,14 +1,13 @@
-import { AlertCircle, RefreshCw, type LucideIcon } from "lucide-react";
+import { AlertCircle, type LucideIcon,RefreshCw } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
-
-import { Button } from "@/components/ui/button";
 
 interface ErrorModalProps {
   open: boolean;

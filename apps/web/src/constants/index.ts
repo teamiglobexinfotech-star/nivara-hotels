@@ -1,4 +1,3 @@
-import type { NavItem } from "@/components/shadcn-space/blocks/sidebar-01/nav-main";
 import {
   BedDouble,
   Bell,
@@ -13,7 +12,10 @@ import {
   Wrench,
 } from "lucide-react";
 
-export const ROLES = {
+import type { NavItem } from "@/components/shadcn-space/blocks/sidebar-01/nav-main";
+import type { UserRole } from "@/types/shared.types";
+
+export const ROLES: { [key: string]: UserRole } = {
   ADMIN: "ADMIN",
   MANAGER: "MANAGER",
   STAFF: "STAFF",
@@ -100,3 +102,22 @@ export const OCCUPANCY_STATUS = [
 ];
 
 export const HOUSEKEEPING_STATUS = ["CLEAN", "DIRTY", "CLEANING"];
+
+import {
+  Car,
+  type LucideIcon,
+  Snowflake,
+  Tv,
+  Utensils,
+  Waves,
+  Wifi,
+} from "lucide-react";
+
+export const AMENITY_ICONS: Record<string, LucideIcon> = {
+  wifi: Wifi,
+  air_conditioning: Snowflake,
+  tv: Tv,
+  parking: Car,
+  pool: Waves,
+  breakfast: Utensils,
+};

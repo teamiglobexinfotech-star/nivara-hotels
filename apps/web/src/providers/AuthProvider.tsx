@@ -1,5 +1,6 @@
 import { createContext, type ReactNode } from "react";
-import { useProfile } from "@/features/user/hooks/useProfile";
+
+import { useGetUser } from "@/features/users/hooks/useGetUser";
 import type { AuthCTX } from "@/types/shared.types";
 
 const initialCTX: AuthCTX = {
@@ -11,7 +12,7 @@ const initialCTX: AuthCTX = {
 export const AuthContext = createContext<AuthCTX>(initialCTX);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const { data, isLoading } = useProfile();
+  const { data, isLoading } = useGetUser();
 
   return (
     <AuthContext.Provider

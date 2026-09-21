@@ -1,13 +1,15 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+
 import { notifyError } from "@/lib/notification";
-import { staffService } from "../staff.service";
+
 import {
-  CreateStaffSchema,
   type CreateStaff,
+  CreateStaffSchema,
 } from "../schema/createStaff.schema";
+import { staffService } from "../staff.service";
 
 const useCreateStaff = () => {
   const queryClient = useQueryClient();

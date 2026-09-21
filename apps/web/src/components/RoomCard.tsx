@@ -1,8 +1,10 @@
+import { Maximize2,Plus, Users } from "lucide-react";
 import React from "react";
-import { Plus, Users, Maximize2 } from "lucide-react";
-import { Card } from "@/components/ui/card";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+
 import type { Room } from "../types";
 
 interface RoomCardProps {

@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -11,7 +13,6 @@ import {
 import { useLogout } from "@/features/auth/hooks/useLogout";
 import { useAuth } from "@/hooks/useAuth";
 import { getInitials } from "@/lib/getInitials";
-import { Link } from "react-router-dom";
 
 export const ProfileDropdown = () => {
   const { user } = useAuth();

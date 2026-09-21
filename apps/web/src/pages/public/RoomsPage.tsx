@@ -1,28 +1,29 @@
-import React, { useState } from "react";
 import {
-  Users,
   BedDouble,
-  Sparkles,
   Calendar,
-  Utensils,
-  Moon,
-  Wind,
   Coffee,
   MessageSquare,
+  Moon,
+  Sparkles,
+  Users,
+  Utensils,
+  Wind,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Table,
-  TableHeader,
   TableBody,
-  TableHead,
-  TableRow,
   TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
-import { useNavigate } from "react-router-dom";
-import type { Room } from "@/types";
 import { INCLUDED_SERVICES, ROOMS_DATA } from "@/data";
+import type { Room } from "@/types";
 
 interface RoomsPageProps {
   onOpenBooking: (room?: Room) => void;

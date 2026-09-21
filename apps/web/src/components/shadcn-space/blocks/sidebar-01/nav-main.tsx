@@ -1,12 +1,13 @@
 "use client";
 
-import * as React from "react";
 import { ChevronRight, type LucideIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import * as React from "react";
+import { Link } from "react-router-dom";
+
 import {
   Collapsible,
-  CollapsibleTrigger,
   CollapsibleContent,
+  CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import {
   SidebarGroup,
@@ -15,10 +16,10 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
-  SidebarMenuSubItem,
   SidebarMenuSubButton,
+  SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import { Link } from "react-router-dom";
+import { cn } from "@/lib/utils";
 
 export type NavItem = {
   label?: string;
@@ -78,7 +79,7 @@ function NavMainItem({
   // Section label
   if (item.isSection && item.label) {
     return (
-      <SidebarGroup className="p-0 pt-5 first:pt-0">
+      <SidebarGroup className="p-0 first:pt-0">
         <SidebarGroupLabel className="text-sidebar-foreground p-0 text-xs font-medium uppercase">
           {item.label}
         </SidebarGroupLabel>

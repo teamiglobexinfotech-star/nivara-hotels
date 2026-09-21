@@ -1,11 +1,11 @@
+import { CheckCircle2, Mail, MapPin, Phone, Send } from "lucide-react";
 import React, { useState } from "react";
-import { Phone, Mail, MapPin, CheckCircle2, Send } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { HOTEL_CONTACT } from "@/data";
+import { Textarea } from "@/components/ui/textarea";
+import { HOTEL_CONTACT } from "@/mock/app.mock";
 
 export const ContactPage: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);

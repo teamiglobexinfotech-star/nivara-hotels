@@ -1,4 +1,5 @@
 import type { StaffCategory } from "@/types";
+
 import type { UserRole } from "./shared.types";
 
 export type UserProfile = {

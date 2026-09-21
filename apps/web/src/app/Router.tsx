@@ -1,25 +1,23 @@
-import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import type { Room } from "@/types";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 
 import type { BookingSearchDetails } from "@/components/BookingBar";
 import { BookingModal } from "@/components/BookingModal";
-
-import { PublicLayout } from "@/components/layout/PublicLayout";
 import { AuthLayout } from "@/components/layout/AuthLayout";
 import { ProtectLayout } from "@/components/layout/ProtectLayout";
-
-import { HomePage } from "@/pages/public/HomePage";
-import { AboutPage } from "@/pages/public/AboutPage";
-import { RoomsPage } from "@/pages/public/RoomsPage";
-import { ContactPage } from "@/pages/public/ContactPage";
-import { SignupPage } from "@/pages/auth/SignupPage";
+import { PublicLayout } from "@/components/layout/PublicLayout";
 import { LoginPage } from "@/pages/auth/LoginPage";
+import { SignupPage } from "@/pages/auth/SignupPage";
 import { DashboardPage } from "@/pages/dashboard";
-import { StaffPage } from "@/pages/shared/StaffPage";
-import { CustomersPage } from "@/pages/shared/CustomersPage";
+import { AboutPage } from "@/pages/public/AboutPage";
+import { ContactPage } from "@/pages/public/ContactPage";
+import { HomePage } from "@/pages/public/HomePage";
+import { RoomsPage } from "@/pages/public/RoomsPage";
 import { RoomsPage as DRoomsPage } from "@/pages/room";
-import { BookingsPage } from "@/pages/shared/BookingsPage";
+// import { BookingsPage } from "@/pages/shared/BookingsPage";
+import { CustomersPage } from "@/pages/shared/CustomersPage";
+import { StaffPage } from "@/pages/shared/StaffPage";
+import type { Room } from "@/types";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -71,7 +69,7 @@ export function Router() {
           <Route path="staff" element={<StaffPage />} />
           <Route path="customers" element={<CustomersPage />} />
           <Route path="rooms" element={<DRoomsPage />} />
-          <Route path="bookings" element={<BookingsPage />} />
+          {/* <Route path="bookings" element={<BookingsPage />} /> */}
         </Route>
       </Routes>
       <BookingModal

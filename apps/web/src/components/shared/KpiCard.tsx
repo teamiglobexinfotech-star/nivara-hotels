@@ -1,10 +1,11 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import type { KpiCard } from "@/types/shared.types";
+
 import "lucide-react";
 
 export function KpiCard({ item, className }: KpiCard) {
-  const Icon = item.icon;
+  const Icon = item.iconKey;
 
   return (
     <Card
@@ -35,7 +36,7 @@ export function KpiCard({ item, className }: KpiCard) {
 
         {/* Bottom: Detail */}
         <div className="text-xs font-medium text-muted-foreground/80">
-          {item.detail}
+          {item.details}
         </div>
       </CardContent>
     </Card>

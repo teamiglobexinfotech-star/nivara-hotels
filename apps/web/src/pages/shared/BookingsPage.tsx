@@ -1,22 +1,23 @@
 import { EllipsisVertical, Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { SectionHeader } from "@/components/shared/SectionHeader";
-import { KpiCard } from "@/components/shared/KpiCard";
-import { bookingKpiData, bookingsApiResponse } from "@/mock/booking.mock";
+
 import { DataTable } from "@/components/shared/DataTable";
-import type { Booking } from "@/types/booking.types";
-import type { Column, FilterConfig } from "@/types/shared.types";
 import { IconButton } from "@/components/shared/IconButton";
-import { Badge } from "@/components/ui/badge";
+import { KpiCard } from "@/components/shared/KpiCard";
+import { SectionHeader } from "@/components/shared/SectionHeader";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { getInitials } from "@/lib/getInitials";
 import { NewBookingSheet } from "@/features/booking/components/NewBookingSheet";
+import { getInitials } from "@/lib/getInitials";
+import { bookingKpiData, bookingsApiResponse } from "@/mock/booking.mock";
+import type { Booking } from "@/types/booking.types";
+import type { Column, FilterConfig } from "@/types/shared.types";
 
 const bookingColumns: Column<Booking>[] = [
   {
