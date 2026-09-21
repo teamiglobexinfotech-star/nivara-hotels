@@ -28,10 +28,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ViewRoomTypeModal } from "@/features/room-type/components/ViewRoomTypeModal";
-import type { RoomResponse } from "@/features/room-type/room-type.types";
+import type { RoomTypeResponse } from "@/features/room-type/room-type.types";
 import { useDeleteRoomType } from "@/features/room-type/hooks/useDeleteRoomType";
+import { UpdateRoomTypeModal } from "@/features/room-type/components/UpdateRoomTypeModal";
 
-const roomTypeColumns: Column<RoomResponse>[] = [
+const roomTypeColumns: Column<RoomTypeResponse>[] = [
   {
     header: "Name",
     key: "name",
@@ -123,8 +124,14 @@ const roomColumns: Column<Room>[] = [
   },
 ];
 
-function RoomTypeActionsDropdownMenu({ roomType }: { roomType: RoomResponse }) {
+function RoomTypeActionsDropdownMenu({
+  roomType,
+}: {
+  roomType: RoomTypeResponse;
+}) {
   const [isViewModal, setIsViewModal] = useState(false);
+  const [isUpdateModal, setIsUpdateModal] = useState(false);
+
   const { handleDelete, isPending } = useDeleteRoomType();
 
   return (
@@ -140,7 +147,9 @@ function RoomTypeActionsDropdownMenu({ roomType }: { roomType: RoomResponse }) {
           <DropdownMenuItem onClick={() => setIsViewModal(true)}>
             View
           </DropdownMenuItem>
-          <DropdownMenuItem>Edit</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setIsUpdateModal(true)}>
+            Edit
+          </DropdownMenuItem>
           <DropdownMenuItem
             className={"text-destructive"}
             onClick={() => handleDelete(roomType.id)}
@@ -150,6 +159,15 @@ function RoomTypeActionsDropdownMenu({ roomType }: { roomType: RoomResponse }) {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      {/*  */}
+      {isUpdateModal && (
+        <UpdateRoomTypeModal
+          open={isUpdateModal}
+          onOpenChange={setIsUpdateModal}
+          roomType={roomType}
+        />
+      )}
 
       {/*  */}
       {isViewModal && (

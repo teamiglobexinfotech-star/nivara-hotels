@@ -1,10 +1,10 @@
-export type RoomStatus = "ACTIVE" | "INACTIVE";
+export type RoomTypeStatus = "ACTIVE" | "INACTIVE";
 
-export interface RoomResponse {
+export interface RoomTypeResponse {
   id: string;
   name: string;
   description: string;
   capacity: number;
   basePrice: number;
-  status: RoomStatus;
+  status: RoomTypeStatus;
 }

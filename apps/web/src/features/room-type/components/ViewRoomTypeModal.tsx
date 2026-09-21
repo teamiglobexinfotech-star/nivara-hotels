@@ -7,14 +7,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { RoomResponse } from "../room-type.types";
+import type { RoomTypeResponse } from "../room-type.types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 type ViewRoomTypeModalProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  roomType: RoomResponse;
+  roomType: RoomTypeResponse;
 };
 
 export function ViewRoomTypeModal({
