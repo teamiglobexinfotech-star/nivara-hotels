@@ -91,7 +91,8 @@ export class CustomerController {
   @Roles('ADMIN')
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
-  delete() {
-    return { message: CUSTOMER_SUCCESS_MSG.DELETED };
+  async delete(@Param('id') id: string) {
+    const data = await this.customerService.delete(id);
+    return apiResponse({ data, message: CUSTOMER_SUCCESS_MSG.DELETED });
   }
 }

@@ -243,4 +243,20 @@ export class CustomerService {
       });
     });
   }
+
+  async delete(id: string): Promise<{ id: string }> {
+    const customer = await this.prismaService.user.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+
+    if (!customer) {
+      throw new NotFoundException(CUSTOMER_ERROR_MSG.NOT_FOUND);
+    }
+
+    return await this.prismaService.user.delete({
+      where: { id },
+      select: { id: true },
+    });
+  }
 }
