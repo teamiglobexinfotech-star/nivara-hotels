@@ -1,7 +1,9 @@
 import { ROLES } from "@/constants";
+import { useAuth } from "@/hooks/useAuth";
 import { AdminPage } from "./AdminPage";
 
 export function RoomsPage() {
-  if (ROLES.ADMIN == "ADMIN") return <AdminPage />;
+  const { user } = useAuth();
+  if (ROLES.ADMIN == user?.role) return <AdminPage />;
   return <>No Role</>;
 }

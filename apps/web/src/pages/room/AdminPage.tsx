@@ -20,6 +20,7 @@ import { useRooms } from "@/features/room/hooks/useRooms";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useRoomType } from "@/features/room/hooks/useRoomType";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { NewRoomTypeModal } from "@/features/room-type/components/NewRoomTypeModal";
 
 const roomTypeColumns: Column<RoomType>[] = [
   {
@@ -143,10 +144,12 @@ function QuickActions() {
 
       <CardContent>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-          <Button className="">
-            <Plus className="size-4" />
-            Room Type
-          </Button>
+          <NewRoomTypeModal>
+            <Button className="w-full">
+              <Plus className="size-4" />
+              Room Type
+            </Button>
+          </NewRoomTypeModal>
 
           <Button variant="outline" className="w-full justify-center">
             <Plus className="size-4" />
@@ -221,15 +224,6 @@ export function AdminPage() {
             >
               <Plus className="h-3.5 w-3.5" />
               <span>New Room</span>
-            </Button>
-            <Button
-              id="btn-add-amenity"
-              variant="ghost"
-              size="sm"
-              className="h-9 gap-1.5 rounded-full bg-foreground px-4 text-xs font-medium text-background hover:bg-foreground/90"
-            >
-              <Plus className="h-3.5 w-3.5" />
-              <span>New Amenity</span>
             </Button>
           </>
         }
