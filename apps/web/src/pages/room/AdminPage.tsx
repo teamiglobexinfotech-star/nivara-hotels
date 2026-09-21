@@ -31,6 +31,7 @@ import { ViewRoomTypeModal } from "@/features/room-type/components/ViewRoomTypeM
 import type { RoomTypeResponse } from "@/features/room-type/room-type.types";
 import { useDeleteRoomType } from "@/features/room-type/hooks/useDeleteRoomType";
 import { UpdateRoomTypeModal } from "@/features/room-type/components/UpdateRoomTypeModal";
+import { NewRoomModal } from "@/features/room/components/NewRoomModal";
 
 const roomTypeColumns: Column<RoomTypeResponse>[] = [
   {
@@ -215,10 +216,12 @@ function QuickActions() {
             </Button>
           </NewRoomTypeModal>
 
-          <Button variant="outline" className="w-full justify-center">
-            <Plus className="size-4" />
-            Room
-          </Button>
+          <NewRoomModal>
+            <Button variant="outline" className="w-full justify-center">
+              <Plus className="size-4" />
+              Room
+            </Button>
+          </NewRoomModal>
 
           <Button variant="secondary" className="w-full justify-center">
             <Plus className="size-4" />
@@ -280,15 +283,17 @@ export function AdminPage() {
         description="Manage room, room type and  amenity, occupancy, housekeeping status and room detail"
         rightContent={
           <>
-            <Button
-              id="btn-add-room"
-              variant="default"
-              size="sm"
-              className="h-9 gap-1.5 rounded-full bg-foreground px-4 text-xs font-medium text-background hover:bg-foreground/90"
-            >
-              <Plus className="h-3.5 w-3.5" />
-              <span>New Room</span>
-            </Button>
+            <NewRoomModal>
+              <Button
+                id="btn-add-room"
+                variant="default"
+                size="sm"
+                className="h-9 gap-1.5 rounded-full bg-foreground px-4 text-xs font-medium text-background hover:bg-foreground/90"
+              >
+                <Plus className="h-3.5 w-3.5" />
+                <span>New Room</span>
+              </Button>
+            </NewRoomModal>
           </>
         }
       />

@@ -7,7 +7,6 @@ import {
   CircleDollarSign,
   Home,
   LayoutDashboard,
-  ShieldCheck,
   Sparkles,
   UserCheck,
   Users,
@@ -92,3 +91,12 @@ export const ROLE_NAVIGATION = {
   [ROLES.STAFF]: RECEPTIONIST_PAGES,
   [ROLES.CUSTOMER]: CUSTOMER_PAGES,
 } as const;
+
+export const OCCUPANCY_STATUS = [
+  "VACANT",
+  "RESERVED",
+  "OCCUPIED",
+  "OUT_OF_ORDER",
+];
+
+export const HOUSEKEEPING_STATUS = ["CLEAN", "DIRTY", "CLEANING"];
