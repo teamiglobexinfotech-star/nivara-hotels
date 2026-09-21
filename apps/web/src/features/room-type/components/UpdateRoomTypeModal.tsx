@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import type { RoomTypeResponse } from "../room-type.types";
-import { useCreateRoomTypeFacade } from "../hooks/useCreateRoomType";
+import { useUpdateRoomTypeFacade } from "../hooks/useUpdateRoomType";
 
 type UpdateRoomTypeModalProps = {
   open: boolean;
@@ -26,7 +26,7 @@ export function UpdateRoomTypeModal({
   roomType,
 }: UpdateRoomTypeModalProps) {
   const { handleSubmit, submit, register, errors, isPending } =
-    useCreateRoomTypeFacade();
+    useUpdateRoomTypeFacade(roomType.id);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

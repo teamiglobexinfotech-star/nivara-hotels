@@ -31,5 +31,14 @@ export const CreateRoomTypeSchema = z
   })
   .strict();
 
+export const UpdateRoomTypeSchema = CreateRoomTypeSchema.partial()
+  .strict()
+  .refine((data) => Object.keys(data).length > 0, {
+    message: "At least one field must be provided.",
+  });
+
 export type CreateRoomTypeForm = z.input<typeof CreateRoomTypeSchema>;
 export type CreateRoomType = z.output<typeof CreateRoomTypeSchema>;
+
+export type UpdateRoomTypeForm = z.input<typeof UpdateRoomTypeSchema>;
+export type UpdateRoomType = z.output<typeof UpdateRoomTypeSchema>;
