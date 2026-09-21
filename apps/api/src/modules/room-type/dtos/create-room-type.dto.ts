@@ -18,7 +18,7 @@ export const CreateRoomTypeSchema = z
     basePrice: z
       .number('Base price is required')
       .positive('Base price must be greater than 0'),
-    status: z.enum(['ACTIVE', 'INACTIVE']).default('ACTIVE'),
+    isActive: z.boolean('IsActive must be a boolean').default(true).optional(),
   })
   .strict();
 

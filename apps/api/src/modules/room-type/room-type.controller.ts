@@ -10,19 +10,22 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+
 import { Roles } from '../../common/decorators';
-import { ValidationPipe } from '../../common/pipes';
 import { AuthGuard, RoleGuard } from '../../common/guards';
-import { RoomTypeService } from './room-type.service';
+import { apiResponse } from '../../common/helpers';
+import { ValidationPipe } from '../../common/pipes';
+
 import {
   CreateRoomTypeDto,
   CreateRoomTypeSchema,
 } from './dtos/create-room-type.dto';
-import { ROOM_TYPE_SUCCESS_MSG } from './room-type.constants';
 import {
   UpdateRoomTypeDto,
   UpdateRoomTypeSchema,
 } from './dtos/update-room-type.dto';
+import { ROOM_TYPE_SUCCESS_MSG } from './room-type.constants';
+import { RoomTypeService } from './room-type.service';
 
 @UseGuards(AuthGuard, RoleGuard)
 @Controller('room-types')
@@ -36,17 +39,17 @@ export class RoomTypeController {
     @Body(new ValidationPipe(CreateRoomTypeSchema)) body: CreateRoomTypeDto,
   ) {
     const data = await this.roomTypeService.create(body);
-    return {
+    return apiResponse({
       data,
       message: ROOM_TYPE_SUCCESS_MSG.CREATED,
-    };
+    });
   }
 
   @Get()
   @HttpCode(HttpStatus.OK)
   async getAll() {
     const data = await this.roomTypeService.getAll();
-    return { data };
+    return apiResponse({ data });
   }
 
   @Roles('ADMIN')
@@ -57,13 +60,14 @@ export class RoomTypeController {
     @Body(new ValidationPipe(UpdateRoomTypeSchema)) body: UpdateRoomTypeDto,
   ) {
     const data = await this.roomTypeService.update(id, body);
-    return { data, message: ROOM_TYPE_SUCCESS_MSG.UPDATED };
+    return apiResponse({ data, message: ROOM_TYPE_SUCCESS_MSG.UPDATED });
   }
 
   @Roles('ADMIN')
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async delete(@Param('id') roomId: string): Promise<void> {
-    await this.roomTypeService.delete(roomId);
+  async delete(@Param('id') roomId: string) {
+    const data = await this.roomTypeService.delete(roomId);
+    return apiResponse({ data, message: ROOM_TYPE_SUCCESS_MSG.DELETED });
   }
 }

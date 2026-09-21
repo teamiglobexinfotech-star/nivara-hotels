@@ -15,13 +15,13 @@ export const UpdateAmenitySchema = z
       .nullable()
       .optional(),
 
-    icon: z
+    iconKey: z
       .string('Icon must be a string')
       .max(100, 'Icon must be 100 characters or less')
       .nullable()
       .optional(),
 
-    status: z.enum(['ACTIVE', 'INACTIVE']).optional(),
+    isActive: z.boolean('IsActive must be a boolean').optional(),
   })
   .strict();
 

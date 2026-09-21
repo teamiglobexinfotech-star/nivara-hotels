@@ -1,18 +1,19 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
+import { Project } from 'node-appwrite';
+
+import { PrismaModule } from './db/prisma/prisma.module';
+import { AmenityModule } from './modules/amenity/amenity.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { CustomerModule } from './modules/customer/customer.module';
+import { RoomModule } from './modules/room/room.module';
+import { RoomTypeModule } from './modules/room-type/room-type.module';
+import { StaffModule } from './modules/staff/staff.module';
+import { UserModule } from './modules/user/user.module';
+import { SeedModule } from './seed/seed.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { client, env } from './config';
-import { PrismaModule } from './db/prisma/prisma.module';
-import { AuthModule } from './modules/auth/auth.module';
-import { SeedModule } from './seed/seed.module';
-import { StaffModule } from './modules/staff/staff.module';
-import { CustomerModule } from './modules/customer/customer.module';
-import { AmenityModule } from './modules/amenity/amenity.module';
-import { RoomModule } from './modules/room/room.module';
-import { RoomTypeModule } from './modules/room-type/room-type.module';
-import { Project } from 'node-appwrite';
-import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [

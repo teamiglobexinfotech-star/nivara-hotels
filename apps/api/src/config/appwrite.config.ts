@@ -1,5 +1,6 @@
 import { Client, Storage } from 'node-appwrite';
 import { InputFile } from 'node-appwrite/file';
+
 import { env } from './env.config';
 
 export const client = new Client()

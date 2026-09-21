@@ -10,26 +10,29 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { ValidationPipe } from '../../common/pipes';
-import { AuthGuard, RoleGuard } from '../../common/guards';
+
 import { Roles } from '../../common/decorators';
-import { AmenityService } from './amenity.service';
+import { AuthGuard, RoleGuard } from '../../common/guards';
+import { apiMessageResponse, apiResponse } from '../../common/helpers';
+import { ValidationPipe } from '../../common/pipes';
+
 import {
   CreateAmenityDto,
   CreateAmenitySchema,
 } from './dtos/create-amenity.dto';
-import { AMENITY_SUCCESS_MSG } from './amenity.constants';
 import {
   UpdateAmenityDto,
   UpdateAmenitySchema,
 } from './dtos/update-amenity.dto';
+import { AMENITY_SUCCESS_MSG } from './amenity.constants';
+import { AmenityService } from './amenity.service';
 
 @Controller('amenities')
 export class AmenityController {
   constructor(private readonly amenityService: AmenityService) {}
 
   @UseGuards(AuthGuard, RoleGuard)
-  @Roles('ADMIN', 'MANAGER')
+  @Roles('ADMIN')
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(
@@ -37,14 +40,14 @@ export class AmenityController {
   ) {
     const data = await this.amenityService.create(body);
 
-    return { data, message: AMENITY_SUCCESS_MSG.CREATED };
+    return apiResponse({ data, message: AMENITY_SUCCESS_MSG.CREATED });
   }
 
   @Get()
   @HttpCode(HttpStatus.OK)
   async getAll() {
     const data = await this.amenityService.getAll();
-    return { data };
+    return apiResponse({ data });
   }
 
   @UseGuards(AuthGuard, RoleGuard)
@@ -56,14 +59,15 @@ export class AmenityController {
     @Body(new ValidationPipe(UpdateAmenitySchema)) body: UpdateAmenityDto,
   ) {
     const data = await this.amenityService.update(id, body);
-    return { data, message: AMENITY_SUCCESS_MSG.UPDATED };
+    return apiResponse({ data, message: AMENITY_SUCCESS_MSG.UPDATED });
   }
 
   @UseGuards(AuthGuard, RoleGuard)
-  @Roles('ADMIN', 'MANAGER')
+  @Roles('ADMIN')
   @Delete(':id')
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @HttpCode(HttpStatus.OK)
   async delete(@Param('id') id: string) {
     await this.amenityService.delete(id);
+    return apiMessageResponse(AMENITY_SUCCESS_MSG.DELETED);
   }
 }

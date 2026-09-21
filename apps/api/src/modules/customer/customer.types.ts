@@ -1,27 +1,28 @@
-import { UserRole, UserStatus } from '../../types';
+import { UserRole } from '../../types';
 
-export type CreateCustomerResponse = {
-  customerProfile: {
-    address: string;
-    id: string;
-    idProofNumber: string;
-  } | null;
+export type Customer = {
   email: string;
   fullName: string;
   id: string;
   phone: string;
   role: UserRole;
-  status: UserStatus;
+  isActive: boolean;
+  customerProfile: {
+    address: string;
+    id: string;
+    idProofNumber: string;
+  } | null;
 };
 
-export type CustomerListItem = {
+export type CustomerList = {
   id: string;
   fullName: string;
-  profileImage: string;
+  profileImageId: string | null;
   email: string;
   phone: string;
-  status: UserStatus;
+  isActive: boolean;
   createdAt: Date | null;
+  updatedAt: Date | null;
   customerProfile: {
     id: string;
     idProofNumber: string;
@@ -29,20 +30,20 @@ export type CustomerListItem = {
   } | null;
 };
 
-export type CustomerDetailsResponse = {
+export type CustomerDetails = {
   id: string;
   fullName: string;
-  profileImage: string;
+  profileImageId: string | null;
   email: string;
   phone: string;
-  role: UserRole;
-  status: UserStatus;
+  isActive: boolean;
   createdAt: Date | null;
+  updatedAt: Date | null;
   customerProfile: {
     id: string;
-    idProofImage: string;
     idProofNumber: string;
+    idProofImageId: string | null;
+    signatureImageId: string | null;
     address: string;
-    signature: string;
   } | null;
 };

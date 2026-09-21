@@ -1,5 +1,6 @@
-import * as argon2 from 'argon2';
 import crypto from 'node:crypto';
+
+import * as argon2 from 'argon2';
 
 export const hashPassword = async (str: string): Promise<string> => {
   return await argon2.hash(str);

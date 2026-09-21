@@ -1,50 +1,50 @@
-import { Category, UserRole, UserStatus } from '../../types';
+import { Category, UserRole } from '../../types';
 
-export type CreateStaffResponse = {
-  category: Category;
-  email: string;
-  fullName: string;
+export type Staff = {
   id: string;
+  fullName: string;
+  email: string;
   phone: string;
   role: UserRole;
-  status: UserStatus;
-};
-
-export type StaffListItem = {
-  id: string;
-  fullName: string;
-  email: string;
-  phone: string;
-  status: string;
-  category: string;
+  isActive: boolean;
+  category?: Category;
   createdAt: Date | null;
+  updatedAt: Date | null;
 };
 
-export type StaffDetailsResponse = {
-  createdAt: Date;
-  email: string;
-  fullName: string;
+export type StaffList = Staff;
+
+export type StaffDetails = {
   id: string;
-  lastLoginAt: Date | null;
+  fullName: string;
+  email: string;
   phone: string;
-  profileImage: string;
   role: UserRole;
+  isActive: boolean;
+  lastLoginAt: Date | null;
+  createdAt: Date | null;
+  updatedAt: Date | null;
   staff: {
-    address: string;
-    category: Category;
-    createdAt: Date;
-    emergencyContact: string;
-    experience: string;
-    fatherName: string;
     id: string;
-    idProofImage: string;
-    idProofNumber: string;
+    fatherName: string;
     motherName: string;
+    idProofNumber: string;
     qualification: string;
-    signature: string;
-    status: string;
-    updatedAt: Date;
+    experience: string;
+    category: Category;
+    emergencyContact: string;
+    address: string;
+    createdAt: Date | null;
+    updatedAt: Date | null;
+    idProofImage: {
+      id: string;
+      fileId: string;
+      altText: string | null;
+    } | null;
+    signatureImage: {
+      id: string;
+      fileId: string;
+      altText: string | null;
+    } | null;
   } | null;
-  status: UserStatus;
-  updatedAt: Date;
 };

@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -16,7 +17,7 @@ describe('AppController', () => {
 
   describe('root', () => {
     it('should return "Welcome to NestJS API!"', () => {
-      expect(appController.getHello()).toBe('Welcome to NestJS API!');
+      expect(appController.getGreet()).toBe('Welcome to NestJS API!');
     });
   });
 });

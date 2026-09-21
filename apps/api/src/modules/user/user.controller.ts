@@ -5,9 +5,12 @@ import {
   HttpStatus,
   UseGuards,
 } from '@nestjs/common';
-import { AuthGuard, RoleGuard } from '../../common/guards';
-import { UserService } from './user.service';
+
 import { CurrentUser } from '../../common/decorators';
+import { AuthGuard, RoleGuard } from '../../common/guards';
+import { apiResponse } from '../../common/helpers';
+
+import { UserService } from './user.service';
 
 @UseGuards(AuthGuard, RoleGuard)
 @Controller('users')
@@ -16,8 +19,8 @@ export class UserController {
 
   @Get('me')
   @HttpCode(HttpStatus.OK)
-  async getProfile(@CurrentUser('id') userId: string) {
-    const data = await this.userService.getProfile(userId);
-    return { data };
+  async getById(@CurrentUser('id') userId: string) {
+    const data = await this.userService.getById(userId);
+    return apiResponse({ data });
   }
 }

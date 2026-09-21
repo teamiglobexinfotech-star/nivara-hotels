@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { RoomTypeService } from './room-type.service';
 
 describe('RoomTypeService', () => {

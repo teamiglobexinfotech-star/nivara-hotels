@@ -8,13 +8,16 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import type { Response, Request } from 'express';
-import { ValidationPipe } from '../../common/pipes';
+import type { Request, Response } from 'express';
+
+import { CurrentUser } from '../../common/decorators';
 import { AuthGuard } from '../../common/guards';
-import { AuthService } from './auth.service';
+import { apiMessageResponse } from '../../common/helpers';
+import { ValidationPipe } from '../../common/pipes';
+
 import { LoginDto, LoginSchema } from './dtos/login.dto';
 import { AUTH_SUCCESS_MSG } from './auth.constants';
-import { CurrentUser } from '../../common/decorators';
+import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
@@ -27,7 +30,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     await this.authService.login(body, res);
-    return { message: AUTH_SUCCESS_MSG.LOGIN };
+    return apiMessageResponse(AUTH_SUCCESS_MSG.LOGIN);
   }
 
   @UseGuards(AuthGuard)
@@ -39,7 +42,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     await this.authService.logout(userId, req, res);
-    return { message: AUTH_SUCCESS_MSG.LOGOUT };
+    return apiMessageResponse(AUTH_SUCCESS_MSG.LOGOUT);
   }
 
   @Post('refresh')
@@ -49,6 +52,6 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     await this.authService.refresh(req, res);
-    return { message: AUTH_SUCCESS_MSG.REFRESH_TOKEN };
+    return apiMessageResponse(AUTH_SUCCESS_MSG.REFRESH_TOKEN);
   }
 }

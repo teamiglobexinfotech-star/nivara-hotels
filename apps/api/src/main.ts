@@ -1,7 +1,7 @@
-import { NestFactory } from '@nestjs/core';
 import { Logger } from '@nestjs/common';
-import helmet from 'helmet';
+import { NestFactory } from '@nestjs/core';
 import cookieParser from 'cookie-parser';
+import helmet from 'helmet';
 
 import { AppModule } from './app.module';
 import { env } from './config';

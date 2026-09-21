@@ -13,21 +13,24 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { AuthGuard, RoleGuard } from '../../common/guards';
-import { ValidationPipe } from '../../common/pipes';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+
 import { Roles } from '../../common/decorators';
-import { CustomerService } from './customer.service';
+import { AuthGuard, RoleGuard } from '../../common/guards';
+import { apiListResponse, apiResponse } from '../../common/helpers';
+import { ValidationPipe } from '../../common/pipes';
+
 import {
   CreateCustomerDto,
   CreateCustomerSchema,
 } from './dtos/create-customer.dto';
-import { CUSTOMER_SUCCESS_MSG } from './customer.constants';
 import { GetCustomersDto, GetCustomersSchema } from './dtos/get-customers.dto';
 import {
   UpdateCustomerDto,
   UpdateCustomerSchema,
 } from './dtos/update-customer.dto';
-import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { CUSTOMER_SUCCESS_MSG } from './customer.constants';
+import { CustomerService } from './customer.service';
 
 @UseGuards(AuthGuard, RoleGuard)
 @Controller('customers')
@@ -43,53 +46,52 @@ export class CustomerController {
     ]),
   )
   @HttpCode(HttpStatus.CREATED)
-  async createCustomer(
+  async create(
     @UploadedFiles()
     files: { idProof; signature },
     @Body(new ValidationPipe(CreateCustomerSchema)) body: CreateCustomerDto,
   ) {
-    const data = await this.customerService.createCustomer(files, body);
-    return { data, message: CUSTOMER_SUCCESS_MSG.CREATED };
+    const data = await this.customerService.create(files, body);
+    return apiResponse({ data, message: CUSTOMER_SUCCESS_MSG.CREATED });
   }
 
   @Roles('ADMIN', 'MANAGER', 'STAFF')
   @Get()
   @HttpCode(HttpStatus.OK)
-  async getCustomers(
+  async getAll(
     @Query(new ValidationPipe(GetCustomersSchema)) query: GetCustomersDto,
   ) {
-    const { items, pagination } =
-      await this.customerService.getCustomers(query);
-    return { items, pagination: pagination };
+    const { data, meta } = await this.customerService.getAll(query);
+    return apiListResponse({ data, meta });
   }
 
   @Roles('ADMIN', 'MANAGER', 'STAFF')
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  async getCustomerById(@Param('id') id: string) {
-    const data = await this.customerService.getCustomerById(id);
-    return { data };
+  async getById(@Param('id') id: string) {
+    const data = await this.customerService.getById(id);
+    return apiResponse({ data });
   }
 
   @Roles('ADMIN', 'MANAGER', 'STAFF')
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
-  async updateCustomer(
+  async update(
     @Param('id') id: string,
     @Body(new ValidationPipe(UpdateCustomerSchema)) body: UpdateCustomerDto,
   ) {
-    const data = await this.customerService.updateCustomer(id, body);
+    const data = await this.customerService.update(id, body);
 
-    return {
+    return apiResponse({
       data,
       message: CUSTOMER_SUCCESS_MSG.UPDATED,
-    };
+    });
   }
 
-  @Roles('ADMIN', 'MANAGER', 'STAFF')
+  @Roles('ADMIN')
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
-  async deleteCustomer() {
+  delete() {
     return { message: CUSTOMER_SUCCESS_MSG.DELETED };
   }
 }

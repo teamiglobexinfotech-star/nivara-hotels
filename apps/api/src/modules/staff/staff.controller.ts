@@ -9,13 +9,16 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ValidationPipe } from '../../common/pipes';
+
 import { Roles } from '../../common/decorators';
 import { AuthGuard, RoleGuard } from '../../common/guards';
-import { StaffService } from './staff.service';
-import { STAFF_SUCCESS_MSG } from './staff.constants';
+import { apiListResponse, apiResponse } from '../../common/helpers';
+import { ValidationPipe } from '../../common/pipes';
+
 import { CreateStaffDto, CreateStaffSchema } from './dtos/create-staff.dto';
 import { GetStaffDto, GetStaffSchema } from './dtos/get-staff.dto';
+import { STAFF_SUCCESS_MSG } from './staff.constants';
+import { StaffService } from './staff.service';
 
 @UseGuards(AuthGuard, RoleGuard)
 @Controller('staff')
@@ -25,29 +28,26 @@ export class StaffController {
   @Roles('ADMIN', 'MANAGER')
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async createStaff(
+  async create(
     @Body(new ValidationPipe(CreateStaffSchema)) body: CreateStaffDto,
   ) {
-    const data = await this.staffService.createStaff(body);
-
-    return { data, message: STAFF_SUCCESS_MSG.CREATED };
+    const data = await this.staffService.create(body);
+    return apiResponse({ data, message: STAFF_SUCCESS_MSG.CREATED });
   }
 
   @Roles('ADMIN', 'MANAGER')
   @Get()
   @HttpCode(HttpStatus.OK)
-  async getStaff(
-    @Query(new ValidationPipe(GetStaffSchema)) query: GetStaffDto,
-  ) {
-    const { items, pagination } = await this.staffService.getStaff(query);
-    return { data: items, pagination: pagination };
+  async getAll(@Query(new ValidationPipe(GetStaffSchema)) query: GetStaffDto) {
+    const { data, meta } = await this.staffService.getAll(query);
+    return apiListResponse({ data, meta });
   }
 
-  @Roles('ADMIN', 'MANAGER', 'STAFF')
+  @Roles('ADMIN', 'MANAGER')
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  async getStaffById(@Param('id') id: string) {
-    const data = await this.staffService.getStaffById(id);
-    return { data };
+  async getById(@Param('id') id: string) {
+    const data = await this.staffService.getById(id);
+    return apiResponse({ data });
   }
 }

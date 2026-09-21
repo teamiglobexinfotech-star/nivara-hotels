@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
-import { SeedService } from './seed.service';
+
 import { PrismaModule } from '../db/prisma/prisma.module';
+
+import { SeedService } from './seed.service';
 
 @Module({
   imports: [PrismaModule],

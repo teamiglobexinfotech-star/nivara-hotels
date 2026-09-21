@@ -3,24 +3,22 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from '../../db/prisma/prisma.service';
+
 import { hashPassword } from '../../common/helpers';
+import { PrismaService } from '../../db/prisma/prisma.service';
+import { ListResponse } from '../../types';
 import { AUTH_ERROR_MSG } from '../auth/auth.constants';
-import {
-  CreateStaffResponse,
-  StaffDetailsResponse,
-  StaffListItem,
-} from './staff.types';
+
 import { CreateStaffDto } from './dtos/create-staff.dto';
 import { GetStaffDto } from './dtos/get-staff.dto';
-import { ListResponse } from '../../types';
 import { STAFF_ERROR_MSG } from './staff.constants';
+import { StaffDetails, StaffList } from './staff.types';
 
 @Injectable()
 export class StaffService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async createStaff(dto: CreateStaffDto): Promise<CreateStaffResponse> {
+  async create(dto: CreateStaffDto): Promise<{ id: string }> {
     const existingUser = await this.prismaService.user.findUnique({
       where: {
         email: dto.email,
@@ -44,49 +42,36 @@ export class StaffService {
           phone: dto.phone,
           passwordHash,
           role: 'STAFF',
-          status: 'ACTIVE',
-          profileImage: '',
         },
         select: {
           id: true,
-          fullName: true,
-          email: true,
-          phone: true,
-          role: true,
-          status: true,
         },
       });
 
-      const staff = await tx.staff.create({
+      await tx.staff.create({
         data: {
           userId: user.id,
           fatherName: dto.fatherName,
           motherName: dto.motherName,
-          idProofImage: dto.idProofImage,
           idProofNumber: dto.idProofNumber,
           qualification: dto.qualification,
           experience: dto.experience,
           category: dto.category,
           emergencyContact: dto?.emergencyContact,
           address: dto.address,
-          signature: dto.signature,
-          status: 'ACTIVE',
         },
         select: {
-          category: true,
+          id: true,
         },
       });
 
-      return {
-        ...user,
-        category: staff.category,
-      };
+      return { ...user, category: dto.category };
     });
 
     return staff;
   }
 
-  async getStaff(dto: GetStaffDto): Promise<ListResponse<StaffListItem>> {
+  async getAll(dto: GetStaffDto): Promise<ListResponse<StaffList[]>> {
     const { search, status, category, page, limit } = dto;
     const skip = (page - 1) * limit;
 
@@ -137,8 +122,11 @@ export class StaffService {
           fullName: true,
           email: true,
           phone: true,
-          status: true,
+          role: true,
+          isActive: true,
+          profileImage: true,
           createdAt: true,
+          updatedAt: true,
           staff: {
             select: {
               category: true,
@@ -152,16 +140,18 @@ export class StaffService {
     ]);
 
     return {
-      items: users.map((user) => ({
+      data: users.map((user) => ({
         id: user.id,
         fullName: user.fullName,
         email: user.email,
         phone: user.phone,
-        status: user.status,
-        category: user.staff!.category,
+        role: user.role,
+        isActive: user.isActive,
+        category: user.staff?.category,
         createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
       })),
-      pagination: {
+      meta: {
         page,
         limit,
         total,
@@ -170,7 +160,7 @@ export class StaffService {
     };
   }
 
-  async getStaffById(id: string): Promise<StaffDetailsResponse> {
+  async getById(id: string): Promise<StaffDetails> {
     const user = await this.prismaService.user.findUnique({
       where: {
         id,
@@ -181,9 +171,8 @@ export class StaffService {
         fullName: true,
         email: true,
         phone: true,
-        profileImage: true,
         role: true,
-        status: true,
+        isActive: true,
         lastLoginAt: true,
         createdAt: true,
         updatedAt: true,
@@ -192,17 +181,28 @@ export class StaffService {
             id: true,
             fatherName: true,
             motherName: true,
-            idProofImage: true,
             idProofNumber: true,
             qualification: true,
             experience: true,
             category: true,
             emergencyContact: true,
             address: true,
-            signature: true,
-            status: true,
             createdAt: true,
             updatedAt: true,
+            idProofImage: {
+              select: {
+                id: true,
+                fileId: true,
+                altText: true,
+              },
+            },
+            signatureImage: {
+              select: {
+                id: true,
+                fileId: true,
+                altText: true,
+              },
+            },
           },
         },
       },

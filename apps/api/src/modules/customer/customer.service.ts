@@ -4,28 +4,23 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { ID } from 'node-appwrite';
-import { PrismaService } from '../../db/prisma/prisma.service';
+
 import { hashPassword } from '../../common/helpers';
+import { uploadFile } from '../../config';
+import { PrismaService } from '../../db/prisma/prisma.service';
+import { ListResponse, UserRole } from '../../types';
+
 import { CreateCustomerDto } from './dtos/create-customer.dto';
-import {
-  CreateCustomerResponse,
-  CustomerDetailsResponse,
-  CustomerListItem,
-} from './customer.types';
-import { ListResponse, UserRole, UserStatus } from '../../types';
 import { GetCustomersDto } from './dtos/get-customers.dto';
-import { CUSTOMER_ERROR_MSG } from './customer.constants';
 import { UpdateCustomerDto } from './dtos/update-customer.dto';
-import { getFileUrl, uploadFile } from '../../config';
+import { CUSTOMER_ERROR_MSG } from './customer.constants';
+import { CustomerDetails, CustomerList } from './customer.types';
 
 @Injectable()
 export class CustomerService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async createCustomer(
-    files,
-    dto: CreateCustomerDto,
-  ): Promise<CreateCustomerResponse> {
+  async create(files, dto: CreateCustomerDto): Promise<{ id: string }> {
     const existingUser = await this.prismaService.user.findUnique({
       where: { email: dto.email },
       select: { id: true },
@@ -40,15 +35,15 @@ export class CustomerService {
     const idProof = files.idProof?.[0];
     const signature = files.signature?.[0];
 
-    const uploadedIdProof = idProof
-      ? getFileUrl((await uploadFile(idProof, `id-proof-${ID.unique()}`)).$id)
-      : '';
+    const uploadedIdProof = await uploadFile(
+      idProof,
+      `id-proof-${ID.unique()}`,
+    );
 
-    const uploadedSignature = signature
-      ? getFileUrl(
-          (await uploadFile(signature, `signature-${ID.unique()}`)).$id,
-        )
-      : '';
+    const uploadedSignature = await uploadFile(
+      signature,
+      `signature-${ID.unique()}`,
+    );
 
     const user = await this.prismaService.user.create({
       data: {
@@ -56,50 +51,42 @@ export class CustomerService {
         email: dto.email,
         phone: dto.phone,
         passwordHash,
-        profileImage: '',
+        profileImageId: '',
         role: UserRole.CUSTOMER,
-        status: UserStatus.ACTIVE,
         customerProfile: {
           create: {
-            idProofImage: uploadedIdProof,
             idProofNumber: dto.idProofNumber,
             address: dto.address,
-            signature: uploadedSignature,
+            idProofImage: {
+              create: {
+                fileId: uploadedIdProof.$id,
+                altText: uploadedIdProof.name,
+              },
+            },
+            signatureImage: {
+              create: {
+                fileId: uploadedSignature.$id,
+                altText: uploadedSignature.name,
+              },
+            },
           },
         },
       },
       select: {
         id: true,
-        fullName: true,
-        profileImage: true,
-        email: true,
-        phone: true,
-        role: true,
-        status: true,
-        customerProfile: {
-          select: {
-            id: true,
-            idProofImage: true,
-            idProofNumber: true,
-            address: true,
-            signature: true,
-          },
-        },
       },
     });
 
     return user;
   }
 
-  async getCustomers(
-    query: GetCustomersDto,
-  ): Promise<ListResponse<CustomerListItem>> {
-    const { search, status, page, limit } = query;
+  async getAll(query: GetCustomersDto): Promise<ListResponse<CustomerList[]>> {
+    const { search, isActive, page, limit } = query;
     const skip = (page - 1) * limit;
 
     const where = {
       role: UserRole.CUSTOMER,
-      ...(status && { status }),
+      ...(isActive && { isActive }),
       ...(search && {
         OR: [
           {
@@ -135,11 +122,12 @@ export class CustomerService {
         select: {
           id: true,
           fullName: true,
-          profileImage: true,
+          profileImageId: true,
           email: true,
           phone: true,
-          status: true,
+          isActive: true,
           createdAt: true,
+          updatedAt: true,
           customerProfile: {
             select: {
               id: true,
@@ -153,17 +141,17 @@ export class CustomerService {
     ]);
 
     return {
-      items: customers,
-      pagination: {
-        page,
+      data: customers,
+      meta: {
         limit,
+        page,
         total,
         totalPages: Math.ceil(total / limit),
       },
     };
   }
 
-  async getCustomerById(id: string): Promise<CustomerDetailsResponse> {
+  async getById(id: string): Promise<CustomerDetails> {
     const customer = await this.prismaService.user.findFirst({
       where: {
         id,
@@ -172,19 +160,19 @@ export class CustomerService {
       select: {
         id: true,
         fullName: true,
-        profileImage: true,
+        profileImageId: true,
         email: true,
         phone: true,
-        role: true,
-        status: true,
+        isActive: true,
         createdAt: true,
+        updatedAt: true,
         customerProfile: {
           select: {
             id: true,
-            idProofImage: true,
             idProofNumber: true,
+            idProofImageId: true,
+            signatureImageId: true,
             address: true,
-            signature: true,
           },
         },
       },
@@ -197,10 +185,7 @@ export class CustomerService {
     return customer;
   }
 
-  async updateCustomer(
-    id: string,
-    dto: UpdateCustomerDto,
-  ): Promise<{ id: string }> {
+  async update(id: string, dto: UpdateCustomerDto): Promise<{ id: string }> {
     const customer = await this.prismaService.user.findUnique({
       where: { id },
       select: {
@@ -235,7 +220,7 @@ export class CustomerService {
     }
 
     return this.prismaService.$transaction(async (tx) => {
-      return tx.user.update({
+      return await tx.user.update({
         where: { id },
         data: {
           ...(dto.fullName !== undefined && { fullName: dto.fullName }),

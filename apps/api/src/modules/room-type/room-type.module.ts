@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
-import { RoomTypeService } from './room-type.service';
-import { RoomTypeController } from './room-type.controller';
+
 import { PrismaModule } from '../../db/prisma/prisma.module';
+
+import { RoomTypeController } from './room-type.controller';
+import { RoomTypeService } from './room-type.service';
 
 @Module({
   imports: [PrismaModule],

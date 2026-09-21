@@ -1,6 +1,7 @@
 export const ROOM_TYPE_SUCCESS_MSG = {
   CREATED: 'Room type created successfully',
   UPDATED: 'Room type updated successfully',
+  DELETED: 'Room type deleted successfully',
 };
 
 export const ROOM_TYPE_ERROR_MSG = {

@@ -3,21 +3,19 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+
 import { PrismaService } from '../../db/prisma/prisma.service';
+
 import { CreateAmenityDto } from './dtos/create-amenity.dto';
-import {
-  AmenityListItemResponse,
-  CreateAmenityResponse,
-  UpdateAmenityResponse,
-} from './amenity.types';
-import { AMENITY_ERROR_MSG } from './amenity.constants';
 import { UpdateAmenityDto } from './dtos/update-amenity.dto';
+import { AMENITY_ERROR_MSG } from './amenity.constants';
+import { Amenity, AmenityList } from './amenity.types';
 
 @Injectable()
 export class AmenityService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(dto: CreateAmenityDto): Promise<CreateAmenityResponse> {
+  async create(dto: CreateAmenityDto): Promise<Amenity> {
     const existingAmenity = await this.prismaService.amenity.findUnique({
       where: { name: dto.name },
       select: { id: true },
@@ -31,27 +29,29 @@ export class AmenityService {
       data: {
         name: dto.name,
         description: dto.description,
-        icon: dto.icon,
-        status: dto.status,
+        iconKey: dto.iconKey,
+        isActive: dto.isActive,
       },
-      select: {
-        id: true,
-        name: true,
-        icon: true,
-        status: true,
-        createdAt: true,
-      },
-    });
-  }
-
-  async getAll(): Promise<AmenityListItemResponse[]> {
-    return this.prismaService.amenity.findMany({
       select: {
         id: true,
         name: true,
         description: true,
-        icon: true,
-        status: true,
+        iconKey: true,
+        isActive: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+  }
+
+  async getAll(): Promise<AmenityList[]> {
+    return await this.prismaService.amenity.findMany({
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        iconKey: true,
+        isActive: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -61,10 +61,7 @@ export class AmenityService {
     });
   }
 
-  async update(
-    id: string,
-    dto: UpdateAmenityDto,
-  ): Promise<UpdateAmenityResponse> {
+  async update(id: string, dto: UpdateAmenityDto): Promise<{ id: string }> {
     const amenity = await this.prismaService.amenity.findUnique({
       where: { id },
       select: {
@@ -88,20 +85,16 @@ export class AmenityService {
       }
     }
 
-    return this.prismaService.amenity.update({
+    return await this.prismaService.amenity.update({
       where: { id },
-      data: dto,
+      data: { ...dto },
       select: {
         id: true,
-        name: true,
-        description: true,
-        icon: true,
-        status: true,
       },
     });
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: string): Promise<{ id: string }> {
     const amenity = await this.prismaService.amenity.findUnique({
       where: { id },
       select: {
@@ -122,8 +115,9 @@ export class AmenityService {
       throw new ConflictException(AMENITY_ERROR_MSG.IN_USE);
     }
 
-    await this.prismaService.amenity.delete({
+    return await this.prismaService.amenity.delete({
       where: { id },
+      select: { id: true },
     });
   }
 }

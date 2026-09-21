@@ -1,12 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+
 import { PrismaService } from '../../db/prisma/prisma.service';
-import { UserProfileResponse } from './user.types';
+
+import { User } from './user.types';
 
 @Injectable()
 export class UserService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async getProfile(userId: string): Promise<UserProfileResponse> {
+  async getById(userId: string): Promise<User> {
     const user = await this.prismaService.user.findUnique({
       where: { id: userId },
       select: {
@@ -15,6 +17,13 @@ export class UserService {
         email: true,
         phone: true,
         role: true,
+        profileImage: {
+          select: {
+            id: true,
+            fileId: true,
+            altText: true,
+          },
+        },
         staff: {
           select: {
             category: true,
@@ -36,6 +45,7 @@ export class UserService {
       ...(user.staff?.category && {
         category: user.staff.category,
       }),
+      profileImage: user.profileImage,
     };
   }
 }

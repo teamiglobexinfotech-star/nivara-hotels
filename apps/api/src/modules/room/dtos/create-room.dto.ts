@@ -25,7 +25,7 @@ export const CreateRoomSchema = z
       .default('VACANT'),
 
     housekeepingStatus: z.enum(['CLEAN', 'DIRTY', 'CLEANING']).default('CLEAN'),
-    isActive: z.boolean('Active status is required').default(true),
+    isActive: z.boolean('Active status is required').default(true).optional(),
   })
   .strict();
 

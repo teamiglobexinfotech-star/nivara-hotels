@@ -1,31 +1,12 @@
-import { RoomTypeStatus } from '../../types';
-
-export type CreateRoomTypeResponse = {
+export type RoomType = {
   id: string;
   name: string;
   description: string | null;
   capacity: number;
-  basePrice: any;
-  status: RoomTypeStatus;
-  createdAt: Date;
+  basePrice: number;
+  isActive: boolean;
+  createdAt: Date | null;
+  updatedAt: Date | null;
 };
 
-export type RoomTypeListItemResponse = {
-  id: string;
-  name: string;
-  description: string | null;
-  capacity: number;
-  basePrice: any;
-  status: RoomTypeStatus;
-  createdAt: Date;
-  updatedAt: Date;
-};
-
-export type UpdateRoomTypeResponse = {
-  id: string;
-  name: string;
-  description: string | null;
-  capacity: number;
-  basePrice: any;
-  status: RoomTypeStatus;
-};
+export type RoomTypeList = RoomType;

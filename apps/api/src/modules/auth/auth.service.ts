@@ -1,11 +1,12 @@
-import { JwtService } from '@nestjs/jwt';
-import type { Request, Response } from 'express';
 import {
   ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { PrismaService } from '../../db/prisma/prisma.service';
+import { JwtService } from '@nestjs/jwt';
+import type { Request, Response } from 'express';
+
+import { COOKIE_EXPIRATION, COOKIE_NAME } from '../../common/constants';
 import {
   clearCookies,
   comparePassword,
@@ -13,12 +14,13 @@ import {
   hashRandomStr,
   setCookies,
 } from '../../common/helpers';
-import { LoginDto } from './dtos/login.dto';
-import { JwtPayload } from './auth.types';
-import { AUTH_ERROR_MSG } from './auth.constants';
-import { UserRole } from '../../types';
 import { env } from '../../config';
-import { COOKIE_EXPIRATION, COOKIE_NAME } from '../../common/constants';
+import { PrismaService } from '../../db/prisma/prisma.service';
+import { UserRole } from '../../types';
+
+import { LoginDto } from './dtos/login.dto';
+import { AUTH_ERROR_MSG } from './auth.constants';
+import { JwtPayload } from './auth.types';
 
 @Injectable()
 export class AuthService {
@@ -43,7 +45,7 @@ export class AuthService {
             category: true,
           },
         },
-        status: true,
+        isActive: true,
       },
     });
 
@@ -51,7 +53,7 @@ export class AuthService {
       throw new UnauthorizedException(AUTH_ERROR_MSG.INVALID_CREDENTIALS);
     }
 
-    if (user.status === 'INACTIVE') {
+    if (!user.isActive) {
       throw new ForbiddenException(AUTH_ERROR_MSG.ACCOUNT_NOT_ACTIVE);
     }
 

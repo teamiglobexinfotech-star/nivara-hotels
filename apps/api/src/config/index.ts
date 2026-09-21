@@ -1,2 +1,2 @@
-export * from './env.config';
 export * from './appwrite.config';
+export * from './env.config';
