@@ -14,15 +14,24 @@ import { DataTable } from "@/components/shared/DataTable";
 import type { Column } from "@/types/shared.types";
 import { IconButton } from "@/components/shared/IconButton";
 import { Badge } from "@/components/ui/badge";
-import type { Room, RoomType } from "@/types/room.types";
+import type { Room } from "@/types/room.types";
 import { useStats } from "@/features/room/hooks/useStats";
 import { useRooms } from "@/features/room/hooks/useRooms";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useRoomType } from "@/features/room/hooks/useRoomType";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { NewRoomTypeModal } from "@/features/room-type/components/NewRoomTypeModal";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ViewRoomTypeModal } from "@/features/room-type/components/ViewRoomTypeModal";
+import type { RoomResponse } from "@/features/room-type/room-type.types";
+import { useDeleteRoomType } from "@/features/room-type/hooks/useDeleteRoomType";
 
-const roomTypeColumns: Column<RoomType>[] = [
+const roomTypeColumns: Column<RoomResponse>[] = [
   {
     header: "Name",
     key: "name",
@@ -40,6 +49,7 @@ const roomTypeColumns: Column<RoomType>[] = [
   {
     header: "Price",
     key: "basePrice",
+    render: (r) => <span>₹{r.basePrice}</span>,
   },
   {
     header: "Status",
@@ -53,11 +63,7 @@ const roomTypeColumns: Column<RoomType>[] = [
   {
     header: "Action",
     key: "action",
-    render: () => (
-      <IconButton size={"sm"} variant={"ghost"}>
-        <EllipsisVertical />
-      </IconButton>
-    ),
+    render: (r) => <RoomTypeActionsDropdownMenu roomType={r} />,
   },
 ];
 
@@ -116,6 +122,46 @@ const roomColumns: Column<Room>[] = [
     ),
   },
 ];
+
+function RoomTypeActionsDropdownMenu({ roomType }: { roomType: RoomResponse }) {
+  const [isViewModal, setIsViewModal] = useState(false);
+  const { handleDelete, isPending } = useDeleteRoomType();
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <IconButton size={"sm"} variant={"ghost"}>
+            <EllipsisVertical />
+          </IconButton>
+        </DropdownMenuTrigger>
+
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={() => setIsViewModal(true)}>
+            View
+          </DropdownMenuItem>
+          <DropdownMenuItem>Edit</DropdownMenuItem>
+          <DropdownMenuItem
+            className={"text-destructive"}
+            onClick={() => handleDelete(roomType.id)}
+            disabled={isPending}
+          >
+            Delete
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      {/*  */}
+      {isViewModal && (
+        <ViewRoomTypeModal
+          onOpenChange={setIsViewModal}
+          open={isViewModal}
+          roomType={roomType}
+        />
+      )}
+    </>
+  );
+}
 
 function KpiSection() {
   let { data: stats } = useStats();

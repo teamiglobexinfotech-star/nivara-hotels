@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { notifyError } from "@/lib/notification";
-import { roomKeys, roomMutationKeys } from "../room-type.keys";
+
 import { roomTypeService } from "../room-type.service";
 import {
   CreateRoomTypeSchema,
@@ -11,17 +11,18 @@ import {
   type CreateRoomTypeForm,
 } from "../schema/room-type.schema";
 import { useEffect } from "react";
+import { roomTypeKeys, roomTypeMutationKeys } from "../room-type.keys";
 
 function useCreateRoomType() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: roomMutationKeys.create,
+    mutationKey: roomTypeMutationKeys.create,
     mutationFn: roomTypeService.create,
     onSuccess: (res) => {
       toast.success(res?.message || "Room type created successfully.");
       queryClient.invalidateQueries({
-        queryKey: roomKeys.all,
+        queryKey: roomTypeKeys.all,
       });
     },
     onError: notifyError,

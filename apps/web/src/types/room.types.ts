@@ -29,8 +29,8 @@ export type RoomType = {
   capacity: number;
   basePrice: any;
   status: RoomTypeStatus;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 };
 
 export interface AvailableRoom {
