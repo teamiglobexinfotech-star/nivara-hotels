@@ -7,7 +7,7 @@ export const CreateRoomSchema = z
       .min(1, "Room number is required")
       .max(50, "Room number must be 50 characters or less"),
 
-    roomTypeId: z.cuid("Invalid room type ID"),
+    roomTypeId: z.cuid("Invalid room type ID").min(25).max(32),
 
     floor: z.coerce
       .number("Floor must be a valid number.")

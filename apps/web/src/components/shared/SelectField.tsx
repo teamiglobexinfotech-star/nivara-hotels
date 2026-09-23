@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-type SelectOption = {
+export type SelectOption = {
   id: string;
   name: string;
 };

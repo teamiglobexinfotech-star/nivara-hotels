@@ -1,5 +1,6 @@
 import { Bed, CheckCircle2, Sparkles, UserCheck } from "lucide-react";
 
+import type { SelectOption } from "@/components/shared/SelectField";
 import type { KpiItem } from "@/types/shared.types";
 
 import type { Room } from "./room.types";
@@ -139,5 +140,32 @@ export const roomsData: Room[] = [
     isActive: false,
     createdAt: new Date("2026-05-01"),
     updatedAt: new Date("2026-09-18"),
+  },
+];
+
+export const dummyRoomTypes: SelectOption[] = [
+  {
+    id: "cmudnf82c000004l68ny9d4u0",
+    name: "Deluxe",
+  },
+  {
+    id: "cmudng1jf000104l6h7kp2x9r",
+    name: "Standard",
+  },
+  {
+    id: "cmudng7qk000204l6v3mt8a5n",
+    name: "Executive",
+  },
+  {
+    id: "cmudngd9r000304l6p8yb4w2c",
+    name: "Family",
+  },
+  {
+    id: "cmudngk2x000404l6z1qh7m8t",
+    name: "Premium Suite",
+  },
+  {
+    id: "cmudngqfw000504l6c6jr9n3v",
+    name: "Presidential Suite",
   },
 ];
