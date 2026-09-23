@@ -8,6 +8,7 @@ import { NewAmenityModal } from "@/features/amenities/components/NewAmenityModal
 import { NewRoomModal } from "@/features/rooms/components/NewRoomModal";
 import { RoomKpi } from "@/features/rooms/components/RoomKpi";
 import { RoomTableSection } from "@/features/rooms/components/RoomTableSection";
+import { NewRoomTypeModal } from "@/features/roomTypes/components/NewRoomTypeModal";
 import { RoomTypeTableSection } from "@/features/roomTypes/components/RoomTypeTableSection";
 
 function QuickActions() {
@@ -32,6 +33,13 @@ function QuickActions() {
               Amenity
             </Button>
           </NewAmenityModal>
+
+          <NewRoomTypeModal>
+            <Button variant="outline" className="w-full justify-center">
+              <Plus className="size-4" />
+              Room Type
+            </Button>
+          </NewRoomTypeModal>
         </div>
       </CardContent>
     </Card>

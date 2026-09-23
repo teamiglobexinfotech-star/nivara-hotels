@@ -41,7 +41,7 @@ export function useCreateRoomTypeFacade() {
     getValues,
     reset,
     setValue,
-  } = useForm<CreateRoomType>({
+  } = useForm({
     resolver: zodResolver(createRoomTypeSchema),
     defaultValues: {
       name: "",

@@ -33,7 +33,7 @@ export class RoomService {
 
     const existingRoom = await this.prismaService.room.findUnique({
       where: {
-        roomNumber: dto.roomNumber,
+        roomNumber: dto.roomNumber.toString(),
       },
       select: {
         id: true,
@@ -46,7 +46,7 @@ export class RoomService {
 
     return await this.prismaService.room.create({
       data: {
-        roomNumber: dto.roomNumber,
+        roomNumber: dto.roomNumber.toString(),
         roomTypeId: dto.roomTypeId,
         floor: dto.floor,
         description: dto.description,
@@ -212,9 +212,9 @@ export class RoomService {
       throw new NotFoundException(ROOM_ERROR_MSG.NOT_FOUND);
     }
 
-    if (dto.roomNumber && dto.roomNumber !== room.roomNumber) {
+    if (dto.roomNumber && dto.roomNumber.toString() !== room.roomNumber) {
       const existingRoom = await this.prismaService.room.findUnique({
-        where: { roomNumber: dto.roomNumber },
+        where: { roomNumber: dto.roomNumber.toString() },
         select: { id: true },
       });
 
@@ -236,7 +236,11 @@ export class RoomService {
 
     return await this.prismaService.room.update({
       where: { id },
-      data: { ...dto },
+      data: {
+        ...dto,
+        roomNumber: undefined,
+        ...(dto.roomNumber && { roomNumber: dto.roomNumber.toString() }),
+      },
       select: {
         id: true,
       },

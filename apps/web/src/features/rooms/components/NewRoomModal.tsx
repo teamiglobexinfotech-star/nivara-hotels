@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { Controller } from "react-hook-form";
 
 import { InputField } from "@/components/shared/InputField";
 import { SelectField } from "@/components/shared/SelectField";
@@ -25,61 +24,66 @@ export function NewRoomModal({ children }: { children: ReactNode }) {
 
   return (
     <Dialog>
-      <DialogTrigger>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-120">
-        <DialogHeader>
-          <DialogTitle className="text-lg font-semibold tracking-tight">
-            New Room
-          </DialogTitle>
-          <DialogDescription></DialogDescription>
+      <DialogTrigger asChild>{children}</DialogTrigger>
+
+      <DialogContent className="p-0 sm:max-w-120">
+        <DialogHeader className="border-b px-6 py-5">
+          <DialogTitle className="text-xl">Create New Room</DialogTitle>
+          <DialogDescription>
+            Add a new room by entering its number, type, floor, and an optional
+            description.
+          </DialogDescription>
         </DialogHeader>
 
-        <form
-          onSubmit={handleSubmit(submit)}
-          className="space-y-4 overflow-y-scroll"
-        >
-          <InputField
-            label="Room Number"
-            type="number"
-            placeholder="Room Number"
-            {...register("roomNumber")}
-            disabled={isPending}
-            error={errors.roomNumber?.message}
-          />
-
-          <div className="grid grid-cols-2 gap-4">
-            <SelectField
-              name="roomTypeId"
-              label="Select Room Type"
-              control={control}
-              options={dummyRoomTypes}
-            />
+        <form onSubmit={handleSubmit(submit)}>
+          <div className="max-h-[65vh] space-y-5 overflow-y-auto px-6 py-5">
             <InputField
-              label="Floor"
+              label="Room Number"
               type="number"
-              placeholder="Floor"
-              {...register("floor")}
+              placeholder="e.g. 101"
+              {...register("roomNumber")}
               disabled={isPending}
               error={errors.roomNumber?.message}
             />
+
+            <div className="grid grid-cols-2 gap-4">
+              <SelectField
+                name="roomTypeId"
+                label="Room Type"
+                control={control}
+                options={dummyRoomTypes}
+                error={errors.roomTypeId?.message}
+                disabled={isPending}
+              />
+
+              <InputField
+                label="Floor"
+                type="number"
+                placeholder="e.g. 1"
+                {...register("floor")}
+                disabled={isPending}
+                error={errors.floor?.message}
+              />
+            </div>
+
+            <TextareaField
+              label="Description"
+              placeholder="Add any notes about this room (optional)"
+              {...register("description")}
+              disabled={isPending}
+              error={errors.description?.message}
+            />
           </div>
 
-          <TextareaField
-            label="Description"
-            placeholder="Enter description"
-            {...register("description")}
-            disabled={isPending}
-            error={errors.description?.message}
-          />
-
-          <DialogFooter className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-            <DialogClose>
+          <DialogFooter className="sticky bottom-0 border-t bg-background px-6 py-4">
+            <DialogClose asChild>
               <Button type="button" variant="outline" disabled={isPending}>
                 Cancel
               </Button>
             </DialogClose>
+
             <Button type="submit" disabled={isPending}>
-              {isPending ? "Saving..." : "Save"}
+              {isPending ? "Creating..." : "Create Room"}
             </Button>
           </DialogFooter>
         </form>

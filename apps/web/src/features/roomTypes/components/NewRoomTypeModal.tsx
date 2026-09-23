@@ -16,39 +16,63 @@ import {
 
 import { useCreateRoomTypeFacade } from "../hooks/useCreateRoomType";
 
-export function NewAmenityModal({ children }: { children: ReactNode }) {
+export function NewRoomTypeModal({ children }: { children: ReactNode }) {
   const { handleSubmit, submit, register, errors, isPending } =
     useCreateRoomTypeFacade();
 
   return (
     <Dialog>
       <DialogTrigger>{children}</DialogTrigger>
+
       <DialogContent className="sm:max-w-120">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold tracking-tight">
             Create New Room Type
           </DialogTitle>
           <DialogDescription>
-            Fill out the form below to create a new room type
+            Add the room type details, pricing, capacity, and description below.
           </DialogDescription>
         </DialogHeader>
+
         <form
           onSubmit={handleSubmit(submit)}
           className="space-y-4 overflow-y-scroll"
         >
           <InputField
-            label="Amenity Name"
-            placeholder="e.g. Free Wi-Fi"
+            label="Room Type Name"
+            placeholder="e.g. Deluxe King Room"
             error={errors.name?.message}
             disabled={isPending}
+            autoComplete={"off"}
             {...register("name")}
           />
 
+          <div className="grid grid-cols-2 gap-4">
+            <InputField
+              label="Base Price"
+              placeholder="e.g. 2500"
+              error={errors.basePrice?.message}
+              disabled={isPending}
+              autoComplete={"off"}
+              {...register("basePrice")}
+            />
+
+            <InputField
+              label="Guest Capacity"
+              placeholder="e.g. 2"
+              error={errors.capacity?.message}
+              disabled={isPending}
+              autoComplete={"off"}
+              {...register("capacity")}
+            />
+          </div>
+
           <TextareaField
-            label="Description"
-            placeholder="Briefly describe this amenity..."
+            label="Room Description"
+            placeholder="e.g. Spacious room with a king-size bed, private bathroom, and city view."
             error={errors.description?.message}
             disabled={isPending}
+            autoComplete={"off"}
             {...register("description")}
           />
 
@@ -58,8 +82,9 @@ export function NewAmenityModal({ children }: { children: ReactNode }) {
                 Cancel
               </Button>
             </DialogClose>
+
             <Button type="submit" disabled={isPending} className="w-full">
-              {isPending ? "Saving..." : "Save"}
+              {isPending ? "Saving..." : "Create Room Type"}
             </Button>
           </DialogFooter>
         </form>

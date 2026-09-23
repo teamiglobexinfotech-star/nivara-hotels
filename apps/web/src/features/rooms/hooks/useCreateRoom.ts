@@ -2,13 +2,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import type { z } from "zod";
 
 import { notifyError } from "@/lib/notification";
 
 import { roomKeys, roomMutationKeys } from "../room.keys";
 import { roomService } from "../room.service";
-import { type CreateRoom,CreateRoomSchema } from "../schema/createRoom.schema";
+import { type CreateRoom, CreateRoomSchema } from "../schema/createRoom.schema";
 
 function useCreateRoom() {
   const queryClient = useQueryClient();
@@ -39,7 +38,7 @@ export function useCreateRoomFacade() {
     formState: { errors },
     getValues,
     reset,
-  } = useForm<z.input<typeof CreateRoomSchema>>({
+  } = useForm({
     resolver: zodResolver(CreateRoomSchema),
   });
 
