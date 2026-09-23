@@ -32,7 +32,7 @@ export class StaffService {
       throw new ConflictException(AUTH_ERROR_MSG.CONFLICT_EMAIL);
     }
 
-    const passwordHash = await hashPassword(dto.password);
+    const passwordHash = await hashPassword('secure1234');
 
     const staff = await this.prismaService.$transaction(async (tx) => {
       const user = await tx.user.create({
@@ -213,5 +213,21 @@ export class StaffService {
     }
 
     return user;
+  }
+
+  async delete(userId: string): Promise<{ id: string }> {
+    const staff = await this.prismaService.staff.findUnique({
+      where: { userId },
+      select: { id: true },
+    });
+
+    if (!staff) {
+      throw new NotFoundException(STAFF_ERROR_MSG.NOT_FOUND);
+    }
+
+    return this.prismaService.staff.delete({
+      where: { id: staff.id },
+      select: { id: true },
+    });
   }
 }

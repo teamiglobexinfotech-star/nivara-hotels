@@ -15,11 +15,6 @@ export const CreateStaffSchema = z
       .min(10, 'Phone must be at least 10 characters')
       .max(20, 'Phone must be 20 characters or less'),
 
-    password: z
-      .string()
-      .min(8, 'Password must be at least 8 characters')
-      .max(100, 'Password must be 100 characters or less'),
-
     fatherName: z
       .string('Father name is required')
       .min(2, 'Father name must be at least 2 characters')
@@ -29,10 +24,6 @@ export const CreateStaffSchema = z
       .string('Mother name is required')
       .min(2, 'Mother name must be at least 2 characters')
       .max(100, 'Mother name must be 100 characters or less'),
-
-    idProofImage: z
-      .string('ID proof image is required')
-      .min(1, 'ID proof image is required'),
 
     idProofNumber: z
       .string('ID proof number is required')
@@ -64,10 +55,6 @@ export const CreateStaffSchema = z
     address: z
       .string('Address is required')
       .min(5, 'Address must be at least 5 characters'),
-
-    signature: z
-      .string('Signature is required')
-      .min(1, 'Signature is required'),
   })
   .strict();
 

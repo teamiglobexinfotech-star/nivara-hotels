@@ -4,4 +4,5 @@ export const STAFF_ERROR_MSG = {
 
 export const STAFF_SUCCESS_MSG = {
   CREATED: 'Staff created successfully.',
+  DELETED: 'Staff deleted successfully.',
 };

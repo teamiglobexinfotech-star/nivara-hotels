@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -49,5 +50,13 @@ export class StaffController {
   async getById(@Param('id') id: string) {
     const data = await this.staffService.getById(id);
     return apiResponse({ data });
+  }
+
+  @Roles('ADMIN')
+  @Delete(':id')
+  @HttpCode(HttpStatus.OK)
+  async delete(@Param('id') id: string) {
+    const data = await this.staffService.delete(id);
+    return apiResponse({ data, message: STAFF_SUCCESS_MSG.DELETED });
   }
 }

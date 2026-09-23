@@ -9,27 +9,29 @@ import {
   type CreateStaff,
   CreateStaffSchema,
 } from "../schema/createStaff.schema";
-import { staffMutationKeys } from "../staff.keys";
+import type { UpdateStaff } from "../schema/updateStaff.schema";
+import { staffKeys, staffMutationKeys } from "../staff.keys";
 import { staffService } from "../staff.service";
 
-const useCreateStaff = () => {
+const useUpdateStaff = (id: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: staffMutationKeys.create,
-    mutationFn: staffService.create,
+    mutationKey: staffMutationKeys.update,
+    mutationFn: (data: UpdateStaff) => staffService.update(id, data),
     onSuccess: (res) => {
-      toast.success(res?.message || "");
+      toast.success(res?.message || "Staff updated successfully.");
+
       queryClient.invalidateQueries({
-        queryKey: ["staff", "staffs"],
+        queryKey: staffKeys.lists(),
       });
     },
     onError: notifyError,
   });
 };
 
-export const useCreateStaffFacade = () => {
-  const { mutate, isPending, isSuccess } = useCreateStaff();
+export const useUpdateStaffFacade = (id: string) => {
+  const { mutate, isPending, isSuccess } = useUpdateStaff(id);
 
   const {
     handleSubmit,

@@ -1,22 +1,35 @@
+import { EllipsisVertical } from "lucide-react";
+import { useState } from "react";
+
 import { DataTable } from "@/components/shared/DataTable";
+import { IconButton } from "@/components/shared/IconButton";
 import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useDebounce } from "@/hooks/useDebounce";
 import type { Column } from "@/types/shared.types";
 
-import { staffData } from "../staff.mock";
-import type { Staff } from "../staff.types";
+import { useDeleteStaff } from "../hooks/useDeleteStaff";
+import { useStaffList } from "../hooks/useStaffList";
+import type { StaffList } from "../staff.types";
 
-const staffColumns: Column<Staff>[] = [
+import { ViewStaffSheet } from "./ViewStaffSheet";
+
+const staffColumns: Column<StaffList>[] = [
   {
-    header: "Staff Code",
-    key: "staffCode",
-  },
-  {
-    header: "Full Name",
+    header: "Fulll Name",
     key: "fullName",
     className: "flex items-center gap-x-2",
     render: (r) => (
       <div>
-        <p>{r.fullName}</p>
+        <p className="font-medium">{r.fullName}</p>
+        {r.staffCode && (
+          <span className="text-sm text-muted-foreground">#{r.staffCode}</span>
+        )}
       </div>
     ),
   },
@@ -47,23 +60,90 @@ const staffColumns: Column<Staff>[] = [
     ),
   },
   {
-    header: "Joined At",
-    key: "joinedAt",
-    render: (r) => <span>{r.joinedAt.toLocaleDateString("en-IN")}</span>,
+    header: "Created At",
+    key: "createdAt",
+    render: (r) => (
+      <span>{new Date(r.createdAt).toLocaleDateString("en-IN")}</span>
+    ),
+  },
+  {
+    header: "Action",
+    key: "action",
+    render: (s) => <StaffActionDropdownMenu staff={s} />,
   },
 ];
 
 export function StaffTableSection() {
+  const [search, setSearch] = useState<string | undefined>();
+  const [page, setPage] = useState<number>(1);
+  const query = useDebounce(search, 400);
+  const { items, pagination } = useStaffList({ search: query, page });
+
   return (
     <DataTable
-      response={{ items: staffData }}
+      response={{ items, pagination }}
       columns={staffColumns}
       searchKey="name"
-      searchPlaceholder="Search products..."
+      searchPlaceholder="Search..."
       enablePagination={true}
-      onPageChange={(page) => console.log("Fetch page:", page)}
-      onSearchChange={(query) => console.log("Search query:", query)}
-      onFilterChange={(filters) => console.log("Applied filters:", filters)}
+      onPageChange={(page) => setPage(page)}
+      onSearchChange={(query) => setSearch(query)}
     />
+  );
+}
+
+function StaffActionDropdownMenu({ staff }: { staff: StaffList }) {
+  const [isViewModal, setIsViewModal] = useState(false);
+  // const [isUpdateModal, setIsUpdateModal] = useState(false);
+  const { handleDelete, isDeleting } = useDeleteStaff();
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <IconButton size={"sm"} variant={"ghost"}>
+            <EllipsisVertical />
+          </IconButton>
+        </DropdownMenuTrigger>
+
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem
+            onClick={() => setIsViewModal(true)}
+            disabled={isDeleting}
+          >
+            View
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            // onClick={() => setIsUpdateModal(true)}
+            disabled={isDeleting}
+          >
+            Edit
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className={"text-destructive"}
+            onClick={() => handleDelete(staff.id)}
+            disabled={isDeleting}
+          >
+            Delete
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      {/* {isUpdateModal && (
+        <UpdateRoomModal
+          open={isUpdateModal}
+          onOpenChange={setIsUpdateModal}
+          room={room}
+        />
+      )} */}
+
+      {isViewModal && (
+        <ViewStaffSheet
+          isOpen={isViewModal}
+          onOpenChange={setIsViewModal}
+          id={staff.id}
+        />
+      )}
+    </>
   );
 }

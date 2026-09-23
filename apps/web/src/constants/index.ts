@@ -25,9 +25,18 @@ export const ROLES: { [key: string]: UserRole } = {
 export const STAFF_CATEGORIES = {
   RECEPTIONIST: "RECEPTIONIST",
   HOUSEKEEPER: "HOUSEKEEPER",
-  SECURITY_GUARD: "SECURITY_GUARD",
-  WAITER: "WAITER",
 } as const;
+
+export const STAFF_CATEGORY_OPTIONS = [
+  {
+    id: STAFF_CATEGORIES.RECEPTIONIST,
+    name: STAFF_CATEGORIES.RECEPTIONIST,
+  },
+  {
+    id: STAFF_CATEGORIES.HOUSEKEEPER,
+    name: STAFF_CATEGORIES.HOUSEKEEPER,
+  },
+];
 
 export const ADMIN_PAGES: NavItem[] = [
   { title: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },

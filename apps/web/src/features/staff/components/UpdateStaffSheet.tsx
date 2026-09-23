@@ -1,5 +1,5 @@
-import { type ReactNode, useState } from "react";
-
+import { ErrorModal } from "@/components/shared/ErrorModal";
+import { FullScreenLoader } from "@/components/shared/FullScreenLoader";
 import { InputField } from "@/components/shared/InputField";
 import { SelectField } from "@/components/shared/SelectField";
 import { TextareaField } from "@/components/shared/TextareaField";
@@ -11,21 +11,43 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
 import { STAFF_CATEGORY_OPTIONS } from "@/constants";
 
-import { useCreateStaffFacade } from "../hooks/useCreateStaff";
+import { useStaff } from "../hooks/useStaff";
+import { useUpdateStaffFacade } from "../hooks/useUpdateStaff";
 
-export function NewStaffSheet({ children }: { children: ReactNode }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const { handleSubmit, submit, register, errors, isPending, control } =
-    useCreateStaffFacade();
+type ViewStaffSheetProps = {
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+  id: string;
+};
+
+export function ViewStaffSheet({
+  isOpen,
+  onOpenChange,
+  id,
+}: ViewStaffSheetProps) {
+  const { staffDetails, isLoading, isError, refetch } = useStaff(id);
+  const { handleSubmit, register, control, errors, isPending, submit } =
+    useUpdateStaffFacade();
+
+  if (isLoading) {
+    return <FullScreenLoader />;
+  }
+
+  if (isError) {
+    return (
+      <ErrorModal
+        open={!isError}
+        onOpenChange={onOpenChange}
+        onRefetch={refetch}
+      />
+    );
+  }
 
   return (
-    <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetTrigger asChild>{children}</SheetTrigger>
-
+    <Sheet open={isOpen} onOpenChange={onOpenChange}>
       <SheetContent className="side-sheet overflow-y-auto sm:max-w-xl">
         <SheetHeader className="mb-6">
           <SheetTitle className="font-['DM_Sans'] text-xl font-bold">
@@ -47,7 +69,7 @@ export function NewStaffSheet({ children }: { children: ReactNode }) {
               <InputField
                 label="Full Name"
                 placeholder="e.g. Rahul Sharma"
-                {...register("fullName")}
+                {...register("fullName", { value: staffDetails?.fullName })}
                 disabled={isPending}
                 error={errors.fullName?.message}
               />
@@ -55,7 +77,7 @@ export function NewStaffSheet({ children }: { children: ReactNode }) {
               <InputField
                 label="Email Address"
                 placeholder="e.g. rahul.sharma@example.com"
-                {...register("email")}
+                {...register("email", { value: staffDetails?.email })}
                 disabled={isPending}
                 error={errors.email?.message}
               />
@@ -75,7 +97,7 @@ export function NewStaffSheet({ children }: { children: ReactNode }) {
               <InputField
                 label="Phone Number"
                 placeholder="e.g. 9876543210"
-                {...register("phone")}
+                {...register("phone", { value: staffDetails?.phone })}
                 disabled={isPending}
                 error={errors.phone?.message}
               />
@@ -85,7 +107,9 @@ export function NewStaffSheet({ children }: { children: ReactNode }) {
               <InputField
                 label="Father's Name"
                 placeholder="e.g. Ramesh Sharma"
-                {...register("fatherName")}
+                {...register("fatherName", {
+                  value: staffDetails?.staff?.fatherName,
+                })}
                 disabled={isPending}
                 error={errors.fatherName?.message}
               />
@@ -93,7 +117,9 @@ export function NewStaffSheet({ children }: { children: ReactNode }) {
               <InputField
                 label="Mother's Name"
                 placeholder="e.g. Sunita Sharma"
-                {...register("motherName")}
+                {...register("motherName", {
+                  value: staffDetails?.staff?.motherName,
+                })}
                 disabled={isPending}
                 error={errors.motherName?.message}
               />
@@ -103,7 +129,9 @@ export function NewStaffSheet({ children }: { children: ReactNode }) {
               <InputField
                 label="ID Proof Number"
                 placeholder="e.g. ABCD1234567"
-                {...register("idProofNumber")}
+                {...register("idProofNumber", {
+                  value: staffDetails?.staff?.idProofNumber,
+                })}
                 disabled={isPending}
                 error={errors.idProofNumber?.message}
               />
@@ -111,7 +139,9 @@ export function NewStaffSheet({ children }: { children: ReactNode }) {
               <InputField
                 label="Qualification"
                 placeholder="e.g. B.Com"
-                {...register("qualification")}
+                {...register("qualification", {
+                  value: staffDetails?.staff?.qualification,
+                })}
                 disabled={isPending}
                 error={errors.qualification?.message}
               />
@@ -121,7 +151,9 @@ export function NewStaffSheet({ children }: { children: ReactNode }) {
               <InputField
                 label="Experience"
                 placeholder="e.g. 3 years"
-                {...register("experience")}
+                {...register("experience", {
+                  value: staffDetails?.staff?.experience,
+                })}
                 disabled={isPending}
                 error={errors.experience?.message}
               />
@@ -129,16 +161,40 @@ export function NewStaffSheet({ children }: { children: ReactNode }) {
               <InputField
                 label="Emergency Contact"
                 placeholder="e.g. 9123456789"
-                {...register("emergencyContact")}
+                {...register("emergencyContact", {
+                  value: staffDetails?.staff?.emergencyContact,
+                })}
                 disabled={isPending}
                 error={errors.emergencyContact?.message}
+              />
+            </div>
+
+            <div className="flex items-center justify-between rounded-lg border p-4">
+              <div className="space-y-1">
+                <Label htmlFor="isActive">Active</Label>
+                <p className="text-sm text-muted-foreground">
+                  Enable this room so it can be assigned to rooms.
+                </p>
+              </div>
+
+              <Controller
+                name="isActive"
+                control={control}
+                render={({ field }) => (
+                  <Switch
+                    id="isActive"
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    disabled={isPending}
+                  />
+                )}
               />
             </div>
 
             <TextareaField
               label="Address"
               placeholder="e.g. 221B MG Road, Lucknow, Uttar Pradesh"
-              {...register("address")}
+              {...register("address", { value: staffDetails?.staff?.address })}
               disabled={isPending}
               error={errors.address?.message}
             />
