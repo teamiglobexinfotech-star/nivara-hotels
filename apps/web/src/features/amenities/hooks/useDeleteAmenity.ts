@@ -23,7 +23,7 @@ export function useDeleteAmenity() {
   });
 
   return {
-    isPending,
+    isDeleting: isPending,
     handleDelete: (id: string) => mutate(id),
   };
 }

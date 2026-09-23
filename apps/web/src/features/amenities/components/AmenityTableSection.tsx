@@ -7,6 +7,7 @@ import {
   Utensils,
   Wifi,
 } from "lucide-react";
+import { useState } from "react";
 
 import { DataTable } from "@/components/shared/DataTable";
 import { IconButton } from "@/components/shared/IconButton";
@@ -23,6 +24,9 @@ import type { Column } from "@/types/shared.types";
 
 import { dummyAmenities } from "../amenity.mock";
 import type { Amenity } from "../amenity.types";
+import { useDeleteAmenity } from "../hooks/useDeleteAmenity";
+
+import { UpdateAmenityModal } from "./UpdateAmenityModal";
 
 const iconMap = {
   wifi: Wifi,
@@ -103,7 +107,10 @@ export function AmenityTableSection() {
   );
 }
 
-function AmenityActionDropdownMenu({ ..._ }: { amenity: Amenity }) {
+function AmenityActionDropdownMenu({ amenity }: { amenity: Amenity }) {
+  const [isUpdateModal, setIsUpdateModal] = useState(false);
+  const { handleDelete, isDeleting } = useDeleteAmenity();
+
   return (
     <>
       <DropdownMenu>
@@ -114,12 +121,29 @@ function AmenityActionDropdownMenu({ ..._ }: { amenity: Amenity }) {
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="end">
-          <DropdownMenuItem>Edit</DropdownMenuItem>
-          <DropdownMenuItem className={"text-destructive"}>
+          <DropdownMenuItem
+            onClick={() => setIsUpdateModal(true)}
+            disabled={isDeleting}
+          >
+            Edit
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className={"text-destructive"}
+            onClick={() => handleDelete(amenity.id)}
+            disabled={isDeleting}
+          >
             Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      {isUpdateModal && (
+        <UpdateAmenityModal
+          amenity={amenity}
+          open={isUpdateModal}
+          onOpenChange={setIsUpdateModal}
+        />
+      )}
     </>
   );
 }

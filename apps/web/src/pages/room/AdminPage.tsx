@@ -4,6 +4,7 @@ import { SectionHeader } from "@/components/shared/SectionHeader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AmenityTableSection } from "@/features/amenities/components/AmenityTableSection";
+import { NewAmenityModal } from "@/features/amenities/components/NewAmenityModal";
 import { NewRoomModal } from "@/features/rooms/components/NewRoomModal";
 import { RoomKpi } from "@/features/rooms/components/RoomKpi";
 import { RoomTableSection } from "@/features/rooms/components/RoomTableSection";
@@ -25,10 +26,12 @@ function QuickActions() {
             </Button>
           </NewRoomModal>
 
-          <Button variant="secondary" className="w-full justify-center">
-            <Plus className="size-4" />
-            Amenity
-          </Button>
+          <NewAmenityModal>
+            <Button variant="secondary" className="w-full justify-center">
+              <Plus className="size-4" />
+              Amenity
+            </Button>
+          </NewAmenityModal>
         </div>
       </CardContent>
     </Card>
