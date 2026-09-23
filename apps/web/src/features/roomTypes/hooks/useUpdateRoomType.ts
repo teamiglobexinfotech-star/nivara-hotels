@@ -40,7 +40,8 @@ export function useUpdateRoomTypeFacade(id: string) {
     formState: { errors },
     getValues,
     reset,
-  } = useForm<UpdateRoomType>({
+    control,
+  } = useForm({
     resolver: zodResolver(updateRoomTypeSchema),
   });
 
@@ -53,5 +54,6 @@ export function useUpdateRoomTypeFacade(id: string) {
     errors,
     getValues,
     reset,
+    control,
   };
 }

@@ -3,6 +3,10 @@ import { z } from 'zod';
 
 export const CreateRoomSchema = z
   .object({
+    name: z
+      .string('Room name is required')
+      .min(2, 'Room name must be at least 2 characters')
+      .max(100, 'Room name must be 100 characters or less'),
     roomNumber: z.coerce
       .number('Please enter a room number.')
       .min(1, 'Room number must be at least 1.')

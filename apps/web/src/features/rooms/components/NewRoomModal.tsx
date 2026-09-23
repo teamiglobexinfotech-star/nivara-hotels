@@ -14,29 +14,46 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useRoomTypeList } from "@/features/roomTypes/hooks/useRoomTypeList";
 
 import { useCreateRoomFacade } from "../hooks/useCreateRoom";
-import { dummyRoomTypes } from "../room.mock";
 
 export function NewRoomModal({ children }: { children: ReactNode }) {
   const { handleSubmit, submit, register, errors, isPending, control } =
     useCreateRoomFacade();
+  const { items } = useRoomTypeList();
+  const roomTypeOptions = items?.map((i) => ({
+    id: i.id,
+    name: i.name,
+  }));
 
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
 
-      <DialogContent className="p-0 sm:max-w-120">
-        <DialogHeader className="border-b px-6 py-5">
-          <DialogTitle className="text-xl">Create New Room</DialogTitle>
+      <DialogContent className="sm:max-w-120">
+        <DialogHeader>
+          <DialogTitle className="text-lg font-semibold tracking-tight">
+            Create New Room
+          </DialogTitle>
           <DialogDescription>
             Add a new room by entering its number, type, floor, and an optional
             description.
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(submit)}>
-          <div className="max-h-[65vh] space-y-5 overflow-y-auto px-6 py-5">
+        <form
+          onSubmit={handleSubmit(submit)}
+          className="space-y-4 overflow-y-scroll"
+        >
+          <div className="grid grid-cols-2 gap-4">
+            <InputField
+              label="Room Name"
+              placeholder="e.g. Deluxe Garden View"
+              {...register("name")}
+              disabled={isPending}
+              error={errors.name?.message}
+            />
             <InputField
               label="Room Number"
               type="number"
@@ -45,37 +62,36 @@ export function NewRoomModal({ children }: { children: ReactNode }) {
               disabled={isPending}
               error={errors.roomNumber?.message}
             />
-
-            <div className="grid grid-cols-2 gap-4">
-              <SelectField
-                name="roomTypeId"
-                label="Room Type"
-                control={control}
-                options={dummyRoomTypes}
-                error={errors.roomTypeId?.message}
-                disabled={isPending}
-              />
-
-              <InputField
-                label="Floor"
-                type="number"
-                placeholder="e.g. 1"
-                {...register("floor")}
-                disabled={isPending}
-                error={errors.floor?.message}
-              />
-            </div>
-
-            <TextareaField
-              label="Description"
-              placeholder="Add any notes about this room (optional)"
-              {...register("description")}
-              disabled={isPending}
-              error={errors.description?.message}
-            />
           </div>
 
-          <DialogFooter className="sticky bottom-0 border-t bg-background px-6 py-4">
+          <div className="grid grid-cols-2 gap-4">
+            <SelectField
+              name="roomTypeId"
+              label="Room Type"
+              control={control}
+              options={roomTypeOptions}
+              error={errors.roomTypeId?.message}
+              disabled={isPending}
+            />
+
+            <InputField
+              label="Floor"
+              type="number"
+              placeholder="e.g. 1"
+              {...register("floor")}
+              disabled={isPending}
+              error={errors.floor?.message}
+            />
+          </div>
+          <TextareaField
+            label="Description"
+            placeholder="Add any notes about this room (optional)"
+            {...register("description")}
+            disabled={isPending}
+            error={errors.description?.message}
+          />
+
+          <DialogFooter className="flex gap-2 sm:flex-row sm:justify-end">
             <DialogClose asChild>
               <Button type="button" variant="outline" disabled={isPending}>
                 Cancel

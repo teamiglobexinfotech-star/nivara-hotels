@@ -14,7 +14,7 @@ export type Room = {
   updatedAt: Date | null;
 };
 
-export type RoomList = Room;
+export type RoomList = Room & { roomType: { id: string; name: string } };
 
 export type RoomDetails = {
   id: string;

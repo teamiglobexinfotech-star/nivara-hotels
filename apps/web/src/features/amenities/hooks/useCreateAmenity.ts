@@ -1,11 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { notifyError } from "@/lib/notification";
 
-import { amenityMutationKeys } from "../amenity.keys";
+import { amenityKeys, amenityMutationKeys } from "../amenity.keys";
 import { amenityService } from "../amenity.service";
 import {
   type CreateAmenity,
@@ -13,11 +13,16 @@ import {
 } from "../schema/createAmenity.schema";
 
 export function useCreateAmenity() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationKey: amenityMutationKeys.create,
     mutationFn: (data: CreateAmenity) => amenityService.create(data),
     onSuccess: (res) => {
       toast.success(res?.message || "Amenity created successfully.");
+
+      queryClient.invalidateQueries({
+        queryKey: amenityKeys.list(),
+      });
     },
     onError: notifyError,
   });
@@ -32,6 +37,7 @@ export function useCreateAmenityFacade() {
     formState: { errors },
     getValues,
     reset,
+    control,
   } = useForm<CreateAmenity>({
     resolver: zodResolver(createAmenitySchema),
     defaultValues: {
@@ -51,5 +57,6 @@ export function useCreateAmenityFacade() {
     errors,
     getValues,
     reset,
+    control,
   };
 }

@@ -1,4 +1,5 @@
 import { EllipsisVertical } from "lucide-react";
+import { useState } from "react";
 
 import { DataTable } from "@/components/shared/DataTable";
 import { IconButton } from "@/components/shared/IconButton";
@@ -9,12 +10,17 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useDebounce } from "@/hooks/useDebounce";
 import type { Column } from "@/types/shared.types";
 
-import { roomsData } from "../room.mock";
-import type { Room } from "../room.types";
+import { useDeleteRoom } from "../hooks/useDeleteRoom";
+import { useRoomList } from "../hooks/useRoomList";
+import type { RoomList } from "../room.types";
 
-const roomColumns: Column<Room>[] = [
+import { UpdateRoomModal } from "./UpdateRoomModal";
+import { ViewRoomModal } from "./ViewRoomModal";
+
+const roomColumns: Column<RoomList>[] = [
   {
     header: "Room",
     key: "roomNumber",
@@ -23,7 +29,7 @@ const roomColumns: Column<Room>[] = [
       <div>
         <p className="font-medium">#{r.roomNumber}</p>
         <span className="text-sm text-muted-foreground">
-          {r.name || "Unnamed Room"}
+          {r?.name || "Unnamed Room"}
         </span>
       </div>
     ),
@@ -86,7 +92,9 @@ const roomColumns: Column<Room>[] = [
     header: "Created",
     key: "createdAt",
     render: (r) => (
-      <span>{r.createdAt ? r.createdAt.toLocaleDateString("en-IN") : "-"}</span>
+      <span>
+        {r.createdAt ? new Date(r.createdAt).toLocaleDateString("en-IN") : "-"}
+      </span>
     ),
   },
   {
@@ -97,21 +105,30 @@ const roomColumns: Column<Room>[] = [
 ];
 
 export function RoomTableSection() {
+  const [search, setSearch] = useState<string | undefined>();
+  const [page, setPage] = useState<number>(1);
+  const query = useDebounce(search, 400);
+  const { items, pagination } = useRoomList({ search: query, page });
+
   return (
     <DataTable
-      response={{ items: roomsData }}
+      response={{ items, pagination }}
       columns={roomColumns}
-      searchKey="fullName"
-      searchPlaceholder="Search customers..."
+      searchKey="k"
       enablePagination={true}
-      onPageChange={(page) => console.log("Fetch page:", page)}
-      onSearchChange={(query) => console.log("Search query:", query)}
-      onFilterChange={(filters) => console.log("Applied filters:", filters)}
+      onPageChange={(page) => setPage(page)}
+      onSearchChange={(query) => setSearch(query)}
+      emptyMessage="No room found. Create your first room  to get started."
+      errorMessage="We couldn't load the room. Please try again."
     />
   );
 }
 
-function RoomActionDropdownMenu({ ..._ }: { room: Room }) {
+function RoomActionDropdownMenu({ room }: { room: RoomList }) {
+  const [isViewModal, setIsViewModal] = useState(false);
+  const [isUpdateModal, setIsUpdateModal] = useState(false);
+  const { handleDelete, isDeleting } = useDeleteRoom();
+
   return (
     <>
       <DropdownMenu>
@@ -122,13 +139,43 @@ function RoomActionDropdownMenu({ ..._ }: { room: Room }) {
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="end">
-          <DropdownMenuItem>View</DropdownMenuItem>
-          <DropdownMenuItem>Edit</DropdownMenuItem>
-          <DropdownMenuItem className={"text-destructive"}>
+          <DropdownMenuItem
+            onClick={() => setIsViewModal(true)}
+            disabled={isDeleting}
+          >
+            View
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => setIsUpdateModal(true)}
+            disabled={isDeleting}
+          >
+            Edit
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className={"text-destructive"}
+            onClick={() => handleDelete(room.id)}
+            disabled={isDeleting}
+          >
             Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      {isUpdateModal && (
+        <UpdateRoomModal
+          open={isUpdateModal}
+          onOpenChange={setIsUpdateModal}
+          room={room}
+        />
+      )}
+
+      {isViewModal && (
+        <ViewRoomModal
+          open={isViewModal}
+          onOpenChange={setIsViewModal}
+          id={room.id}
+        />
+      )}
     </>
   );
 }

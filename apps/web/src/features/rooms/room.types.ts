@@ -4,9 +4,7 @@ export type Room = {
   id: string;
   name: string | null;
   roomNumber: string;
-  roomType: {
-    name: string;
-  };
+  roomTypeId: string;
   floor: number;
   description: string | null;
   occupancyStatus: OccupancyStatus;
@@ -16,7 +14,7 @@ export type Room = {
   updatedAt: Date | null;
 };
 
-export type RoomList = Room;
+export type RoomList = Room & { roomType: { id: string; name: string } };
 
 export type RoomDetails = {
   id: string;

@@ -1,12 +1,4 @@
-import {
-  Coffee,
-  Dumbbell,
-  EllipsisVertical,
-  Snowflake,
-  Tv,
-  Utensils,
-  Wifi,
-} from "lucide-react";
+import { EllipsisVertical } from "lucide-react";
 import { useState } from "react";
 
 import { DataTable } from "@/components/shared/DataTable";
@@ -22,20 +14,12 @@ import {
 import { getInitials } from "@/lib/getInitials";
 import type { Column } from "@/types/shared.types";
 
-import { dummyAmenities } from "../amenity.mock";
+import { iconsList } from "../amenity.constants";
 import type { Amenity } from "../amenity.types";
+import { useAmenityList } from "../hooks/useAmenityList";
 import { useDeleteAmenity } from "../hooks/useDeleteAmenity";
 
 import { UpdateAmenityModal } from "./UpdateAmenityModal";
-
-const iconMap = {
-  wifi: Wifi,
-  tv: Tv,
-  coffee: Coffee,
-  ac: Snowflake,
-  gym: Dumbbell,
-  restaurant: Utensils,
-} as const;
 
 const amenityColumns: Column<Amenity>[] = [
   {
@@ -43,10 +27,7 @@ const amenityColumns: Column<Amenity>[] = [
     key: "name",
     className: "flex items-center gap-x-2",
     render: (a) => {
-      const Icon =
-        a.iconKey && a.iconKey in iconMap
-          ? iconMap[a.iconKey as keyof typeof iconMap]
-          : a.iconKey;
+      const Icon = iconsList[a.iconKey];
 
       return (
         <div className="flex items-center gap-3">
@@ -87,7 +68,9 @@ const amenityColumns: Column<Amenity>[] = [
   {
     header: "Created",
     key: "createdAt",
-    render: (a) => <span>{a.createdAt.toLocaleDateString("en-IN")}</span>,
+    render: (a) => (
+      <span>{new Date(a.createdAt).toLocaleDateString("en-IN")}</span>
+    ),
   },
   {
     header: "Action",
@@ -97,12 +80,15 @@ const amenityColumns: Column<Amenity>[] = [
 ];
 
 export function AmenityTableSection() {
+  const { items } = useAmenityList();
+
   return (
     <DataTable
-      response={{ items: dummyAmenities }}
+      response={{ items }}
       columns={amenityColumns}
-      searchPlaceholder="Search customers..."
       enablePagination={false}
+      emptyMessage="No amenity found. Create your first amenity to get started."
+      errorMessage="We couldn't load the amenity. Please try again."
     />
   );
 }

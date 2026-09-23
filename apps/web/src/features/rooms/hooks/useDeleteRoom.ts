@@ -3,21 +3,21 @@ import { toast } from "sonner";
 
 import { notifyError } from "@/lib/notification";
 
-import { roomTypeKeys, roomTypeMutationKeys } from "../roomType.keys";
-import { roomTypeService } from "../roomType.service";
+import { roomKeys, roomMutationKeys } from "../room.keys";
+import { roomService } from "../room.service";
 
-export function useDeleteRoomType() {
+export function useDeleteRoom() {
   const queryClient = useQueryClient();
 
   const { isPending, mutate } = useMutation({
-    mutationKey: roomTypeMutationKeys.delete,
-    mutationFn: roomTypeService.delete,
+    mutationKey: roomMutationKeys.delete,
+    mutationFn: roomService.delete,
 
     onSuccess: (res) => {
-      toast.success(res?.message || "Room type deleted successfully.");
+      toast.success(res?.message || "Room deleted successfully.");
 
       queryClient.invalidateQueries({
-        queryKey: roomTypeKeys.list(),
+        queryKey: roomKeys.lists(),
       });
     },
 

@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 import { InputField } from "@/components/shared/InputField";
+import { SelectField } from "@/components/shared/SelectField";
 import { TextareaField } from "@/components/shared/TextareaField";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,10 +15,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
+import { amenitiesList } from "../amenity.constants";
 import { useCreateAmenityFacade } from "../hooks/useCreateAmenity";
 
 export function NewAmenityModal({ children }: { children: ReactNode }) {
-  const { handleSubmit, submit, register, errors, isPending } =
+  const { handleSubmit, submit, register, errors, isPending, control } =
     useCreateAmenityFacade();
 
   return (
@@ -44,12 +46,13 @@ export function NewAmenityModal({ children }: { children: ReactNode }) {
             {...register("name")}
           />
 
-          <InputField
-            label="Icon"
-            placeholder="e.g. Wifi, Car, Coffee"
+          <SelectField
+            name="iconKey"
+            label="Select Amenity Icon"
+            control={control}
+            options={amenitiesList}
             error={errors.iconKey?.message}
             disabled={isPending}
-            {...register("iconKey")}
           />
 
           <TextareaField

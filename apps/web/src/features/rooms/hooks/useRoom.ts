@@ -1,17 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
 
+import { roomKeys } from "../room.keys";
 import { roomService } from "../room.service";
 
-export function useRoomType() {
+export function useRoom(id: string) {
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ["room-types"],
-    queryFn: () => roomService.getRoomTypes(),
-    placeholderData: (previousData) => previousData,
+    queryKey: roomKeys.detail(id),
+    queryFn: () => roomService.getById(id),
+    enabled: !!id,
   });
-  const items = data as [];
 
   return {
-    items,
+    room: data,
     isLoading,
     isError,
     refetch,

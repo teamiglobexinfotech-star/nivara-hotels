@@ -9,7 +9,7 @@ export const roomTypeService = {
   create: (data: CreateRoomType): Promise<ApiMessageResponse> =>
     apiClient.post("/room-types", data).then((response) => response.data),
   getAll: (): Promise<RoomTypeList[]> =>
-    apiClient.get("/room-types").then((response) => response.data),
+    apiClient.get("/room-types").then((response) => response.data?.data),
   update: (id: string, data: UpdateRoomType): Promise<ApiMessageResponse> =>
     apiClient
       .patch(`/room-types/${id}`, data)

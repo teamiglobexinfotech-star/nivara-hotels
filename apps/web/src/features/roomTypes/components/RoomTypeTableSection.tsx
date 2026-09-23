@@ -1,4 +1,5 @@
 import { EllipsisVertical } from "lucide-react";
+import { useState } from "react";
 
 import { DataTable } from "@/components/shared/DataTable";
 import { IconButton } from "@/components/shared/IconButton";
@@ -12,8 +13,11 @@ import {
 import type { Column } from "@/types/shared.types";
 
 import { useDeleteRoomType } from "../hooks/useDeleteRoomType";
-import { dummyRoomTypes } from "../roomType.mock";
+import { useRoomTypeList } from "../hooks/useRoomTypeList";
 import type { RoomType } from "../roomType.types";
+
+import { UpdateRoomTypeModal } from "./UpdateRoomTypeModal";
+import { ViewRoomTypeModal } from "./ViewRoomTypeModal";
 
 const roomTypeColumns: Column<RoomType>[] = [
   {
@@ -55,7 +59,9 @@ const roomTypeColumns: Column<RoomType>[] = [
   {
     header: "Created",
     key: "createdAt",
-    render: (r) => <span>{r.createdAt.toLocaleDateString("en-IN")}</span>,
+    render: (r) => (
+      <span>{new Date(r.createdAt).toLocaleDateString("en-IN")}</span>
+    ),
   },
   {
     header: "Action",
@@ -65,22 +71,24 @@ const roomTypeColumns: Column<RoomType>[] = [
 ];
 
 export function RoomTypeTableSection() {
+  const { items } = useRoomTypeList();
+
   return (
     <DataTable
-      response={{ items: dummyRoomTypes }}
+      response={{ items }}
       columns={roomTypeColumns}
-      searchKey="fullName"
-      searchPlaceholder="Search customers..."
-      enablePagination={true}
-      onPageChange={(page) => console.log("Fetch page:", page)}
-      onSearchChange={(query) => console.log("Search query:", query)}
-      onFilterChange={(filters) => console.log("Applied filters:", filters)}
+      enablePagination={false}
+      emptyMessage="No room types found. Create your first room type to get started."
+      errorMessage="We couldn't load the room types. Please try again."
     />
   );
 }
 
 function RoomTypeActionDropdownMenu({ roomType }: { roomType: RoomType }) {
-  const { handleDelete, isPending } = useDeleteRoomType();
+  const [isViewModal, setIsViewModal] = useState(false);
+  const [isUpdateModal, setIsUpdateModal] = useState(false);
+
+  const { handleDelete, isDeleting } = useDeleteRoomType();
 
   return (
     <>
@@ -92,17 +100,43 @@ function RoomTypeActionDropdownMenu({ roomType }: { roomType: RoomType }) {
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="end">
-          <DropdownMenuItem>View</DropdownMenuItem>
-          <DropdownMenuItem>Edit</DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => setIsViewModal(true)}
+            disabled={isDeleting}
+          >
+            View
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => setIsUpdateModal(true)}
+            disabled={isDeleting}
+          >
+            Edit
+          </DropdownMenuItem>
           <DropdownMenuItem
             className={"text-destructive"}
             onClick={() => handleDelete(roomType.id)}
-            disabled={isPending}
+            disabled={isDeleting}
           >
             Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      {isViewModal && (
+        <ViewRoomTypeModal
+          open={isViewModal}
+          onOpenChange={setIsViewModal}
+          roomType={roomType}
+        />
+      )}
+
+      {isUpdateModal && (
+        <UpdateRoomTypeModal
+          open={isUpdateModal}
+          onOpenChange={setIsUpdateModal}
+          roomType={roomType}
+        />
+      )}
     </>
   );
 }

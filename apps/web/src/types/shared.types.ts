@@ -18,7 +18,7 @@ export type StaffCategory =
 // ============== KPI CARD START  ==============
 export interface KpiItem {
   id: string | number;
-  iconKey: LucideIcon;
+  iconKey: LucideIcon | string;
   title: string;
   value: string | number;
   details: string;

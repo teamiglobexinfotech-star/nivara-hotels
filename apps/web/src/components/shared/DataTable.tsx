@@ -47,7 +47,7 @@ export function DataTable<T extends Record<string, any>>({
   >({});
   const [localPage, setLocalPage] = React.useState(1);
 
-  const items = response?.items || [];
+  const items = response?.items;
   const meta = response?.meta || response?.pagination;
 
   const handleSearch = (val: string) => {

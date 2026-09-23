@@ -46,6 +46,7 @@ export class RoomService {
 
     return await this.prismaService.room.create({
       data: {
+        name: dto.name,
         roomNumber: dto.roomNumber.toString(),
         roomTypeId: dto.roomTypeId,
         floor: dto.floor,
@@ -122,6 +123,12 @@ export class RoomService {
           name: true,
           roomNumber: true,
           roomTypeId: true,
+          roomType: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
           floor: true,
           description: true,
           occupancyStatus: true,
@@ -248,7 +255,7 @@ export class RoomService {
   }
 
   async delete(id: string): Promise<{ id: string }> {
-    const room = await this.prismaService.roomType.findUnique({
+    const room = await this.prismaService.room.findUnique({
       where: { id },
       select: { id: true },
     });

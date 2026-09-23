@@ -19,7 +19,7 @@ import { useCreateRoomTypeFacade } from "../hooks/useCreateRoomType";
 export function NewRoomTypeModal({ children }: { children: ReactNode }) {
   const { handleSubmit, submit, register, errors, isPending } =
     useCreateRoomTypeFacade();
-  console.log(errors);
+
   return (
     <Dialog>
       <DialogTrigger>{children}</DialogTrigger>
