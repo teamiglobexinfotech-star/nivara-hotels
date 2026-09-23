@@ -49,7 +49,6 @@ export function useCreateRoomTypeFacade() {
       capacity: 1,
       basePrice: 0,
       isActive: true,
-      images: [],
     },
   });
 

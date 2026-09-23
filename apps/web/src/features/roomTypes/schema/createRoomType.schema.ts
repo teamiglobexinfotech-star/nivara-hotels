@@ -2,26 +2,17 @@ import { z } from "zod";
 
 export const createRoomTypeSchema = z
   .object({
-    name: z.string().trim().min(1, "Room type name is required."),
-    description: z.string().trim().min(1, "Description is required."),
+    name: z.string().trim().min(1, "Please enter a room type name."),
+    description: z.string().trim().min(1, "Please enter a description."),
     capacity: z.coerce
-      .number({
-        message: "Capacity must be a number.",
-      })
+      .number("Please enter the room capacity.")
       .int("Capacity must be a whole number.")
       .positive("Capacity must be greater than 0."),
     basePrice: z.coerce
-      .number({
-        message: "Base price must be a number.",
-      })
-      .int("Base Price must be a whole number.")
-      .nonnegative("Base price cannot be negative."),
-    isActive: z.boolean(),
-    images: z
-      .array(
-        z.instanceof(File, { message: "Each image must be a valid file." })
-      )
-      .min(1, "At least one image is required."),
+      .number("Please enter the base price.")
+      .int("Base price must be a whole number.")
+      .nonnegative("Base price cannot be less than 0."),
+    isActive: z.boolean().default(true),
   })
   .strict();
 
