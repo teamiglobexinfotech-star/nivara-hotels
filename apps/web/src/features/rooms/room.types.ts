@@ -4,7 +4,9 @@ export type Room = {
   id: string;
   name: string | null;
   roomNumber: string;
-  roomTypeId: string;
+  roomType: {
+    name: string;
+  };
   floor: number;
   description: string | null;
   occupancyStatus: OccupancyStatus;

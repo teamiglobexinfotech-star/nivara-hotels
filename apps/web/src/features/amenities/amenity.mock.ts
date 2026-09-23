@@ -1,0 +1,58 @@
+import type { Amenity } from "./amenity.types";
+
+export const dummyAmenities: Amenity[] = [
+  {
+    id: "am1",
+    name: "Free Wi-Fi",
+    description: "High-speed wireless internet.",
+    iconKey: "wifi",
+    isActive: true,
+    createdAt: new Date("2026-01-05"),
+    updatedAt: new Date("2026-09-20"),
+  },
+  {
+    id: "am2",
+    name: "Air Conditioning",
+    description: "Individually controlled AC.",
+    iconKey: "ac",
+    isActive: true,
+    createdAt: new Date("2026-01-10"),
+    updatedAt: new Date("2026-09-22"),
+  },
+  {
+    id: "am3",
+    name: "Smart TV",
+    description: "42-inch Smart TV with streaming apps.",
+    iconKey: "tv",
+    isActive: true,
+    createdAt: new Date("2026-02-01"),
+    updatedAt: new Date("2026-09-21"),
+  },
+  {
+    id: "am4",
+    name: "Coffee Maker",
+    description: "In-room tea and coffee facilities.",
+    iconKey: "coffee",
+    isActive: true,
+    createdAt: new Date("2026-02-15"),
+    updatedAt: new Date("2026-09-23"),
+  },
+  {
+    id: "am5",
+    name: "Gym Access",
+    description: "Complimentary access to the fitness center.",
+    iconKey: "gym",
+    isActive: true,
+    createdAt: new Date("2026-03-08"),
+    updatedAt: new Date("2026-09-20"),
+  },
+  {
+    id: "am6",
+    name: "Restaurant Service",
+    description: "24/7 room service and restaurant access.",
+    iconKey: "restaurant",
+    isActive: false,
+    createdAt: new Date("2026-04-01"),
+    updatedAt: new Date("2026-09-18"),
+  },
+];
