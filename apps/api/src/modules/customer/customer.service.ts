@@ -8,7 +8,7 @@ import { ID } from 'node-appwrite';
 import { hashPassword } from '../../common/helpers';
 import { uploadFile } from '../../config';
 import { PrismaService } from '../../db/prisma/prisma.service';
-import { ListResponse, UserRole } from '../../types';
+import { KpiStat, ListResponse, UserRole } from '../../types';
 
 import { CreateCustomerDto } from './dtos/create-customer.dto';
 import { GetCustomersDto } from './dtos/get-customers.dto';
@@ -32,18 +32,18 @@ export class CustomerService {
 
     const passwordHash = await hashPassword('secure1234');
 
-    const idProof = files.idProof?.[0];
-    const signature = files.signature?.[0];
+    // const idProof = files.idProof?.[0];
+    // const signature = files.signature?.[0];
 
-    const uploadedIdProof = await uploadFile(
-      idProof,
-      `id-proof-${ID.unique()}`,
-    );
+    // const uploadedIdProof = await uploadFile(
+    //   idProof,
+    //   `id-proof-${ID.unique()}`,
+    // );
 
-    const uploadedSignature = await uploadFile(
-      signature,
-      `signature-${ID.unique()}`,
-    );
+    // const uploadedSignature = await uploadFile(
+    //   signature,
+    //   `signature-${ID.unique()}`,
+    // );
 
     const user = await this.prismaService.user.create({
       data: {
@@ -51,24 +51,11 @@ export class CustomerService {
         email: dto.email,
         phone: dto.phone,
         passwordHash,
-        profileImageId: '',
         role: UserRole.CUSTOMER,
         customerProfile: {
           create: {
             idProofNumber: dto.idProofNumber,
             address: dto.address,
-            idProofImage: {
-              create: {
-                fileId: uploadedIdProof.$id,
-                altText: uploadedIdProof.name,
-              },
-            },
-            signatureImage: {
-              create: {
-                fileId: uploadedSignature.$id,
-                altText: uploadedSignature.name,
-              },
-            },
           },
         },
       },
@@ -86,6 +73,7 @@ export class CustomerService {
 
     const where = {
       role: UserRole.CUSTOMER,
+      softDeletedAt: null,
       ...(isActive && { isActive }),
       ...(search && {
         OR: [
@@ -122,12 +110,12 @@ export class CustomerService {
         select: {
           id: true,
           fullName: true,
-          profileImageId: true,
           email: true,
           phone: true,
           isActive: true,
           createdAt: true,
           updatedAt: true,
+          lastLoginAt: true,
           customerProfile: {
             select: {
               id: true,
@@ -160,18 +148,16 @@ export class CustomerService {
       select: {
         id: true,
         fullName: true,
-        profileImageId: true,
         email: true,
         phone: true,
         isActive: true,
         createdAt: true,
         updatedAt: true,
+        lastLoginAt: true,
         customerProfile: {
           select: {
             id: true,
             idProofNumber: true,
-            idProofImageId: true,
-            signatureImageId: true,
             address: true,
           },
         },
@@ -254,9 +240,81 @@ export class CustomerService {
       throw new NotFoundException(CUSTOMER_ERROR_MSG.NOT_FOUND);
     }
 
-    return await this.prismaService.user.delete({
+    return await this.prismaService.user.update({
       where: { id },
+      data: {
+        isActive: false,
+        softDeletedAt: new Date(),
+      },
       select: { id: true },
     });
+  }
+
+  async getStats(): Promise<KpiStat[]> {
+    const [totalCustomer, activeCustomer, inactiveCustomer, newCustomer] =
+      await Promise.all([
+        this.prismaService.user.count({
+          where: {
+            role: UserRole.CUSTOMER,
+            softDeletedAt: null,
+          },
+        }),
+
+        this.prismaService.user.count({
+          where: {
+            role: UserRole.CUSTOMER,
+            softDeletedAt: null,
+            isActive: true,
+          },
+        }),
+
+        this.prismaService.user.count({
+          where: {
+            role: UserRole.CUSTOMER,
+            softDeletedAt: null,
+            isActive: false,
+          },
+        }),
+        this.prismaService.user.count({
+          where: {
+            role: UserRole.CUSTOMER,
+            softDeletedAt: null,
+            createdAt: {
+              gte: new Date(new Date().setDate(new Date().getDate() - 7)),
+            },
+          },
+        }),
+      ]);
+
+    return [
+      {
+        id: 'total-customer',
+        iconKey: 'Users',
+        title: 'Total Customers',
+        value: totalCustomer,
+        details: 'All registered customers',
+      },
+      {
+        id: 'active-customer',
+        iconKey: 'UserCheck',
+        title: 'Active Customers',
+        value: activeCustomer,
+        details: 'Currently active',
+      },
+      {
+        id: 'inactive-customer',
+        iconKey: 'UserX',
+        title: 'Inactive Customers',
+        value: inactiveCustomer,
+        details: 'Currently inactive',
+      },
+      {
+        id: 'new-customer',
+        iconKey: 'UserPlus',
+        title: 'New Customers',
+        value: newCustomer,
+        details: 'New customers',
+      },
+    ];
   }
 }

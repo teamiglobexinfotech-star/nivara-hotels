@@ -5,6 +5,7 @@ import { toast } from "sonner";
 
 import { notifyError } from "@/lib/notification";
 
+import { customerKeys, customerMutationKeys } from "../customer.keys";
 import { customerService } from "../customer.service";
 import {
   type UpdateCustomer,
@@ -15,13 +16,12 @@ export function useUpdateCustomer(id: string) {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationKey: ["customers", "updateCustomer"],
-    mutationFn: (data: UpdateCustomer) =>
-      customerService.updateCustomer(id, data),
+    mutationKey: customerMutationKeys.update,
+    mutationFn: (data: UpdateCustomer) => customerService.update(id, data),
     onSuccess: (res) => {
       toast.success(res?.message || "Customer updated successfully");
       queryClient.invalidateQueries({
-        queryKey: ["customers", "customers"],
+        queryKey: customerKeys.lists(),
       });
     },
     onError: notifyError,

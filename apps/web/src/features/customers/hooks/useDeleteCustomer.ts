@@ -3,18 +3,19 @@ import { toast } from "sonner";
 
 import { notifyError } from "@/lib/notification";
 
+import { customerKeys, customerMutationKeys } from "../customer.keys";
 import { customerService } from "../customer.service";
 
 export function useDeleteCustomer() {
   const queryClient = useQueryClient();
 
   const { isPending, mutate } = useMutation({
-    mutationKey: ["customers", "deleteCustomer"],
-    mutationFn: customerService.deleteCustomer,
+    mutationKey: customerMutationKeys.delete,
+    mutationFn: customerService.delete,
     onSuccess: (res) => {
       toast.success(res?.message || "Customer deleted successfully");
       queryClient.invalidateQueries({
-        queryKey: ["customers", "customers"],
+        queryKey: customerKeys.lists(),
       });
     },
     onError: notifyError,
@@ -22,6 +23,6 @@ export function useDeleteCustomer() {
 
   return {
     isDeleting: isPending,
-    deleteCustomer: mutate,
+    handleDelete: mutate,
   };
 }

@@ -90,6 +90,7 @@ import {
   Tv,
   Usb,
   UserCheck,
+  UserPlus,
   Users,
   UserX,
   Utensils,
@@ -102,6 +103,7 @@ import {
 export const iconsList: { [key: string]: LucideIcon } = {
   users: Users,
   userx: UserX,
+  userplus: UserPlus,
   usercheck: UserCheck,
   calendaroff: CalendarOff,
   sparkles: Sparkles,

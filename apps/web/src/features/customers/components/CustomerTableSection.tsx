@@ -10,10 +10,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useDebounce } from "@/hooks/useDebounce";
 import type { Column } from "@/types/shared.types";
 
-import { customersData } from "../customer.mock";
 import type { Customer } from "../customer.types";
+import { useCustomerList } from "../hooks/useCustomerList";
 import { useDeleteCustomer } from "../hooks/useDeleteCustomer";
 
 import { UpdateCustomerModal } from "./UpdateCustomerModal";
@@ -36,14 +37,6 @@ const customerColumns: Column<Customer>[] = [
     key: "phone",
   },
   {
-    header: "ID Proof",
-    key: "idProofNumber",
-  },
-  {
-    header: "Address",
-    key: "address",
-  },
-  {
     header: "Last Login",
     key: "lastLoginAt",
     render: (r) => (
@@ -64,7 +57,11 @@ const customerColumns: Column<Customer>[] = [
   {
     header: "Joined",
     key: "createdAt",
-    render: (r) => <span>{r.createdAt.toLocaleDateString("en-IN")}</span>,
+    render: (r) => (
+      <span>
+        {r.createdAt && new Date(r.createdAt).toLocaleDateString("en-IN")}
+      </span>
+    ),
   },
   {
     header: "Action",
@@ -74,16 +71,22 @@ const customerColumns: Column<Customer>[] = [
 ];
 
 export function CustomerTableSection() {
+  const [search, setSearch] = useState<string | undefined>();
+  const [page, setPage] = useState<number>(1);
+  const query = useDebounce(search, 400);
+  const { items, pagination } = useCustomerList({ search: query, page });
+
   return (
     <DataTable
-      response={{ items: customersData }}
+      response={{ items, pagination }}
       columns={customerColumns}
-      searchKey="fullName"
-      searchPlaceholder="Search customers..."
+      searchKey="name"
+      searchPlaceholder="Search..."
       enablePagination={true}
-      onPageChange={(page) => console.log("Fetch page:", page)}
-      onSearchChange={(query) => console.log("Search query:", query)}
-      onFilterChange={(filters) => console.log("Applied filters:", filters)}
+      onPageChange={(page) => setPage(page)}
+      onSearchChange={(query) => setSearch(query)}
+      emptyMessage="No customers found. Create your first customer."
+      errorMessage="We couldn't load the customers. Please try again later."
     />
   );
 }
@@ -91,12 +94,7 @@ export function CustomerTableSection() {
 function ActionsDropdownMenu({ customer }: { customer: Customer }) {
   const [isUpdateModal, setIsUpdateModal] = useState(false);
   const [isViewModal, setIsViewModal] = useState(false);
-
-  const { deleteCustomer, isDeleting } = useDeleteCustomer();
-
-  function handleDeleteCustomer() {
-    deleteCustomer(customer.id);
-  }
+  const { handleDelete, isDeleting } = useDeleteCustomer();
 
   return (
     <>
@@ -116,7 +114,7 @@ function ActionsDropdownMenu({ customer }: { customer: Customer }) {
           </DropdownMenuItem>
           <DropdownMenuItem
             className={"text-destructive"}
-            onClick={handleDeleteCustomer}
+            onClick={() => handleDelete(customer.id)}
             disabled={isDeleting}
           >
             Delete

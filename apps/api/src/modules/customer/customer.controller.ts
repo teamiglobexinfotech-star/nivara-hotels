@@ -66,6 +66,14 @@ export class CustomerController {
   }
 
   @Roles('ADMIN', 'MANAGER', 'STAFF')
+  @Get('stats')
+  @HttpCode(HttpStatus.OK)
+  async getStats() {
+    const data = await this.customerService.getStats();
+    return apiResponse({ data });
+  }
+
+  @Roles('ADMIN', 'MANAGER', 'STAFF')
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   async getById(@Param('id') id: string) {

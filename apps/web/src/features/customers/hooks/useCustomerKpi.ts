@@ -3,11 +3,10 @@ import { useQuery } from "@tanstack/react-query";
 import { customerKeys } from "../customer.keys";
 import { customerService } from "../customer.service";
 
-export function useCustomerById(id: string) {
+export function useCustomerKpi() {
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: customerKeys.detail(id),
-    queryFn: () => customerService.getById(id),
-    enabled: !!id,
+    queryKey: customerKeys.lists(),
+    queryFn: customerService.getStats,
   });
 
   return {
