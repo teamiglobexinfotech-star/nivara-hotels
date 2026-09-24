@@ -9,6 +9,7 @@ import { PublicLayout } from "@/components/layout/PublicLayout";
 import { LoginPage } from "@/pages/auth/LoginPage";
 import { SignupPage } from "@/pages/auth/SignupPage";
 import { DashboardPage } from "@/pages/dashboard";
+import { MaintenancePage } from "@/pages/maintenance";
 import { AboutPage } from "@/pages/public/AboutPage";
 import { ContactPage } from "@/pages/public/ContactPage";
 import { HomePage } from "@/pages/public/HomePage";
@@ -69,6 +70,7 @@ export function Router() {
           <Route path="staff" element={<StaffPage />} />
           <Route path="customers" element={<CustomersPage />} />
           <Route path="rooms" element={<DRoomsPage />} />
+          <Route path="maintenance" element={<MaintenancePage />} />
           {/* <Route path="bookings" element={<BookingsPage />} /> */}
         </Route>
       </Routes>

@@ -63,37 +63,33 @@ export const MANAGER_PAGES: NavItem[] = [
 ];
 
 export const RECEPTIONIST_PAGES: NavItem[] = [
-  {
-    title: "Dashboard",
-    icon: LayoutDashboard,
-    href: "/receptionist-dashboard",
-  },
-  { title: "Customers", icon: UserCheck, href: "/receptionist/customers" },
-  { title: "Rooms", icon: BedDouble, href: "/receptionist/rooms" },
-  { title: "Bookings", icon: CalendarCheck, href: "/receptionist/bookings" },
-  { title: "Finance", icon: CircleDollarSign, href: "/receptionist/finance" },
-  { title: "Maintenance", icon: Wrench, href: "/receptionist/maintenance" },
-  { title: "Notifications", icon: Bell, href: "/receptionist/notifications" },
-  { title: "Profile", icon: BriefcaseBusiness, href: "/receptionist/profile" },
+  { title: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
+  { title: "Customers", icon: UserCheck, href: "/dashboard" },
+  { title: "Rooms", icon: BedDouble, href: "/dashboard/rooms" },
+  { title: "Bookings", icon: CalendarCheck, href: "/dashboard/bookings" },
+  { title: "Finance", icon: CircleDollarSign, href: "/dashboard/finance" },
+  { title: "Maintenance", icon: Wrench, href: "/dashboard/maintenance" },
+  { title: "Notifications", icon: Bell, href: "/dashboard/notifications" },
+  { title: "Profile", icon: BriefcaseBusiness, href: "/dashboard/profile" },
 ];
 
 export const HOUSEKEEPER_PAGES: NavItem[] = [
-  { title: "Dashboard", icon: LayoutDashboard, href: "/housekeeper-dashboard" },
-  { title: "My Tasks", icon: Sparkles, href: "/housekeeper/tasks" },
-  { title: "Rooms", icon: Home, href: "/housekeeper/rooms" },
-  { title: "Maintenance", icon: Wrench, href: "/housekeeper/maintenance" },
-  { title: "Notifications", icon: Bell, href: "/housekeeper/notifications" },
-  { title: "Profile", icon: BriefcaseBusiness, href: "/housekeeper/profile" },
+  { title: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
+  { title: "My Tasks", icon: Sparkles, href: "/dashboard/tasks" },
+  { title: "Rooms", icon: Home, href: "/dashboard/rooms" },
+  { title: "Maintenance", icon: Wrench, href: "/dashboard/maintenance" },
+  { title: "Notifications", icon: Bell, href: "/dashboard/notifications" },
+  { title: "Profile", icon: BriefcaseBusiness, href: "/dashboard/profile" },
 ];
 
 export const CUSTOMER_PAGES: NavItem[] = [
-  { title: "Dashboard", icon: LayoutDashboard, href: "/customer-dashboard" },
-  { title: "Browse Rooms", icon: BedDouble, href: "/customer/rooms" },
-  { title: "My Bookings", icon: CalendarCheck, href: "/customer/bookings" },
-  { title: "Finance", icon: CircleDollarSign, href: "/customer/finance" },
-  { title: "Maintenance", icon: Wrench, href: "/customer/maintenance" },
-  { title: "Notifications", icon: Bell, href: "/customer/notifications" },
-  { title: "Profile", icon: BriefcaseBusiness, href: "/customer/profile" },
+  { title: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
+  { title: "Browse Rooms", icon: BedDouble, href: "/dashboard/rooms" },
+  { title: "My Bookings", icon: CalendarCheck, href: "/dashboard/bookings" },
+  { title: "Finance", icon: CircleDollarSign, href: "/dashboard/finance" },
+  { title: "Maintenance", icon: Wrench, href: "/dashboard/maintenance" },
+  { title: "Notifications", icon: Bell, href: "/dashboard/notifications" },
+  { title: "Profile", icon: BriefcaseBusiness, href: "/dashboard/profile" },
 ];
 
 export const ROLE_NAVIGATION = {

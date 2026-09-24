@@ -11,9 +11,9 @@ import { AUTH_ERROR_MSG } from '../auth/auth.constants';
 
 import { CreateStaffDto } from './dtos/create-staff.dto';
 import { GetStaffDto } from './dtos/get-staff.dto';
+import { UpdateStaffDto } from './dtos/update-staff.dto';
 import { STAFF_ERROR_MSG } from './staff.constants';
 import { StaffDetails, StaffList } from './staff.types';
-import { UpdateStaffDto } from './dtos/update-staff.dto';
 
 @Injectable()
 export class StaffService {

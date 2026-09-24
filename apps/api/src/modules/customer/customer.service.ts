@@ -3,10 +3,10 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { ID } from 'node-appwrite';
 
+// import { ID } from 'node-appwrite';
 import { hashPassword } from '../../common/helpers';
-import { uploadFile } from '../../config';
+// import { uploadFile } from '../../config';
 import { PrismaService } from '../../db/prisma/prisma.service';
 import { KpiStat, ListResponse, UserRole } from '../../types';
 

@@ -13,8 +13,8 @@ export const comparePassword = async (
   return await argon2.verify(hashedStr, raw);
 };
 
-export const generateRandomStr = (): string => {
-  return crypto.randomBytes(64).toString('base64url');
+export const generateRandomStr = (length = 64): string => {
+  return crypto.randomBytes(length).toString('base64url');
 };
 
 export const hashRandomStr = (token: string): string => {

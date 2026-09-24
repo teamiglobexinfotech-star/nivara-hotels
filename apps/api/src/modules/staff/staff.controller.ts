@@ -8,7 +8,6 @@ import {
   Param,
   Patch,
   Post,
-  Proppatch,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -20,9 +19,9 @@ import { ValidationPipe } from '../../common/pipes';
 
 import { CreateStaffDto, CreateStaffSchema } from './dtos/create-staff.dto';
 import { GetStaffDto, GetStaffSchema } from './dtos/get-staff.dto';
+import { UpdateStaffDto, UpdateStaffSchema } from './dtos/update-staff.dto';
 import { STAFF_SUCCESS_MSG } from './staff.constants';
 import { StaffService } from './staff.service';
-import { UpdateStaffDto, UpdateStaffSchema } from './dtos/update-staff.dto';
 
 @UseGuards(AuthGuard, RoleGuard)
 @Controller('staff')

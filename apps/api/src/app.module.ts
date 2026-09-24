@@ -6,6 +6,7 @@ import { PrismaModule } from './db/prisma/prisma.module';
 import { AmenityModule } from './modules/amenity/amenity.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CustomerModule } from './modules/customer/customer.module';
+import { MaintenanceModule } from './modules/maintenance/maintenance.module';
 import { RoomModule } from './modules/room/room.module';
 import { RoomTypeModule } from './modules/room-type/room-type.module';
 import { StaffModule } from './modules/staff/staff.module';
@@ -31,6 +32,7 @@ import { client, env } from './config';
     RoomModule,
     RoomTypeModule,
     UserModule,
+    MaintenanceModule,
   ],
   controllers: [AppController],
   providers: [

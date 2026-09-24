@@ -1,5 +1,3 @@
-import { UserRole } from '../../types';
-
 export type Customer = {
   id: string;
   fullName: string;
