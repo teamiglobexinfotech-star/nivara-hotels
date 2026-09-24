@@ -17,6 +17,7 @@ import { useDeleteStaff } from "../hooks/useDeleteStaff";
 import { useStaffList } from "../hooks/useStaffList";
 import type { StaffList } from "../staff.types";
 
+import { UpdateStaffSheet } from "./UpdateStaffSheet";
 import { ViewStaffSheet } from "./ViewStaffSheet";
 
 const staffColumns: Column<StaffList>[] = [
@@ -94,7 +95,7 @@ export function StaffTableSection() {
 
 function StaffActionDropdownMenu({ staff }: { staff: StaffList }) {
   const [isViewModal, setIsViewModal] = useState(false);
-  // const [isUpdateModal, setIsUpdateModal] = useState(false);
+  const [isUpdateModal, setIsUpdateModal] = useState(false);
   const { handleDelete, isDeleting } = useDeleteStaff();
 
   return (
@@ -114,7 +115,7 @@ function StaffActionDropdownMenu({ staff }: { staff: StaffList }) {
             View
           </DropdownMenuItem>
           <DropdownMenuItem
-            // onClick={() => setIsUpdateModal(true)}
+            onClick={() => setIsUpdateModal(true)}
             disabled={isDeleting}
           >
             Edit
@@ -129,13 +130,13 @@ function StaffActionDropdownMenu({ staff }: { staff: StaffList }) {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* {isUpdateModal && (
-        <UpdateRoomModal
-          open={isUpdateModal}
+      {isUpdateModal && (
+        <UpdateStaffSheet
+          isOpen={isUpdateModal}
           onOpenChange={setIsUpdateModal}
-          room={room}
+          id={staff.id}
         />
-      )} */}
+      )}
 
       {isViewModal && (
         <ViewStaffSheet

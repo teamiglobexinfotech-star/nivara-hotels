@@ -1,11 +1,21 @@
 import { KpiCard } from "@/components/shared/KpiCard";
+import { iconsList } from "@/features/amenities/amenity.constants";
+import type { KpiItem } from "@/types/shared.types";
 
-import { staffKpiData } from "../staff.mock";
+import { useStaffKpi } from "../hooks/useStaffKpi";
 
 export function StaffKpi() {
+  const { data } = useStaffKpi();
+
+  const items: KpiItem[] =
+    data?.map((k) => ({
+      ...k,
+      iconKey: iconsList[k.iconKey.toString().toLocaleLowerCase()],
+    })) || [];
+
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-      {staffKpiData.map((item) => (
+      {items.map((item) => (
         <KpiCard key={item.id} item={item} />
       ))}
     </div>

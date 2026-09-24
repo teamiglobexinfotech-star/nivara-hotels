@@ -5,13 +5,13 @@ import {
 } from '@nestjs/common';
 
 import { PrismaService } from '../../db/prisma/prisma.service';
-import { ListResponse } from '../../types';
+import { KpiStat, ListResponse } from '../../types';
 
 import { CreateRoomDto } from './dtos/create-room.dto';
 import { GetRoomsDto } from './dtos/get-rooms.dto';
 import { UpdateRoomDto } from './dtos/update-room.dto';
 import { ROOM_ERROR_MSG } from './room.constants';
-import { Room, RoomDetails, RoomList, RoomStat } from './room.types';
+import { Room, RoomDetails, RoomList } from './room.types';
 
 @Injectable()
 export class RoomService {
@@ -270,7 +270,7 @@ export class RoomService {
     });
   }
 
-  async getStats(): Promise<RoomStat[]> {
+  async getStats(): Promise<KpiStat[]> {
     const [totalRoom, available, occupied, cleaning, serviceRequired] =
       await Promise.all([
         this.prismaService.room.count(),

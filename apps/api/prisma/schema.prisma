@@ -133,6 +133,7 @@ model User {
   lastLoginAt    DateTime?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
+  softDeletedAt  DateTime?
 
   staff                  Staff?
   customerProfile        CustomerProfile?

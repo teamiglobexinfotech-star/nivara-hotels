@@ -46,11 +46,3 @@ export type RoomDetails = {
     }[];
   };
 };
-
-export type RoomStat = {
-  id: string;
-  iconKey: string;
-  title: string;
-  value: string | number;
-  details: string;
-};

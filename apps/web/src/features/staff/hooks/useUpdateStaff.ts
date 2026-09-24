@@ -6,10 +6,9 @@ import { toast } from "sonner";
 import { notifyError } from "@/lib/notification";
 
 import {
-  type CreateStaff,
-  CreateStaffSchema,
-} from "../schema/createStaff.schema";
-import type { UpdateStaff } from "../schema/updateStaff.schema";
+  type UpdateStaff,
+  UpdateStaffSchema,
+} from "../schema/updateStaff.schema";
 import { staffKeys, staffMutationKeys } from "../staff.keys";
 import { staffService } from "../staff.service";
 
@@ -39,12 +38,12 @@ export const useUpdateStaffFacade = (id: string) => {
     formState: { errors },
     getValues,
     control,
-  } = useForm<CreateStaff>({
-    resolver: zodResolver(CreateStaffSchema),
+  } = useForm({
+    resolver: zodResolver(UpdateStaffSchema),
   });
 
   return {
-    submit: (data: CreateStaff) => mutate(data),
+    submit: (data: UpdateStaff) => mutate(data),
     isPending,
     register,
     handleSubmit,

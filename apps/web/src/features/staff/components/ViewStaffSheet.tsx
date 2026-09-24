@@ -11,6 +11,7 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
+  SheetTrigger,
 } from "@/components/ui/sheet";
 import { getInitials } from "@/lib/getInitials";
 
@@ -45,6 +46,7 @@ export function ViewStaffSheet({
 
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
+      <SheetTrigger>Open</SheetTrigger>
       <SheetContent className="overflow-y-auto sm:max-w-xl">
         <SheetHeader className="mb-6">
           <SheetTitle className="text-xl font-bold">

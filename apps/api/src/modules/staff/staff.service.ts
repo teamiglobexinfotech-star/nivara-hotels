@@ -6,13 +6,14 @@ import {
 
 import { hashPassword } from '../../common/helpers';
 import { PrismaService } from '../../db/prisma/prisma.service';
-import { ListResponse } from '../../types';
+import { KpiStat, ListResponse } from '../../types';
 import { AUTH_ERROR_MSG } from '../auth/auth.constants';
 
 import { CreateStaffDto } from './dtos/create-staff.dto';
 import { GetStaffDto } from './dtos/get-staff.dto';
 import { STAFF_ERROR_MSG } from './staff.constants';
 import { StaffDetails, StaffList } from './staff.types';
+import { UpdateStaffDto } from './dtos/update-staff.dto';
 
 @Injectable()
 export class StaffService {
@@ -77,6 +78,7 @@ export class StaffService {
 
     const where = {
       role: 'STAFF' as const,
+      softDeletedAt: null,
       ...(status && {
         status,
       }),
@@ -215,19 +217,150 @@ export class StaffService {
     return user;
   }
 
-  async delete(userId: string): Promise<{ id: string }> {
-    const staff = await this.prismaService.staff.findUnique({
-      where: { userId },
-      select: { id: true },
+  async update(id: string, dto: UpdateStaffDto): Promise<{ id: string }> {
+    const user = await this.prismaService.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        email: true,
+        phone: true,
+        staff: {
+          select: {
+            id: true,
+          },
+        },
+      },
     });
 
-    if (!staff) {
+    if (!user) {
       throw new NotFoundException(STAFF_ERROR_MSG.NOT_FOUND);
     }
 
-    return this.prismaService.staff.delete({
-      where: { id: staff.id },
+    const existingEmail = await this.prismaService.user.findUnique({
+      where: {
+        email: dto.email,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (existingEmail && existingEmail.id !== user.id) {
+      throw new ConflictException(AUTH_ERROR_MSG.CONFLICT_EMAIL);
+    }
+
+    return await this.prismaService.$transaction(async (tx) => {
+      await tx.user.update({
+        where: { id: user.id },
+        data: {
+          fullName: dto.fullName,
+          email: dto.email,
+          phone: dto.phone,
+          isActive: dto.isActive,
+        },
+      });
+
+      return tx.staff.update({
+        where: { userId: user.id },
+        data: {
+          fatherName: dto.fatherName,
+          motherName: dto.motherName,
+          idProofNumber: dto.idProofNumber,
+          qualification: dto.qualification,
+          experience: dto.experience,
+          category: dto.category,
+          emergencyContact: dto.emergencyContact,
+          address: dto.address,
+        },
+        select: {
+          id: true,
+        },
+      });
+    });
+  }
+
+  async delete(userId: string): Promise<{ id: string }> {
+    const user = await this.prismaService.user.findUnique({
+      where: { id: userId },
       select: { id: true },
     });
+
+    if (!user) {
+      throw new NotFoundException(STAFF_ERROR_MSG.NOT_FOUND);
+    }
+
+    return await this.prismaService.user.update({
+      where: { id: user.id },
+      data: {
+        softDeletedAt: new Date(),
+      },
+      select: { id: true },
+    });
+  }
+
+  async getStats(): Promise<KpiStat[]> {
+    const [totalStaff, activeStaff, inactiveStaff] =
+      await this.prismaService.staff
+        .aggregate({
+          _count: { id: true },
+          where: {
+            user: {
+              role: 'STAFF',
+            },
+          },
+        })
+        .then(async ({ _count }) => {
+          const [active, inactive] = await Promise.all([
+            this.prismaService.staff.count({
+              where: {
+                user: {
+                  role: 'STAFF',
+                  isActive: true,
+                },
+              },
+            }),
+            this.prismaService.staff.count({
+              where: {
+                user: {
+                  role: 'STAFF',
+                  isActive: false,
+                },
+              },
+            }),
+          ]);
+
+          return [_count.id, active, inactive];
+        });
+
+    return [
+      {
+        id: 'total-staff',
+        iconKey: 'Users',
+        title: 'Total Staff',
+        value: totalStaff,
+        details: 'All registered staff',
+      },
+      {
+        id: 'active-staff',
+        iconKey: 'UserCheck',
+        title: 'Active Staff',
+        value: activeStaff,
+        details: 'Currently active',
+      },
+      {
+        id: 'inactive-staff',
+        iconKey: 'UserX',
+        title: 'Inactive Staff',
+        value: inactiveStaff,
+        details: 'Currently inactive',
+      },
+      {
+        id: 'on-leave',
+        iconKey: 'CalendarOff',
+        title: 'On Leave',
+        value: 0,
+        details: 'Currently on leave',
+      },
+    ];
   }
 }

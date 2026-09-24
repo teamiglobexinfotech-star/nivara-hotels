@@ -54,6 +54,7 @@ import {
   BedSingle,
   Bike,
   Bus,
+  CalendarOff,
   Car,
   Cctv,
   ChefHat,
@@ -88,7 +89,9 @@ import {
   Trees,
   Tv,
   Usb,
+  UserCheck,
   Users,
+  UserX,
   Utensils,
   WashingMachine,
   Waves,
@@ -98,6 +101,9 @@ import {
 
 export const iconsList: { [key: string]: LucideIcon } = {
   users: Users,
+  userx: UserX,
+  usercheck: UserCheck,
+  calendaroff: CalendarOff,
   sparkles: Sparkles,
   wifi: Wifi,
   tv: Tv,

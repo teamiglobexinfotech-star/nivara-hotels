@@ -6,7 +6,9 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
+  Proppatch,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -20,6 +22,7 @@ import { CreateStaffDto, CreateStaffSchema } from './dtos/create-staff.dto';
 import { GetStaffDto, GetStaffSchema } from './dtos/get-staff.dto';
 import { STAFF_SUCCESS_MSG } from './staff.constants';
 import { StaffService } from './staff.service';
+import { UpdateStaffDto, UpdateStaffSchema } from './dtos/update-staff.dto';
 
 @UseGuards(AuthGuard, RoleGuard)
 @Controller('staff')
@@ -45,6 +48,14 @@ export class StaffController {
   }
 
   @Roles('ADMIN', 'MANAGER')
+  @Get('stats')
+  @HttpCode(HttpStatus.OK)
+  async getStats() {
+    const data = await this.staffService.getStats();
+    return apiResponse({ data });
+  }
+
+  @Roles('ADMIN', 'MANAGER')
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   async getById(@Param('id') id: string) {
@@ -52,11 +63,22 @@ export class StaffController {
     return apiResponse({ data });
   }
 
+  @Roles('ADMIN', 'MANAGER')
+  @Patch(':id')
+  @HttpCode(HttpStatus.OK)
+  async update(
+    @Param('id') id: string,
+    @Body(new ValidationPipe(UpdateStaffSchema)) body: UpdateStaffDto,
+  ) {
+    const data = await this.staffService.update(id, body);
+    return apiResponse({ data, message: STAFF_SUCCESS_MSG.UPDATED });
+  }
+
   @Roles('ADMIN')
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
   async delete(@Param('id') id: string) {
     const data = await this.staffService.delete(id);
-    return apiResponse({ data, message: STAFF_SUCCESS_MSG.DELETED });
+    return apiResponse({ data, message: STAFF_SUCCESS_MSG.SOFT_DELETED });
   }
 }

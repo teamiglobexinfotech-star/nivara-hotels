@@ -1,6 +1,6 @@
 import { apiClient } from "@/lib/apiClient";
 import type { ApiMessageResponse, ListResponse } from "@/types/api.types";
-import type { ListParams } from "@/types/shared.types";
+import type { KpiItem, ListParams } from "@/types/shared.types";
 
 import type { CreateStaff } from "./schema/createStaff.schema";
 import type { UpdateStaff } from "./schema/updateStaff.schema";
@@ -17,4 +17,6 @@ export const staffService = {
     apiClient.get(`/staff/${id}`).then((r) => r.data?.data),
   update: (id: string, data: UpdateStaff): Promise<ApiMessageResponse> =>
     apiClient.patch(`/staff/${id}`, data).then((r) => r.data),
+  getStats: (): Promise<KpiItem[]> =>
+    apiClient.get("/staff/stats").then((r) => r.data.data),
 };
