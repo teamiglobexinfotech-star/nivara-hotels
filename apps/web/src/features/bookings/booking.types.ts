@@ -1,10 +1,36 @@
-export type Booking = {
+export type BookingStatus =
+  | "PENDING"
+  | "CONFIRMED"
+  | "CHECKED_IN"
+  | "CHECKED_OUT"
+  | "CANCELLED"
+  | "NO_SHOW";
+
+export interface BookingItem {
+  id: string | number;
+  bookingReference: string;
+  customer: {
+    id: string | number;
+    fullName: string;
+  };
+  room: {
+    id: string | number;
+    roomNumber: string;
+    name: string;
+  };
+  checkInDate: string;
+  checkOutDate: string;
+  totalAmount: number;
+  status: BookingStatus;
+}
+
+export type BookingList = BookingItem[];
+
+export interface CustomerItem {
   id: string;
-  bookingCode: string;
-  guestName: string;
-  roomName: string;
-  checkIn: Date;
-  checkOut: Date;
-  status: string;
-  amount: number;
-};
+  fullName: string;
+  email: string;
+  phone: string;
+}
+
+export type CustomerList = CustomerItem[];

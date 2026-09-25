@@ -55,6 +55,7 @@ import {
   BedSingle,
   Bike,
   Bus,
+  CalendarCheck,
   CalendarOff,
   Car,
   Cctv,
@@ -64,6 +65,7 @@ import {
   CigaretteOff,
   CircleParking,
   ClipboardList,
+  Clock,
   Coffee,
   DoorOpen,
   Droplet,
@@ -106,6 +108,7 @@ import {
   Wifi,
   Wind,
   Wrench,
+  XCircle,
 } from "lucide-react";
 
 export const iconsList: { [key: string]: LucideIcon } = {
@@ -167,4 +170,7 @@ export const iconsList: { [key: string]: LucideIcon } = {
   sun: Sun,
   moon: Moon,
   flame: Flame,
+  calendarcheck: CalendarCheck,
+  clock: Clock,
+  xcircle: XCircle,
 } as const;

@@ -8,6 +8,8 @@ import { ProtectLayout } from "@/components/layout/ProtectLayout";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { LoginPage } from "@/pages/auth/LoginPage";
 import { SignupPage } from "@/pages/auth/SignupPage";
+import { BookingsPage } from "@/pages/booking";
+import { NewBookingPage } from "@/pages/booking/NewBookingPage";
 import { DashboardPage } from "@/pages/dashboard";
 import { MaintenancePage } from "@/pages/maintenance";
 import { AboutPage } from "@/pages/public/AboutPage";
@@ -15,7 +17,6 @@ import { ContactPage } from "@/pages/public/ContactPage";
 import { HomePage } from "@/pages/public/HomePage";
 import { RoomsPage } from "@/pages/public/RoomsPage";
 import { RoomsPage as DRoomsPage } from "@/pages/room";
-// import { BookingsPage } from "@/pages/shared/BookingsPage";
 import { CustomersPage } from "@/pages/shared/CustomersPage";
 import { StaffPage } from "@/pages/shared/StaffPage";
 import type { Room } from "@/types";
@@ -71,7 +72,8 @@ export function Router() {
           <Route path="customers" element={<CustomersPage />} />
           <Route path="rooms" element={<DRoomsPage />} />
           <Route path="maintenance" element={<MaintenancePage />} />
-          {/* <Route path="bookings" element={<BookingsPage />} /> */}
+          <Route path="bookings" element={<BookingsPage />} />
+          <Route path="bookings/new" element={<NewBookingPage />} />
         </Route>
       </Routes>
       <BookingModal
