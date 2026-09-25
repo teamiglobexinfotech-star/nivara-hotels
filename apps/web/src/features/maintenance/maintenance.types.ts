@@ -36,3 +36,11 @@ export type ReportDetails = Report & {
   completedAt: Date | null;
   resolvedAt: Date | null;
 };
+
+export type Housekeeper = {
+  id: string;
+  name: string;
+  totalTasks: number;
+};
+
+export type HousekeeperList = Housekeeper;

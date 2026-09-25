@@ -5,6 +5,7 @@ import { AdminPage } from "./AdminPage";
 
 const dashboardByRole = {
   [ROLES.ADMIN]: AdminPage,
+  [ROLES.MANAGER]: AdminPage,
 };
 
 export function DashboardPage() {

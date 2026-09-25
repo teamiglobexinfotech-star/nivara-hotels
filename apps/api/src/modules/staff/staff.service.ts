@@ -13,7 +13,7 @@ import { CreateStaffDto } from './dtos/create-staff.dto';
 import { GetStaffDto } from './dtos/get-staff.dto';
 import { UpdateStaffDto } from './dtos/update-staff.dto';
 import { STAFF_ERROR_MSG } from './staff.constants';
-import { StaffDetails, StaffList } from './staff.types';
+import { Housekeeper, StaffDetails, StaffList } from './staff.types';
 
 @Injectable()
 export class StaffService {
@@ -362,5 +362,45 @@ export class StaffService {
         details: 'Currently on leave',
       },
     ];
+  }
+
+  async getHousekeepers(search?: string): Promise<Housekeeper[]> {
+    const housekeepers = await this.prismaService.staff.findMany({
+      where: {
+        category: 'HOUSEKEEPER',
+        user: {
+          fullName: {
+            contains: search,
+            mode: 'insensitive',
+          },
+        },
+      },
+      select: {
+        user: {
+          select: {
+            id: true,
+            fullName: true,
+            _count: {
+              select: {
+                housekeepingTasks: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        user: {
+          housekeepingTasks: {
+            _count: 'desc',
+          },
+        },
+      },
+    });
+
+    return housekeepers.map(({ user }) => ({
+      id: user.id,
+      name: user.fullName,
+      totalTasks: user._count.housekeepingTasks,
+    }));
   }
 }

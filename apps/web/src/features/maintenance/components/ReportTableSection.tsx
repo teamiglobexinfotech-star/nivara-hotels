@@ -19,6 +19,8 @@ import { useDeleteReport } from "../hooks/useDeleteReport";
 import { useReportList } from "../hooks/useReportList";
 import type { ReportList } from "../maintenance.types";
 
+import { AssignTaskModal } from "./AssignTaskModal";
+import { UpdateReportModal } from "./UpdateReportModal";
 import { ViewReportSheet } from "./ViewReportSheet";
 
 const reportColumns: Column<ReportList>[] = [
@@ -105,7 +107,7 @@ const reportColumns: Column<ReportList>[] = [
   {
     header: "Action",
     key: "action",
-    render: (r) => <MaintenanceActionDropdownMenu report={r} />,
+    render: (r) => <ReportActionDropdownMenu report={r} />,
   },
 ];
 
@@ -128,9 +130,11 @@ export function ReportTableSection() {
   );
 }
 
-function MaintenanceActionDropdownMenu({ report }: { report: ReportList }) {
+function ReportActionDropdownMenu({ report }: { report: ReportList }) {
   const [isViewModal, setIsViewModal] = useState(false);
-  const [isUpdateModal, setIsUpdateModal] = useState(false);
+  const [isStatusModal, setIsStatusModal] = useState(false);
+  const [isAssignTaskModal, setIsAssignTaskModal] = useState(false);
+
   const { user } = useAuth();
   const { handleDelete, isDeleting } = useDeleteReport();
 
@@ -151,12 +155,25 @@ function MaintenanceActionDropdownMenu({ report }: { report: ReportList }) {
             View
           </DropdownMenuItem>
 
-          <DropdownMenuItem
-            onClick={() => setIsUpdateModal(true)}
-            disabled={isDeleting}
-          >
-            Edit
-          </DropdownMenuItem>
+          {user?.role ==
+            (ROLES.ADMIN || ROLES.MANAGER || ROLES.HOUSEKEEPER) && (
+            <DropdownMenuItem
+              onClick={() => setIsStatusModal(true)}
+              disabled={isDeleting}
+            >
+              Change Status
+            </DropdownMenuItem>
+          )}
+
+          {user?.role == (ROLES.ADMIN || ROLES.MANAGER) && (
+            <DropdownMenuItem
+              onClick={() => setIsAssignTaskModal(true)}
+              disabled={isDeleting}
+            >
+              Assign Task
+            </DropdownMenuItem>
+          )}
+
           {user?.role == ROLES.ADMIN && (
             <DropdownMenuItem
               className={"text-destructive"}
@@ -169,14 +186,22 @@ function MaintenanceActionDropdownMenu({ report }: { report: ReportList }) {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* {isUpdateModal && (
-        <UpdateRoomModal
-          open={isUpdateModal}
-          onOpenChange={setIsUpdateModal}
-          room={room}
+      {isStatusModal && (
+        <UpdateReportModal
+          open={isStatusModal}
+          onOpenChange={setIsStatusModal}
+          report={report}
         />
       )}
-      */}
+
+      {isAssignTaskModal && (
+        <AssignTaskModal
+          open={isAssignTaskModal}
+          onOpenChange={setIsAssignTaskModal}
+          report={report}
+        />
+      )}
+
       {isViewModal && (
         <ViewReportSheet
           isOpen={isViewModal}

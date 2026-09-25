@@ -11,7 +11,7 @@ type InputFieldProps = {
   error?: string;
   disabled?: boolean;
   required?: boolean;
-};
+} & React.ComponentPropsWithoutRef<"input">;
 
 export function InputField({
   label,

@@ -64,8 +64,7 @@ export const MANAGER_PAGES: NavItem[] = [
 
 export const RECEPTIONIST_PAGES: NavItem[] = [
   { title: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
-  { title: "Customers", icon: UserCheck, href: "/dashboard" },
-  { title: "Rooms", icon: BedDouble, href: "/dashboard/rooms" },
+  { title: "Customers", icon: UserCheck, href: "/dashboard/customers" },
   { title: "Bookings", icon: CalendarCheck, href: "/dashboard/bookings" },
   { title: "Finance", icon: CircleDollarSign, href: "/dashboard/finance" },
   { title: "Maintenance", icon: Wrench, href: "/dashboard/maintenance" },

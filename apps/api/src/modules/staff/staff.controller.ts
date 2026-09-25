@@ -55,6 +55,16 @@ export class StaffController {
   }
 
   @Roles('ADMIN', 'MANAGER')
+  @Get('housekeepers')
+  @HttpCode(HttpStatus.OK)
+  async getHousekeepers(
+    @Query(new ValidationPipe(GetStaffSchema)) query: GetStaffDto,
+  ) {
+    const data = await this.staffService.getHousekeepers(query.search || '');
+    return apiResponse({ data });
+  }
+
+  @Roles('ADMIN', 'MANAGER')
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   async getById(@Param('id') id: string) {

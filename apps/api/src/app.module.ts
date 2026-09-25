@@ -15,6 +15,7 @@ import { SeedModule } from './seed/seed.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { client, env } from './config';
+import { HousekeepingtaskModule } from './modules/housekeepingtask/housekeepingtask.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { client, env } from './config';
     RoomTypeModule,
     UserModule,
     MaintenanceModule,
+    HousekeepingtaskModule,
   ],
   controllers: [AppController],
   providers: [

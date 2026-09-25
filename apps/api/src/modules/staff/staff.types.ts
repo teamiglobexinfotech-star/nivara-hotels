@@ -48,3 +48,9 @@ export type StaffDetails = {
     } | null;
   } | null;
 };
+
+export type Housekeeper = {
+  id: string;
+  name: string;
+  totalTasks: number;
+};
