@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -21,6 +22,10 @@ export class RoomTypeService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(files, dto: CreateRoomTypeDto): Promise<RoomTypeCreate> {
+    if (!files?.length) {
+      throw new BadRequestException('At least one primary image is required');
+    }
+
     const existingRoomType = await this.prismaService.roomType.findFirst({
       where: {
         name: {
@@ -57,6 +62,12 @@ export class RoomTypeService {
           capacity: dto.capacity,
           basePrice: dto.basePrice,
           isActive: dto.isActive,
+          amenities: {
+            connect:
+              dto.amenities?.map((id) => ({
+                id,
+              })) || [],
+          },
         },
         select: {
           id: true,
@@ -75,6 +86,7 @@ export class RoomTypeService {
           roomTypeId: roomType.id,
         })),
       });
+
       return roomType;
     });
   }
@@ -88,6 +100,14 @@ export class RoomTypeService {
         capacity: true,
         basePrice: true,
         isActive: true,
+        amenities: {
+          select: {
+            id: true,
+            name: true,
+            icon: true,
+          },
+          take: 5,
+        },
         images: {
           select: {
             id: true,
@@ -124,6 +144,13 @@ export class RoomTypeService {
         capacity: true,
         basePrice: true,
         isActive: true,
+        amenities: {
+          select: {
+            id: true,
+            name: true,
+            icon: true,
+          },
+        },
         images: {
           select: {
             id: true,
@@ -141,7 +168,7 @@ export class RoomTypeService {
     return roomType;
   }
 
-  async update(id: string, dto: UpdateRoomTypeDto): Promise<{ id: string }> {
+  async update(id: string, dto: UpdateRoomTypeDto): Promise<void> {
     const roomType = await this.prismaService.roomType.findUnique({
       where: { id },
       select: {
@@ -168,9 +195,21 @@ export class RoomTypeService {
       }
     }
 
-    return await this.prismaService.roomType.update({
+    await this.prismaService.roomType.update({
       where: { id },
-      data: { ...dto },
+      data: {
+        name: dto.name,
+        description: dto.description,
+        capacity: dto.capacity,
+        basePrice: dto.basePrice,
+        amenities: {
+          set: dto.amenities?.map((id) => ({
+            id,
+          })),
+        },
+        isActive: dto.isActive,
+      },
+
       select: {
         id: true,
       },

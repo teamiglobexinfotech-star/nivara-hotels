@@ -18,6 +18,10 @@ export const CreateRoomTypeSchema = z
     basePrice: z.coerce
       .number('Base price is required')
       .positive('Base price must be greater than 0'),
+    amenities: z
+      .array(z.string().cuid('Amenity must be a valid cuid'))
+      .max(20, 'Amenities must be 20 or less')
+      .optional(),
     isActive: z.boolean('IsActive must be a boolean').default(true),
   })
   .strict();

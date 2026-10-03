@@ -23,6 +23,10 @@ export const UpdateRoomTypeSchema = z
       .number('Base price is required')
       .positive('Base price must be greater than 0')
       .optional(),
+    amenities: z
+      .array(z.string().cuid('Amenity must be a valid cuid'))
+      .max(20, 'Amenities must be 20 or less')
+      .optional(),
     isActive: z.boolean('IsActive must be a boolean').optional(),
   })
   .refine(
@@ -31,10 +35,18 @@ export const UpdateRoomTypeSchema = z
       data.description ||
       data.capacity ||
       data.basePrice ||
-      data.isActive,
+      data.isActive ||
+      data.amenities,
     {
       message: 'At least one field must be provided for update',
-      path: ['name', 'description', 'capacity', 'basePrice', 'isActive'],
+      path: [
+        'name',
+        'description',
+        'capacity',
+        'basePrice',
+        'isActive',
+        'amenities',
+      ],
     },
   )
   .strict();
