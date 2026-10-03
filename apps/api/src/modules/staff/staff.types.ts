@@ -1,40 +1,40 @@
-import { Category, UserRole } from '../../types';
+import { Category } from '../../types';
 
-export type StaffCategory = Category;
-
-export type StaffItem = {
+export type StaffBase = {
   id: string;
   fullName: string;
   email: string;
   phone: string;
-  category: StaffCategory;
+  category: Category | null;
   isActive: boolean;
-  createdAt: string;
-  lastLogin: string;
 };
 
-export type Staff = {
+export type Image = {
   id: string;
-  fullName: string;
-  email: string;
-  phone: string;
-  role: UserRole;
-  isActive: boolean;
-  category?: Category;
-  createdAt: Date | null;
-  updatedAt: Date | null;
+  url: string;
+  altText: string | null;
 };
 
-export type StaffList = Staff;
+export type StaffCreate = StaffBase;
 
-export type StaffDetail = StaffItem & {
+export type StaffList = StaffBase & {
+  createdAt: string | null;
+  lastLogin: string | null;
+};
+
+export type StaffDetails = StaffBase & {
+  createdAt: string | null;
+  lastLogin: string | null;
   address: string;
   fatherName: string;
   motherName: string;
   idProofNumber: string;
+  category: Category;
   qualification: string;
   experience: string;
   emergencyContact: string;
+  idProofImage: Image | null;
+  signatureImage: Image | null;
 };
 
 export type Housekeeper = {

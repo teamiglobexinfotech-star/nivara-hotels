@@ -1,25 +1,36 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 
 import { hashPassword } from '../../common/helpers';
+import { uploadFile } from '../../config';
 import { PrismaService } from '../../db/prisma/prisma.service';
-import { KpiStat, ListResponse } from '../../types';
+import { KpiStat, ListResponse, UserRole } from '../../types';
 import { AUTH_ERROR_MSG } from '../auth/auth.constants';
 
 import { CreateStaffDto } from './dtos/create-staff.dto';
 import { GetStaffDto } from './dtos/get-staff.dto';
 import { UpdateStaffDto } from './dtos/update-staff.dto';
 import { STAFF_ERROR_MSG } from './staff.constants';
-import { Housekeeper, StaffDetail, StaffItem } from './staff.types';
+import {
+  Housekeeper,
+  StaffCreate,
+  StaffDetails,
+  StaffList,
+} from './staff.types';
 
 @Injectable()
 export class StaffService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(dto: CreateStaffDto): Promise<{ id: string }> {
+  async create(files, dto: CreateStaffDto): Promise<StaffCreate> {
+    if (!files?.idProof?.[0] || !files?.signature?.[0]) {
+      throw new BadRequestException('Id proof and signature are required');
+    }
+
     const existingUser = await this.prismaService.user.findUnique({
       where: {
         email: dto.email,
@@ -35,44 +46,68 @@ export class StaffService {
 
     const passwordHash = await hashPassword('secure1234');
 
-    const staff = await this.prismaService.$transaction(async (tx) => {
-      const user = await tx.user.create({
-        data: {
-          fullName: dto.fullName,
-          email: dto.email,
-          phone: dto.phone,
-          passwordHash,
-          role: 'STAFF',
-        },
-        select: {
-          id: true,
-        },
-      });
+    const images = await Promise.all([
+      uploadFile(files.idProof[0]),
+      uploadFile(files.signature[0]),
+    ]);
 
-      await tx.staff.create({
-        data: {
-          userId: user.id,
-          fatherName: dto.fatherName,
-          motherName: dto.motherName,
-          idProofNumber: dto.idProofNumber,
-          qualification: dto.qualification,
-          experience: dto.experience,
-          category: dto.category,
-          emergencyContact: dto?.emergencyContact,
-          address: dto.address,
+    const staff = await this.prismaService.user.create({
+      data: {
+        fullName: dto.fullName,
+        email: dto.email,
+        phone: dto.phone,
+        passwordHash,
+        role: UserRole.STAFF,
+        staff: {
+          create: {
+            fatherName: dto.fatherName,
+            motherName: dto.motherName,
+            idProofNumber: dto.idProofNumber,
+            qualification: dto.qualification,
+            experience: dto.experience,
+            category: dto.category,
+            emergencyContact: dto?.emergencyContact,
+            address: dto.address,
+            idProofImage: {
+              create: {
+                url: images[0].url,
+                altText: images[0].name,
+              },
+            },
+            signatureImage: {
+              create: {
+                url: images[1].url,
+                altText: images[1].name,
+              },
+            },
+          },
         },
-        select: {
-          id: true,
+      },
+      select: {
+        id: true,
+        fullName: true,
+        email: true,
+        phone: true,
+        isActive: true,
+        staff: {
+          select: {
+            category: true,
+          },
         },
-      });
-
-      return { ...user, category: dto.category };
+      },
     });
 
-    return staff;
+    return {
+      id: staff.id,
+      fullName: staff.fullName,
+      email: staff.email,
+      phone: staff.phone,
+      category: staff?.staff?.category || 'HOUSEKEEPER',
+      isActive: staff.isActive,
+    };
   }
 
-  async getAll(dto: GetStaffDto): Promise<ListResponse<StaffItem[]>> {
+  async getAll(dto: GetStaffDto): Promise<ListResponse<StaffList[]>> {
     const { search, status, category, page, limit } = dto;
     const skip = (page - 1) * limit;
 
@@ -159,11 +194,11 @@ export class StaffService {
     };
   }
 
-  async getById(id: string): Promise<StaffDetail> {
+  async getOne(id: string): Promise<StaffDetails> {
     const user = await this.prismaService.user.findUnique({
       where: {
         id,
-        role: 'STAFF',
+        role: UserRole.STAFF,
       },
       select: {
         id: true,
@@ -183,6 +218,20 @@ export class StaffService {
             category: true,
             emergencyContact: true,
             address: true,
+            idProofImage: {
+              select: {
+                id: true,
+                url: true,
+                altText: true,
+              },
+            },
+            signatureImage: {
+              select: {
+                id: true,
+                url: true,
+                altText: true,
+              },
+            },
           },
         },
       },
@@ -199,7 +248,7 @@ export class StaffService {
       phone: user.phone,
       category: user.staff.category,
       isActive: user.isActive,
-      createdAt: user.createdAt.toISOString(),
+      createdAt: user.createdAt?.toISOString(),
       lastLogin: user.lastLoginAt?.toISOString() ?? '',
       address: user.staff.address,
       fatherName: user.staff.fatherName,
@@ -208,6 +257,8 @@ export class StaffService {
       qualification: user.staff.qualification,
       experience: user.staff.experience,
       emergencyContact: user.staff.emergencyContact,
+      idProofImage: user.staff.idProofImage,
+      signatureImage: user.staff.signatureImage,
     };
   }
 
