@@ -15,10 +15,11 @@ import {
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 
+import { MAX_FILE_SIZE } from '../../common/constants';
 import { Roles } from '../../common/decorators';
 import { AuthGuard, RoleGuard } from '../../common/guards';
 import { apiListResponse, apiResponse } from '../../common/helpers';
-import { ValidationPipe } from '../../common/pipes';
+import { fileValidationPipe, ValidationPipe } from '../../common/pipes';
 
 import {
   CreateCustomerDto,
@@ -44,15 +45,18 @@ export class CustomerController {
   @Roles('ADMIN', 'MANAGER', 'STAFF')
   @Post()
   @UseInterceptors(
-    FileFieldsInterceptor([
-      { name: 'idProof', maxCount: 1 },
-      { name: 'signature', maxCount: 1 },
-    ]),
+    FileFieldsInterceptor(
+      [
+        { name: 'idProof', maxCount: 1 },
+        { name: 'signature', maxCount: 1 },
+      ],
+      fileValidationPipe(MAX_FILE_SIZE, 2),
+    ),
   )
   @HttpCode(HttpStatus.CREATED)
   async create(
     @UploadedFiles()
-    files: { idProof; signature },
+    files: { idProof: []; signature: [] },
     @Body(new ValidationPipe(CreateCustomerSchema)) body: CreateCustomerDto,
   ) {
     const data = await this.customerService.create(files, body);
@@ -89,8 +93,8 @@ export class CustomerController {
   @Roles('ADMIN', 'MANAGER', 'STAFF')
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  async getById(@Param('id') id: string) {
-    const data = await this.customerService.getById(id);
+  async getOne(@Param('id') id: string) {
+    const data = await this.customerService.getOne(id);
     return apiResponse({ data });
   }
 

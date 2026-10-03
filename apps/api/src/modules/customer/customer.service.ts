@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -6,6 +7,7 @@ import {
 
 // import { ID } from 'node-appwrite';
 import { hashPassword } from '../../common/helpers';
+import { uploadFile } from '../../config';
 // import { uploadFile } from '../../config';
 import { PrismaService } from '../../db/prisma/prisma.service';
 import { KpiStat, ListResponse, UserRole } from '../../types';
@@ -14,13 +16,22 @@ import { CreateCustomerDto } from './dtos/create-customer.dto';
 import { GetCustomersDto } from './dtos/get-customers.dto';
 import { UpdateCustomerDto } from './dtos/update-customer.dto';
 import { CUSTOMER_ERROR_MSG } from './customer.constants';
-import { CustomerDetail, CustomerItem, SearchCustomer } from './customer.types';
+import {
+  CustomerCreate,
+  CustomerDetails,
+  CustomerList,
+  SearchCustomer,
+} from './customer.types';
 
 @Injectable()
 export class CustomerService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(files, dto: CreateCustomerDto): Promise<{ id: string }> {
+  async create(files, dto: CreateCustomerDto): Promise<CustomerCreate> {
+    if (!files?.idProof?.[0] || !files?.signature?.[0]) {
+      throw new BadRequestException('Id proof and signature are required');
+    }
+
     const existingUser = await this.prismaService.user.findUnique({
       where: { email: dto.email },
       select: { id: true },
@@ -32,18 +43,14 @@ export class CustomerService {
 
     const passwordHash = await hashPassword('secure1234');
 
-    // const idProof = files.idProof?.[0];
-    // const signature = files.signature?.[0];
+    const images = await Promise.all([
+      uploadFile(files.idProof[0]),
+      uploadFile(files.signature[0]),
+    ]);
 
-    // const uploadedIdProof = await uploadFile(
-    //   idProof,
-    //   `id-proof-${ID.unique()}`,
-    // );
-
-    // const uploadedSignature = await uploadFile(
-    //   signature,
-    //   `signature-${ID.unique()}`,
-    // );
+    if (images.length < 2) {
+      throw new BadRequestException('Id proof and signature are required');
+    }
 
     const user = await this.prismaService.user.create({
       data: {
@@ -56,18 +63,34 @@ export class CustomerService {
           create: {
             idProofNumber: dto.idProofNumber,
             address: dto.address,
+            idProofImage: {
+              create: {
+                url: images[0].url,
+                altText: images[0].name,
+              },
+            },
+            signatureImage: {
+              create: {
+                url: images[1].url,
+                altText: images[1].name,
+              },
+            },
           },
         },
       },
       select: {
         id: true,
+        fullName: true,
+        email: true,
+        phone: true,
+        isActive: true,
       },
     });
 
     return user;
   }
 
-  async getAll(query: GetCustomersDto): Promise<ListResponse<CustomerItem[]>> {
+  async getAll(query: GetCustomersDto): Promise<ListResponse<CustomerList[]>> {
     const { search, isActive, page, limit } = query;
     const skip = (page - 1) * limit;
 
@@ -151,7 +174,7 @@ export class CustomerService {
     };
   }
 
-  async getById(id: string): Promise<CustomerDetail> {
+  async getOne(id: string): Promise<CustomerDetails> {
     const customer = await this.prismaService.user.findFirst({
       where: {
         id,
@@ -167,6 +190,20 @@ export class CustomerService {
           select: {
             idProofNumber: true,
             address: true,
+            idProofImage: {
+              select: {
+                id: true,
+                url: true,
+                altText: true,
+              },
+            },
+            signatureImage: {
+              select: {
+                id: true,
+                url: true,
+                altText: true,
+              },
+            },
           },
         },
       },
@@ -180,23 +217,16 @@ export class CustomerService {
       throw new NotFoundException(CUSTOMER_ERROR_MSG.PROFILE_NOT_FOUND);
     }
 
-    const [bookingStats] = await this.prismaService.booking.groupBy({
-      by: ['customerId'],
-      where: { customerId: id },
-      _count: { _all: true },
-      _sum: { totalAmount: true },
-    });
-
     return {
       id: customer.id,
       fullName: customer.fullName,
       email: customer.email,
       phone: customer.phone,
-      totalBookings: bookingStats?._count._all ?? 0,
-      totalSpend: bookingStats?._sum.totalAmount ?? 0,
       isActive: customer.isActive,
       address: customer.customerProfile.address,
       idProofNumber: customer.customerProfile.idProofNumber,
+      idProofImage: customer.customerProfile.idProofImage,
+      signatureImage: customer.customerProfile.signatureImage,
     };
   }
 
