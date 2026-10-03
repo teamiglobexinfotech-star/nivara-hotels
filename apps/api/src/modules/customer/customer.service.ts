@@ -14,7 +14,7 @@ import { CreateCustomerDto } from './dtos/create-customer.dto';
 import { GetCustomersDto } from './dtos/get-customers.dto';
 import { UpdateCustomerDto } from './dtos/update-customer.dto';
 import { CUSTOMER_ERROR_MSG } from './customer.constants';
-import { CustomerDetails, CustomerList } from './customer.types';
+import { CustomerDetail, CustomerItem, SearchCustomer } from './customer.types';
 
 @Injectable()
 export class CustomerService {
@@ -67,7 +67,7 @@ export class CustomerService {
     return user;
   }
 
-  async getAll(query: GetCustomersDto): Promise<ListResponse<CustomerList[]>> {
+  async getAll(query: GetCustomersDto): Promise<ListResponse<CustomerItem[]>> {
     const { search, isActive, page, limit } = query;
     const skip = (page - 1) * limit;
 
@@ -113,23 +113,35 @@ export class CustomerService {
           email: true,
           phone: true,
           isActive: true,
-          createdAt: true,
-          updatedAt: true,
-          lastLoginAt: true,
-          customerProfile: {
-            select: {
-              id: true,
-              idProofNumber: true,
-              address: true,
-            },
-          },
         },
       }),
       this.prismaService.user.count({ where }),
     ]);
 
+    const bookingsByCustomer = customers.length
+      ? await this.prismaService.booking.groupBy({
+          by: ['customerId'],
+          where: {
+            customerId: { in: customers.map(({ id }) => id) },
+          },
+          _count: { _all: true },
+          _sum: { totalAmount: true },
+        })
+      : [];
+    const bookingStats = new Map(
+      bookingsByCustomer.map((booking) => [booking.customerId, booking]),
+    );
+
     return {
-      data: customers,
+      data: customers.map((customer) => {
+        const stats = bookingStats.get(customer.id);
+
+        return {
+          ...customer,
+          totalBookings: stats?._count._all ?? 0,
+          totalSpend: stats?._sum.totalAmount ?? 0,
+        };
+      }),
       meta: {
         limit,
         page,
@@ -139,7 +151,7 @@ export class CustomerService {
     };
   }
 
-  async getById(id: string): Promise<CustomerDetails> {
+  async getById(id: string): Promise<CustomerDetail> {
     const customer = await this.prismaService.user.findFirst({
       where: {
         id,
@@ -151,12 +163,8 @@ export class CustomerService {
         email: true,
         phone: true,
         isActive: true,
-        createdAt: true,
-        updatedAt: true,
-        lastLoginAt: true,
         customerProfile: {
           select: {
-            id: true,
             idProofNumber: true,
             address: true,
           },
@@ -168,7 +176,28 @@ export class CustomerService {
       throw new NotFoundException(CUSTOMER_ERROR_MSG.NOT_FOUND);
     }
 
-    return customer;
+    if (!customer.customerProfile) {
+      throw new NotFoundException(CUSTOMER_ERROR_MSG.PROFILE_NOT_FOUND);
+    }
+
+    const [bookingStats] = await this.prismaService.booking.groupBy({
+      by: ['customerId'],
+      where: { customerId: id },
+      _count: { _all: true },
+      _sum: { totalAmount: true },
+    });
+
+    return {
+      id: customer.id,
+      fullName: customer.fullName,
+      email: customer.email,
+      phone: customer.phone,
+      totalBookings: bookingStats?._count._all ?? 0,
+      totalSpend: bookingStats?._sum.totalAmount ?? 0,
+      isActive: customer.isActive,
+      address: customer.customerProfile.address,
+      idProofNumber: customer.customerProfile.idProofNumber,
+    };
   }
 
   async update(id: string, dto: UpdateCustomerDto): Promise<{ id: string }> {
@@ -289,32 +318,71 @@ export class CustomerService {
     return [
       {
         id: 'total-customer',
-        iconKey: 'Users',
+        icon: 'Users',
         title: 'Total Customers',
         value: totalCustomer,
-        details: 'All registered customers',
+        description: 'All registered customers',
       },
       {
         id: 'active-customer',
-        iconKey: 'UserCheck',
+        icon: 'UserCheck',
         title: 'Active Customers',
         value: activeCustomer,
-        details: 'Currently active',
+        description: 'Currently active',
       },
       {
         id: 'inactive-customer',
-        iconKey: 'UserX',
+        icon: 'UserX',
         title: 'Inactive Customers',
         value: inactiveCustomer,
-        details: 'Currently inactive',
+        description: 'Currently inactive',
       },
       {
         id: 'new-customer',
-        iconKey: 'UserPlus',
+        icon: 'UserPlus',
         title: 'New Customers',
         value: newCustomer,
-        details: 'New customers',
+        description: 'New customers',
       },
     ];
+  }
+
+  async search(q?: string): Promise<SearchCustomer[]> {
+    const search = q?.trim() || '';
+
+    return await this.prismaService.user.findMany({
+      where: {
+        role: UserRole.CUSTOMER,
+        OR: [
+          {
+            fullName: {
+              contains: search,
+              mode: 'insensitive',
+            },
+          },
+          {
+            email: {
+              contains: search,
+              mode: 'insensitive',
+            },
+          },
+          {
+            phone: {
+              contains: search,
+            },
+          },
+        ],
+      },
+      select: {
+        id: true,
+        fullName: true,
+        email: true,
+        phone: true,
+      },
+      take: 20,
+      orderBy: {
+        fullName: 'asc',
+      },
+    });
   }
 }

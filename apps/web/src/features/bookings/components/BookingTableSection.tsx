@@ -13,7 +13,7 @@ import {
 import { useDebounce } from "@/hooks/useDebounce";
 import type { Column } from "@/types/shared.types";
 
-import { dummBookingList } from "../booking.mock";
+import { dummyBookingList } from "../booking.mock";
 import type { BookingItem } from "../booking.types";
 
 const bookingColumns: Column<BookingItem>[] = [
@@ -110,7 +110,7 @@ export function BookingTableSection() {
 
   return (
     <DataTable
-      response={{ items: dummBookingList }}
+      response={{ items: dummyBookingList }}
       columns={bookingColumns}
       searchKey="k"
       enablePagination={true}

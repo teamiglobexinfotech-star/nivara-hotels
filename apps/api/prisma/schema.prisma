@@ -202,20 +202,9 @@ model RoomType {
   updatedAt   DateTime @updatedAt
 
   rooms        Room[]
-  images       RoomTypeImage[]
-  amenities    RoomTypeAmenity[]
+  images       Image[]
+  amenities    Amenity[]
   bookingRooms BookingRoom[]
-}
-
-model RoomTypeImage {
-  roomTypeId String
-  imageId    String
-
-  roomType RoomType @relation(fields: [roomTypeId], references: [id], onDelete: Cascade)
-  image    Image    @relation(fields: [imageId], references: [id], onDelete: Cascade)
-
-  @@id([roomTypeId, imageId])
-  @@map("room_type_images")
 }
 
 model Room {
@@ -242,22 +231,12 @@ model Amenity {
   id          String   @id @default(cuid())
   name        String   @unique
   description String?
-  iconKey     String?
+  icon        String?
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  roomTypeAmenities RoomTypeAmenity[]
-}
-
-model RoomTypeAmenity {
-  roomTypeId String
-  amenityId  String
-
-  roomType RoomType @relation(fields: [roomTypeId], references: [id], onDelete: Cascade)
-  amenity  Amenity  @relation(fields: [amenityId], references: [id], onDelete: Cascade)
-
-  @@id([roomTypeId, amenityId])
+  roomTypeAmenities RoomType[]
 }
 
 model Booking {
@@ -433,14 +412,15 @@ model Notification {
 
 model Image {
   id        String   @id @default(uuid())
-  fileId    String
+  url       String
   altText   String?
   isPrimary Boolean  @default(false)
   sortOrder Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  roomTypeImages     RoomTypeImage[]
+  roomTypeId         String?
+  roomType           RoomType?           @relation(fields: [roomTypeId], references: [id], onDelete: Cascade)
   profileUsers       User[]
   maintenanceReports MaintenanceReport[] @relation("ReportedImage")
 
@@ -450,7 +430,8 @@ model Image {
   customerIdProofs   CustomerProfile[] @relation("CustomerIdProof")
   customerSignatures CustomerProfile[] @relation("CustomerSignature")
 
-  @@index([fileId])
+  @@index([url])
+  @@index([roomTypeId])
 }
 
 model RefreshToken {

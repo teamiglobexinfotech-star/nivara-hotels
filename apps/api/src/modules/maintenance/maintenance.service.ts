@@ -192,31 +192,31 @@ export class MaintenanceService {
     return [
       {
         id: 'total-reports',
-        iconKey: 'ListTodo',
+        icon: 'ListTodo',
         title: 'Total Reports',
         value: totalReports,
-        details: 'All registered reports',
+        description: 'All registered reports',
       },
       {
         id: 'in-progress-reports',
-        iconKey: 'TriangleAlert',
+        icon: 'TriangleAlert',
         title: 'In Progress Reports',
         value: inProgressReports,
-        details: 'Currently in progress',
+        description: 'Currently in progress',
       },
       {
         id: 'completed-reports',
-        iconKey: 'ListChecks',
+        icon: 'ListChecks',
         title: 'Completed Reports',
         value: completedReports,
-        details: 'Currently completed',
+        description: 'Currently completed',
       },
       {
         id: 'resolved-reports',
-        iconKey: 'Check',
+        icon: 'Check',
         title: 'Resolved Reports',
         value: resolvedReports,
-        details: 'Resolved reports',
+        description: 'Resolved reports',
       },
     ];
   }

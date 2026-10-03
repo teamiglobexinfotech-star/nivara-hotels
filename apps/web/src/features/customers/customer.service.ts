@@ -4,7 +4,7 @@ import type { KpiItem, ListParams } from "@/types/shared.types";
 
 import type { CreateCustomer } from "./schema/createCustomer.schema";
 import type { UpdateCustomer } from "./schema/updateCustomer.schema";
-import type { CustomerList } from "./customer.types";
+import type { CustomerList, SearchCustomer } from "./customer.types";
 
 export const customerService = {
   create: (data: CreateCustomer): Promise<ApiMessageResponse> =>
@@ -19,4 +19,8 @@ export const customerService = {
     apiClient.get(`/customers/${id}`).then((r) => r.data),
   getStats: (): Promise<KpiItem[]> =>
     apiClient.get("/customers/stats").then((r) => r.data.data),
+  search: (q?: string): Promise<SearchCustomer[]> =>
+    apiClient
+      .get("/customers/search", { params: { q } })
+      .then((r) => r.data?.data),
 };

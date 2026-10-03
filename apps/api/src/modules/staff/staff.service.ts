@@ -13,7 +13,7 @@ import { CreateStaffDto } from './dtos/create-staff.dto';
 import { GetStaffDto } from './dtos/get-staff.dto';
 import { UpdateStaffDto } from './dtos/update-staff.dto';
 import { STAFF_ERROR_MSG } from './staff.constants';
-import { Housekeeper, StaffDetails, StaffList } from './staff.types';
+import { Housekeeper, StaffDetail, StaffItem } from './staff.types';
 
 @Injectable()
 export class StaffService {
@@ -72,7 +72,7 @@ export class StaffService {
     return staff;
   }
 
-  async getAll(dto: GetStaffDto): Promise<ListResponse<StaffList[]>> {
+  async getAll(dto: GetStaffDto): Promise<ListResponse<StaffItem[]>> {
     const { search, status, category, page, limit } = dto;
     const skip = (page - 1) * limit;
 
@@ -124,11 +124,9 @@ export class StaffService {
           fullName: true,
           email: true,
           phone: true,
-          role: true,
           isActive: true,
-          profileImage: true,
           createdAt: true,
-          updatedAt: true,
+          lastLoginAt: true,
           staff: {
             select: {
               category: true,
@@ -147,11 +145,10 @@ export class StaffService {
         fullName: user.fullName,
         email: user.email,
         phone: user.phone,
-        role: user.role,
         isActive: user.isActive,
-        category: user.staff?.category,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
+        category: user.staff!.category,
+        createdAt: user.createdAt.toISOString(),
+        lastLogin: user.lastLoginAt?.toISOString() ?? '',
       })),
       meta: {
         page,
@@ -162,7 +159,7 @@ export class StaffService {
     };
   }
 
-  async getById(id: string): Promise<StaffDetails> {
+  async getById(id: string): Promise<StaffDetail> {
     const user = await this.prismaService.user.findUnique({
       where: {
         id,
@@ -173,14 +170,11 @@ export class StaffService {
         fullName: true,
         email: true,
         phone: true,
-        role: true,
         isActive: true,
         lastLoginAt: true,
         createdAt: true,
-        updatedAt: true,
         staff: {
           select: {
-            id: true,
             fatherName: true,
             motherName: true,
             idProofNumber: true,
@@ -189,22 +183,6 @@ export class StaffService {
             category: true,
             emergencyContact: true,
             address: true,
-            createdAt: true,
-            updatedAt: true,
-            idProofImage: {
-              select: {
-                id: true,
-                fileId: true,
-                altText: true,
-              },
-            },
-            signatureImage: {
-              select: {
-                id: true,
-                fileId: true,
-                altText: true,
-              },
-            },
           },
         },
       },
@@ -214,7 +192,23 @@ export class StaffService {
       throw new NotFoundException(STAFF_ERROR_MSG.NOT_FOUND);
     }
 
-    return user;
+    return {
+      id: user.id,
+      fullName: user.fullName,
+      email: user.email,
+      phone: user.phone,
+      category: user.staff.category,
+      isActive: user.isActive,
+      createdAt: user.createdAt.toISOString(),
+      lastLogin: user.lastLoginAt?.toISOString() ?? '',
+      address: user.staff.address,
+      fatherName: user.staff.fatherName,
+      motherName: user.staff.motherName,
+      idProofNumber: user.staff.idProofNumber,
+      qualification: user.staff.qualification,
+      experience: user.staff.experience,
+      emergencyContact: user.staff.emergencyContact,
+    };
   }
 
   async update(id: string, dto: UpdateStaffDto): Promise<{ id: string }> {
@@ -335,31 +329,31 @@ export class StaffService {
     return [
       {
         id: 'total-staff',
-        iconKey: 'Users',
+        icon: 'Users',
         title: 'Total Staff',
         value: totalStaff,
-        details: 'All registered staff',
+        description: 'All registered staff',
       },
       {
         id: 'active-staff',
-        iconKey: 'UserCheck',
+        icon: 'UserCheck',
         title: 'Active Staff',
         value: activeStaff,
-        details: 'Currently active',
+        description: 'Currently active',
       },
       {
         id: 'inactive-staff',
-        iconKey: 'UserX',
+        icon: 'UserX',
         title: 'Inactive Staff',
         value: inactiveStaff,
-        details: 'Currently inactive',
+        description: 'Currently inactive',
       },
       {
         id: 'on-leave',
-        iconKey: 'CalendarOff',
+        icon: 'CalendarOff',
         title: 'On Leave',
         value: 0,
-        details: 'Currently on leave',
+        description: 'Currently on leave',
       },
     ];
   }

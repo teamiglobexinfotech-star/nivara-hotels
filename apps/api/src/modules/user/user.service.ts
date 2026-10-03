@@ -20,7 +20,7 @@ export class UserService {
         profileImage: {
           select: {
             id: true,
-            fileId: true,
+            url: true,
             altText: true,
           },
         },

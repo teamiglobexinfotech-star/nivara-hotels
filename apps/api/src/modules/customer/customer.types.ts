@@ -1,33 +1,21 @@
-export type Customer = {
+export type CustomerItem = {
   id: string;
   fullName: string;
   email: string;
   phone: string;
+  totalBookings: number;
+  totalSpend: number;
   isActive: boolean;
-  createdAt: Date | null;
-  updatedAt: Date | null;
-  lastLoginAt: Date | null;
-  customerProfile: {
-    id: string;
-    idProofNumber: string;
-    address: string;
-  } | null;
 };
 
-export type CustomerList = Customer;
+export type CustomerDetail = CustomerItem & {
+  address: string;
+  idProofNumber: string;
+};
 
-export type CustomerDetails = {
+export type SearchCustomer = {
   id: string;
   fullName: string;
   email: string;
   phone: string;
-  isActive: boolean;
-  createdAt: Date | null;
-  updatedAt: Date | null;
-  lastLoginAt: Date | null;
-  customerProfile: {
-    id: string;
-    idProofNumber: string;
-    address: string;
-  } | null;
 };

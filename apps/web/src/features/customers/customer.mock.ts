@@ -2,70 +2,7 @@ import { RefreshCw, UserCheck, UserPlus, Users } from "lucide-react";
 
 import type { KpiItem } from "@/types/shared.types";
 
-import type { Customer } from "./customer.types";
-
-export const customersData: Customer[] = [
-  {
-    id: "cus_001",
-    fullName: "Aarav Sharma",
-    email: "aarav.sharma@gmail.com",
-    phone: "+91 98765 43210",
-    idProofNumber: "XXXX-XXXX-4521",
-    address: "Hazratganj, Lucknow, Uttar Pradesh",
-    role: "CUSTOMER",
-    isActive: true,
-    lastLoginAt: new Date("2026-09-22T18:30:00"),
-    createdAt: new Date("2025-11-12"),
-  },
-  {
-    id: "cus_002",
-    fullName: "Priya Mehta",
-    email: "priya.mehta@gmail.com",
-    phone: "+91 98123 45678",
-    idProofNumber: "XXXX-XXXX-7834",
-    address: "Gomti Nagar, Lucknow, Uttar Pradesh",
-    role: "CUSTOMER",
-    isActive: true,
-    lastLoginAt: new Date("2026-09-23T09:15:00"),
-    createdAt: new Date("2026-01-08"),
-  },
-  {
-    id: "cus_003",
-    fullName: "Rohan Verma",
-    email: "rohan.verma@gmail.com",
-    phone: "+91 97654 32109",
-    idProofNumber: "XXXX-XXXX-2167",
-    address: "Indira Nagar, Lucknow, Uttar Pradesh",
-    role: "CUSTOMER",
-    isActive: true,
-    lastLoginAt: new Date("2026-09-20T14:45:00"),
-    createdAt: new Date("2025-08-19"),
-  },
-  {
-    id: "cus_004",
-    fullName: "Ananya Kapoor",
-    email: "ananya.kapoor@gmail.com",
-    phone: "+91 98987 65432",
-    idProofNumber: "XXXX-XXXX-9056",
-    address: "Aliganj, Lucknow, Uttar Pradesh",
-    role: "CUSTOMER",
-    isActive: false,
-    lastLoginAt: new Date("2026-07-14T11:20:00"),
-    createdAt: new Date("2024-12-03"),
-  },
-  {
-    id: "cus_005",
-    fullName: "Vikram Singh",
-    email: "vikram.singh@gmail.com",
-    phone: "+91 97012 34567",
-    idProofNumber: "XXXX-XXXX-6348",
-    address: "Mahanagar, Lucknow, Uttar Pradesh",
-    role: "CUSTOMER",
-    isActive: true,
-    lastLoginAt: null,
-    createdAt: new Date("2026-06-27"),
-  },
-];
+import type { SearchCustomer } from "./customer.types";
 
 export const customerKpiData: KpiItem[] = [
   {
@@ -95,5 +32,68 @@ export const customerKpiData: KpiItem[] = [
     title: "Returning Guests",
     value: "68%",
     details: "+6.2% booking retention",
+  },
+];
+
+export const dummyCustomerList: SearchCustomer[] = [
+  {
+    id: "customer-001",
+    fullName: "John Doe",
+    email: "john.doe@example.com",
+    phone: "+91 98765 43210",
+  },
+  {
+    id: "customer-002",
+    fullName: "Sarah Wilson",
+    email: "sarah.wilson@example.com",
+    phone: "+91 98765 43211",
+  },
+  {
+    id: "customer-003",
+    fullName: "Michael Brown",
+    email: "michael.brown@example.com",
+    phone: "+91 98765 43212",
+  },
+  {
+    id: "customer-004",
+    fullName: "Emily Johnson",
+    email: "emily.johnson@example.com",
+    phone: "+91 98765 43213",
+  },
+  {
+    id: "customer-005",
+    fullName: "David Miller",
+    email: "david.miller@example.com",
+    phone: "+91 98765 43214",
+  },
+  {
+    id: "customer-006",
+    fullName: "Olivia Davis",
+    email: "olivia.davis@example.com",
+    phone: "+91 98765 43215",
+  },
+  {
+    id: "customer-007",
+    fullName: "James Anderson",
+    email: "james.anderson@example.com",
+    phone: "+91 98765 43216",
+  },
+  {
+    id: "customer-008",
+    fullName: "Sophia Martinez",
+    email: "sophia.martinez@example.com",
+    phone: "+91 98765 43217",
+  },
+  {
+    id: "customer-009",
+    fullName: "Daniel Taylor",
+    email: "daniel.taylor@example.com",
+    phone: "+91 98765 43218",
+  },
+  {
+    id: "customer-010",
+    fullName: "Emma Thomas",
+    email: "emma.thomas@example.com",
+    phone: "+91 98765 43219",
   },
 ];

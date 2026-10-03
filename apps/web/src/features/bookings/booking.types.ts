@@ -1,3 +1,7 @@
+import type { SearchCustomer } from "../customers/customer.types";
+import type { PaymentInfo } from "../payments/payment.types";
+import type { AvailabilityQuery, RoomAvailableItem } from "../rooms/room.types";
+
 export type BookingStatus =
   | "PENDING"
   | "CONFIRMED"
@@ -26,11 +30,19 @@ export interface BookingItem {
 
 export type BookingList = BookingItem[];
 
-export interface CustomerItem {
-  id: string;
-  fullName: string;
-  email: string;
-  phone: string;
-}
+export type Guest = {
+  primaryGuest: {
+    fullName: string;
+    age: number;
+    gender: "male" | "female" | "other";
+  };
+  totalGuests: number;
+  specialRequest?: string;
+};
 
-export type CustomerList = CustomerItem[];
+export interface BookingReducerState {
+  customer?: SearchCustomer;
+  stayAndRoom?: { room: RoomAvailableItem; query: AvailabilityQuery };
+  guest?: Guest;
+  payment?: PaymentInfo;
+}

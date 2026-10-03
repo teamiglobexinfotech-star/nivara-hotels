@@ -16,6 +16,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { client, env } from './config';
 import { HousekeepingtaskModule } from './modules/housekeepingtask/housekeepingtask.module';
+import { BookingModule } from './modules/booking/booking.module';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -35,6 +37,8 @@ import { HousekeepingtaskModule } from './modules/housekeepingtask/housekeepingt
     UserModule,
     MaintenanceModule,
     HousekeepingtaskModule,
+    BookingModule,
+    DashboardModule,
   ],
   controllers: [AppController],
   providers: [

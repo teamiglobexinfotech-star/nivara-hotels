@@ -28,8 +28,9 @@ export type ApiMessageResponse = { message: string };
 
 export type KpiStat = {
   id: string;
-  iconKey: string;
+  icon: string;
   title: string;
   value: string | number;
-  details: string;
+  description: string;
+  link?: string;
 };

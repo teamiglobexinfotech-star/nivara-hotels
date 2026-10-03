@@ -15,7 +15,7 @@ export const UpdateAmenitySchema = z
       .nullable()
       .optional(),
 
-    iconKey: z
+    icon: z
       .string('Icon must be a string')
       .max(100, 'Icon must be 100 characters or less')
       .nullable()

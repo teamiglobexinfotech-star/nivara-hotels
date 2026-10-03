@@ -5,6 +5,7 @@ export const customerKeys = {
   lists: () => ["customers", "list"] as const,
   list: (params?: ListParams) => ["customers", "list", params] as const,
   detail: (id: string) => ["customers", "detail", id] as const,
+  search: (search?: string) => ["customers", "search", search] as const,
 } as const;
 
 export const customerMutationKeys = {

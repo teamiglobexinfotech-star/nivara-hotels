@@ -4,19 +4,19 @@ export const bookingSteps = [
     description: "Select or create a customer",
   },
   {
-    title: "Stay & Room",
-    description: "Select dates and an available room",
+    title: "Room",
+    description: "Choose an available room",
   },
   {
-    title: "Guest",
-    description: "Enter guest information",
+    title: "Guests",
+    description: "Add guest and stay details",
   },
   {
     title: "Payment",
-    description: "Select payment method and amount",
+    description: "Review payment and billing",
   },
   {
     title: "Review",
-    description: "Review and confirm the booking",
+    description: "Confirm the reservation",
   },
 ];

@@ -47,48 +47,61 @@ export function DataTable<T extends Record<string, any>>({
   >({});
   const [localPage, setLocalPage] = React.useState(1);
 
-  const items = response?.items;
+  const items = response?.items ?? [];
   const meta = response?.meta || response?.pagination;
 
-  const handleSearch = (val: string) => {
-    setSearchQuery(val);
-    if (onSearchChange) onSearchChange(val);
+  const handleSearch = (value: string) => {
+    setSearchQuery(value);
+    setLocalPage(1);
+    onSearchChange?.(value);
   };
 
-  const handleFilterSelect = (key: string, val: string) => {
-    const updated = { ...filterValues, [key]: val };
+  const handleFilterSelect = (key: string, value: string) => {
+    const updated = {
+      ...filterValues,
+      [key]: value,
+    };
+
     setFilterValues(updated);
-    if (onFilterChange) onFilterChange(updated);
+    setLocalPage(1);
+    onFilterChange?.(updated);
   };
 
-  const handlePage = (newPage: number) => {
-    setLocalPage(newPage);
-    if (onPageChange) onPageChange(newPage);
+  const handlePage = (page: number) => {
+    setLocalPage(page);
+    onPageChange?.(page);
   };
 
-  // Client-side fallback filtering if server callbacks aren't provided
+  /**
+   * Client-side fallback filtering.
+   * Server-side filtering takes precedence when callbacks are provided.
+   */
   const filteredItems = React.useMemo(() => {
     return items.filter((row) => {
       if (searchKey && searchQuery && !onSearchChange) {
-        const val = String(row[searchKey] || "").toLowerCase();
-        if (!val.includes(searchQuery.toLowerCase())) return false;
+        const value = String(row[searchKey] ?? "").toLowerCase();
+
+        if (!value.includes(searchQuery.toLowerCase())) {
+          return false;
+        }
       }
 
       for (const filter of filters) {
-        const selectedVal = filterValues[filter.key];
+        const selectedValue = filterValues[filter.key];
+
         if (
-          selectedVal &&
-          selectedVal.toLowerCase() !== "all" &&
+          selectedValue &&
+          selectedValue.toLowerCase() !== "all" &&
           !onFilterChange
         ) {
-          if (
-            String(row[filter.key] ?? "").toLowerCase() !==
-            selectedVal.toLowerCase()
-          ) {
+          const rowValue = String(row[filter.key] ?? "").toLowerCase();
+
+          if (rowValue !== selectedValue.toLowerCase()) {
             return false;
           }
         }
       }
+
       return true;
     });
   }, [
@@ -102,111 +115,161 @@ export function DataTable<T extends Record<string, any>>({
   ]);
 
   const currentPage = meta?.page || localPage;
-  const totalPages =
-    meta?.totalPages || Math.ceil(filteredItems.length / (meta?.limit || 5));
+
+  const totalPages = meta?.totalPages
+    ? meta.totalPages
+    : Math.max(1, Math.ceil(filteredItems.length / (meta?.limit || 5)));
 
   return (
     <div className="w-full space-y-4">
-      {/* Search and Filters Bar */}
+      {/* ============================================================
+          TOOLBAR
+      ============================================================ */}
       {(searchKey || filters.length > 0) && (
-        <div className="flex flex-col items-center justify-between gap-3 rounded-2xl border bg-muted p-4 sm:flex-row">
+        <div className="flex flex-col gap-3 border-b pb-4 sm:flex-row sm:items-center sm:justify-between">
+          {/* Search */}
           {searchKey && (
-            <div className="relative w-full sm:w-72">
-              <Search className="absolute top-2.5 left-2.5 h-4 w-4 text-muted-foreground" />
+            <div className="group relative w-full sm:max-w-sm">
+              <Search className="absolute top-1/2 left-3 z-10 h-4 w-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-foreground" />
+
               <Input
-                placeholder={searchPlaceholder}
                 value={searchQuery}
-                onChange={(e) => handleSearch(e.target.value)}
-                className="border-input bg-background pl-9 text-foreground"
+                placeholder={searchPlaceholder}
+                onChange={(event) => handleSearch(event.target.value)}
+                className="h-10 border-border/70 bg-background pl-9 shadow-none transition-all placeholder:text-muted-foreground/70 focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/10"
               />
             </div>
           )}
 
-          <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
-            {filters.map((filter) => (
-              <Select
-                key={filter.key}
-                value={filterValues[filter.key] || "ALL"}
-                onValueChange={(val) => handleFilterSelect(filter.key, val)}
-              >
-                <SelectTrigger className="w-35 border-input bg-background text-foreground">
-                  <SelectValue placeholder={filter.placeholder} />
-                </SelectTrigger>
-                <SelectContent className="border-border bg-popover text-popover-foreground">
-                  {filter.options.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value}>
-                      {opt?.label[0].toUpperCase() +
-                        opt?.label.slice(1).toLowerCase()}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            ))}
-          </div>
+          {/* Filters */}
+          {filters.length > 0 && (
+            <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
+              {filters.map((filter) => (
+                <Select
+                  key={filter.key}
+                  value={filterValues[filter.key] || "ALL"}
+                  onValueChange={(value) =>
+                    handleFilterSelect(filter.key, value)
+                  }
+                >
+                  <SelectTrigger className="h-10 min-w-35 border-border/70 bg-background shadow-none transition-colors hover:bg-muted/50">
+                    <SelectValue placeholder={filter.placeholder} />
+                  </SelectTrigger>
+
+                  <SelectContent>
+                    {filter.options.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label.charAt(0).toUpperCase() +
+                          option.label.slice(1).toLowerCase()}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
-      {/* Main Table */}
-      <div className="overflow-hidden rounded-lg border border-border bg-card text-card-foreground shadow-sm">
+      {/* ============================================================
+          TABLE
+      ============================================================ */}
+      <div className="overflow-hidden rounded-xl border border-border/70 bg-card shadow-[0_1px_2px_hsl(var(--foreground)/0.04)]">
         <Table>
-          <TableHeader className="bg-muted/50">
-            <TableRow className="border-b border-border hover:bg-transparent">
-              {columns.map((col, idx) => (
+          {/* Header */}
+          <TableHeader>
+            <TableRow className="border-b border-border bg-muted/30 hover:bg-muted/30">
+              {columns.map((column, index) => (
                 <TableHead
-                  key={idx}
-                  className={`font-semibold text-muted-foreground ${col.className || ""}`}
+                  key={index}
+                  className={`h-11 px-4 text-xs font-semibold tracking-wide whitespace-nowrap text-muted-foreground uppercase ${column.className || ""} `}
                 >
-                  {col.header}
+                  {column.header}
                 </TableHead>
               ))}
             </TableRow>
           </TableHeader>
+
           <TableBody>
+            {/* ======================================================
+                LOADING
+            ====================================================== */}
             {isLoading ? (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center text-muted-foreground"
-                >
-                  Loading data...
-                </TableCell>
-              </TableRow>
+              Array.from({ length: 5 }).map((_, rowIndex) => (
+                <TableRow key={rowIndex} className="border-b border-border/50">
+                  {columns.map((_, columnIndex) => (
+                    <TableCell key={columnIndex} className="px-4 py-4">
+                      <div
+                        className="h-4 animate-pulse rounded-md bg-muted"
+                        style={{
+                          width:
+                            columnIndex === 0
+                              ? "70%"
+                              : columnIndex === columns.length - 1
+                                ? "40%"
+                                : "55%",
+                        }}
+                      />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
             ) : isError ? (
+              /* ======================================================
+                  ERROR
+              ====================================================== */
               <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-32 text-center"
-                >
-                  <div className="flex flex-col items-center justify-center gap-2 text-destructive">
-                    <AlertCircle className="h-6 w-6" />
-                    <p className="text-sm font-medium">{errorMessage}</p>
+                <TableCell colSpan={columns.length} className="h-64 px-4">
+                  <div className="flex flex-col items-center justify-center">
+                    <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-destructive/10 text-destructive">
+                      <AlertCircle className="h-5 w-5" />
+                    </div>
+
+                    <p className="text-sm font-medium">Something went wrong</p>
+
+                    <p className="mt-1 max-w-sm text-center text-xs text-muted-foreground">
+                      {errorMessage}
+                    </p>
                   </div>
                 </TableCell>
               </TableRow>
             ) : filteredItems.length === 0 ? (
+              /* ======================================================
+                  EMPTY
+              ====================================================== */
               <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-32 text-center"
-                >
-                  <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
-                    <Inbox className="h-6 w-6" />
+                <TableCell colSpan={columns.length} className="h-64 px-4">
+                  <div className="flex flex-col items-center justify-center">
+                    <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-muted text-muted-foreground">
+                      <Inbox className="h-5 w-5" />
+                    </div>
+
                     <p className="text-sm font-medium">{emptyMessage}</p>
+
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Try adjusting your search or filters.
+                    </p>
                   </div>
                 </TableCell>
               </TableRow>
             ) : (
+              /* ======================================================
+                  DATA
+              ====================================================== */
               filteredItems.map((row, rowIndex) => (
                 <TableRow
                   key={rowIndex}
-                  className="border-b border-border/65 transition-colors hover:bg-muted/50"
+                  className="group relative border-b border-border/50 transition-colors duration-150 last:border-b-0 hover:bg-muted/35"
                 >
-                  {columns.map((col, colIndex) => (
-                    <TableCell key={colIndex} className={col.className}>
-                      {col.render
-                        ? col.render(row)
+                  {columns.map((column, columnIndex) => (
+                    <TableCell
+                      key={columnIndex}
+                      className={`px-4 py-4 align-middle text-sm ${column.className || ""} `}
+                    >
+                      {column.render
+                        ? column.render(row)
                         : String(
-                            (row as Record<string, unknown>)[col.key] ?? ""
+                            (row as Record<string, unknown>)[column.key] ?? ""
                           )}
                     </TableCell>
                   ))}
@@ -215,61 +278,70 @@ export function DataTable<T extends Record<string, any>>({
             )}
           </TableBody>
         </Table>
-      </div>
 
-      {/* Pagination Footer */}
-      {enablePagination && !isLoading && !isError && (
-        <div className="flex items-center justify-between rounded-2xl border bg-muted p-4">
-          <div className="text-xs text-muted-foreground">
-            {meta ? (
-              <>
-                Page{" "}
-                <span className="font-medium text-foreground">
-                  {currentPage}
-                </span>{" "}
-                of{" "}
-                <span className="font-medium text-foreground">
-                  {totalPages}
-                </span>{" "}
-                ({meta.total} total items)
-              </>
-            ) : (
-              <>
-                Showing{" "}
-                <span className="font-medium text-foreground">
-                  {filteredItems.length}
-                </span>{" "}
-                results
-              </>
-            )}
+        {/* ============================================================
+            PAGINATION
+        ============================================================ */}
+        {enablePagination && !isLoading && !isError && (
+          <div className="flex flex-col gap-3 border-t border-border/70 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+            {/* Result information */}
+            <p className="text-xs text-muted-foreground">
+              {meta ? (
+                <>
+                  Page{" "}
+                  <span className="font-medium text-foreground">
+                    {currentPage}
+                  </span>{" "}
+                  of{" "}
+                  <span className="font-medium text-foreground">
+                    {totalPages}
+                  </span>
+                  <span className="mx-1.5 text-border">•</span>
+                  {meta.total} total
+                </>
+              ) : (
+                <>
+                  <span className="font-medium text-foreground">
+                    {filteredItems.length}
+                  </span>{" "}
+                  results
+                </>
+              )}
+            </p>
+
+            {/* Controls */}
+            <div className="flex items-center gap-1.5">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handlePage(Math.max(currentPage - 1, 1))}
+                disabled={currentPage <= 1}
+                className="h-8 px-2.5 text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
+              >
+                <ChevronLeft className="mr-1 h-3.5 w-3.5" />
+                Previous
+              </Button>
+
+              <div className="flex h-8 min-w-8 items-center justify-center rounded-md bg-muted px-2 text-xs font-medium text-foreground">
+                {currentPage}
+              </div>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() =>
+                  handlePage(Math.min(currentPage + 1, totalPages))
+                }
+                disabled={currentPage >= totalPages}
+                className="h-8 px-2.5 text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
+              >
+                Next
+                <ChevronRight className="ml-1 h-3.5 w-3.5" />
+              </Button>
+            </div>
           </div>
-          <div className="flex items-center space-x-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handlePage(Math.max(currentPage - 1, 1))}
-              disabled={currentPage <= 1}
-              className="border-input text-foreground hover:bg-accent hover:text-accent-foreground"
-            >
-              <ChevronLeft className="mr-1 h-4 w-4" />
-              Previous
-            </Button>
-            <span className="text-xs font-medium text-muted-foreground">
-              Page {currentPage} of {totalPages || 1}
-            </span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handlePage(Math.min(currentPage + 1, totalPages))}
-              disabled={currentPage >= totalPages}
-              className="border-input text-foreground hover:bg-accent hover:text-accent-foreground"
-            >
-              Next
-              <ChevronRight className="ml-1 h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

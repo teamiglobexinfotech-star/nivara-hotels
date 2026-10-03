@@ -5,13 +5,20 @@ import {
 } from '@nestjs/common';
 
 import { PrismaService } from '../../db/prisma/prisma.service';
-import { KpiStat, ListResponse } from '../../types';
+import { BookingStatus, KpiStat, ListResponse } from '../../types';
 
+import { BrowseRoomsDto } from './dtos/browse-rooms.dto';
 import { CreateRoomDto } from './dtos/create-room.dto';
 import { GetRoomsDto } from './dtos/get-rooms.dto';
 import { UpdateRoomDto } from './dtos/update-room.dto';
 import { ROOM_ERROR_MSG } from './room.constants';
-import { Room, RoomDetails, RoomList } from './room.types';
+import {
+  BrowseRoomItem,
+  Room,
+  RoomAvailableItem,
+  RoomDetails,
+  RoomList,
+} from './room.types';
 
 @Injectable()
 export class RoomService {
@@ -185,13 +192,9 @@ export class RoomService {
             isActive: true,
             amenities: {
               select: {
-                amenity: {
-                  select: {
-                    id: true,
-                    iconKey: true,
-                    name: true,
-                  },
-                },
+                id: true,
+                icon: true,
+                name: true,
               },
             },
           },
@@ -305,32 +308,193 @@ export class RoomService {
     return [
       {
         id: 'total-room',
-        iconKey: 'BedDouble',
+        icon: 'BedDouble',
         title: 'Total Rooms',
         value: totalRoom,
-        details: 'All registered rooms',
+        description: 'All registered rooms',
       },
       {
         id: 'available',
-        iconKey: 'DoorOpen',
+        icon: 'DoorOpen',
         title: 'Available',
         value: available,
-        details: 'Ready for new bookings',
+        description: 'Ready for new bookings',
       },
       {
         id: 'occupied',
-        iconKey: 'Users',
+        icon: 'Users',
         title: 'Occupied',
         value: occupied,
-        details: 'Currently occupied',
+        description: 'Currently occupied',
       },
       {
         id: 'housekeeping',
-        iconKey: 'Sparkles',
+        icon: 'Sparkles',
         title: 'Housekeeping',
         value: cleaning + serviceRequired,
-        details: `${cleaning} cleaning, ${serviceRequired} service required`,
+        description: `${cleaning} cleaning, ${serviceRequired} service required`,
       },
     ];
+  }
+
+  async getAvailableRooms(
+    checkIn: Date,
+    checkOut: Date,
+    capacity: number,
+  ): Promise<RoomAvailableItem[]> {
+    return this.prismaService.room.findMany({
+      where: {
+        isActive: true,
+        roomType: {
+          isActive: true,
+          capacity: {
+            gte: capacity,
+          },
+        },
+        bookingRooms: {
+          none: {
+            booking: {
+              status: {
+                notIn: [BookingStatus.CANCELLED, BookingStatus.NO_SHOW],
+              },
+              checkInDate: {
+                lt: checkOut,
+              },
+              checkOutDate: {
+                gt: checkIn,
+              },
+            },
+          },
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        roomNumber: true,
+        roomType: {
+          select: {
+            id: true,
+            name: true,
+            capacity: true,
+            basePrice: true,
+          },
+        },
+      },
+      orderBy: {
+        roomType: {
+          capacity: 'asc',
+        },
+      },
+    });
+  }
+
+  async browseRooms(query: BrowseRoomsDto): Promise<BrowseRoomItem[]> {
+    const {
+      search,
+      checkIn,
+      checkOut,
+      guests,
+      roomType,
+      minPrice,
+      maxPrice,
+      amenities,
+    } = query;
+    const rooms = await this.prismaService.room.findMany({
+      where: {
+        isActive: true,
+        roomType: {
+          isActive: true,
+          capacity: { gte: guests },
+          ...(roomType && {
+            OR: [
+              { id: roomType },
+              { name: { contains: roomType, mode: 'insensitive' as const } },
+            ],
+          }),
+          ...(minPrice !== undefined || maxPrice !== undefined
+            ? {
+                basePrice: {
+                  ...(minPrice !== undefined && { gte: minPrice }),
+                  ...(maxPrice !== undefined && { lte: maxPrice }),
+                },
+              }
+            : {}),
+          ...(amenities?.length && {
+            AND: amenities.map((name) => ({
+              amenities: { some: { name } },
+            })),
+          }),
+        },
+        ...(search && {
+          OR: [
+            {
+              roomNumber: {
+                contains: search,
+                mode: 'insensitive' as const,
+              },
+            },
+            {
+              name: { contains: search, mode: 'insensitive' as const },
+            },
+            {
+              roomType: {
+                name: { contains: search, mode: 'insensitive' as const },
+              },
+            },
+          ],
+        }),
+        bookingRooms: {
+          none: {
+            booking: {
+              status: {
+                notIn: [BookingStatus.CANCELLED, BookingStatus.NO_SHOW],
+              },
+              checkInDate: { lt: checkOut },
+              checkOutDate: { gt: checkIn },
+            },
+          },
+        },
+      },
+      orderBy: { roomType: { basePrice: 'asc' } },
+      take: 20,
+      select: {
+        id: true,
+        name: true,
+        roomNumber: true,
+        roomType: {
+          select: {
+            id: true,
+            name: true,
+            capacity: true,
+            basePrice: true,
+            amenities: {
+              select: { id: true, name: true, icon: true },
+            },
+            images: {
+              select: {
+                id: true,
+                url: true,
+                altText: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return rooms.map((room) => ({
+      id: room.id,
+      name: room.name,
+      roomNumber: room.roomNumber,
+      available: true,
+      roomType: {
+        id: room.roomType.id,
+        name: room.roomType.name,
+        capacity: room.roomType.capacity,
+        basePrice: room.roomType.basePrice,
+        amenities: room.roomType.amenities,
+        images: room.roomType.images,
+      },
+    }));
   }
 }

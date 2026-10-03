@@ -17,8 +17,13 @@ import { AuthGuard, RoleGuard } from '../../common/guards';
 import { apiListResponse, apiResponse } from '../../common/helpers';
 import { ValidationPipe } from '../../common/pipes';
 
+import { BrowseRoomsDto, BrowseRoomsSchema } from './dtos/browse-rooms.dto';
 import { CreateRoomDto, CreateRoomSchema } from './dtos/create-room.dto';
 import { GetRoomsDto, GetRoomsSchema } from './dtos/get-rooms.dto';
+import {
+  RoomAvailabilityDto,
+  RoomAvailabilitySchema,
+} from './dtos/room-availability.dto';
 import { UpdateRoomDto, UpdateRoomSchema } from './dtos/update-room.dto';
 import { ROOM_SUCCESS_MSG } from './room.constants';
 import { RoomService } from './room.service';
@@ -50,6 +55,31 @@ export class RoomController {
   @HttpCode(HttpStatus.OK)
   async getStats() {
     const data = await this.roomService.getStats();
+    return apiResponse({ data });
+  }
+
+  @Roles('ADMIN', 'MANAGER', 'STAFF', 'CUSTOMER')
+  @Get('availability')
+  @HttpCode(HttpStatus.OK)
+  async getAvailableRooms(
+    @Query(new ValidationPipe(RoomAvailabilitySchema))
+    query: RoomAvailabilityDto,
+  ) {
+    const data = await this.roomService.getAvailableRooms(
+      query.checkIn,
+      query.checkOut,
+      query.capacity,
+    );
+    return apiResponse({ data });
+  }
+
+  @Roles('CUSTOMER')
+  @Get('browse')
+  @HttpCode(HttpStatus.OK)
+  async browseRooms(
+    @Query(new ValidationPipe(BrowseRoomsSchema)) query: BrowseRoomsDto,
+  ) {
+    const data = await this.roomService.browseRooms(query);
     return apiResponse({ data });
   }
 

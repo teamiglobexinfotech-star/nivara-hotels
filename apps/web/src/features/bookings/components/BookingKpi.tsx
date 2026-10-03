@@ -2,11 +2,11 @@ import { KpiCard } from "@/components/shared/KpiCard";
 import { iconsList } from "@/features/amenities/amenity.constants";
 import type { KpiItem } from "@/types/shared.types";
 
-import { dummBookingKpiData } from "../booking.mock";
+import { dummyBookingKpiData } from "../booking.mock";
 
 export function BookingKpi() {
   const items: KpiItem[] =
-    dummBookingKpiData?.map((k) => ({
+    dummyBookingKpiData?.map((k) => ({
       ...k,
       iconKey: iconsList[k.iconKey.toString().toLocaleLowerCase()],
     })) || [];

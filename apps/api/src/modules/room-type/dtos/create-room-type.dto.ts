@@ -11,11 +11,11 @@ export const CreateRoomTypeSchema = z
       .string('Description must be a string')
       .max(500, 'Description must be 500 characters or less')
       .optional(),
-    capacity: z
+    capacity: z.coerce
       .number('Capacity is required')
       .int('Capacity must be a whole number')
       .min(1, 'Capacity must be at least 1'),
-    basePrice: z
+    basePrice: z.coerce
       .number('Base price is required')
       .positive('Base price must be greater than 0'),
     isActive: z.boolean('IsActive must be a boolean').default(true),

@@ -52,3 +52,21 @@ export type RoomStat = {
   value: string | number;
   details: string;
 };
+
+export type RoomAvailableItem = {
+  id: string;
+  name: string | null;
+  roomNumber: string;
+  roomType: {
+    id: string;
+    name: string;
+    capacity: number;
+    basePrice: number;
+  };
+};
+
+export type AvailabilityQuery = {
+  checkIn: unknown;
+  checkOut: unknown;
+  capacity: unknown;
+};

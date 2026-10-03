@@ -26,6 +26,10 @@ import {
 } from './dtos/create-customer.dto';
 import { GetCustomersDto, GetCustomersSchema } from './dtos/get-customers.dto';
 import {
+  SearchCustomersDto,
+  SearchCustomersSchema,
+} from './dtos/search-customers.dto';
+import {
   UpdateCustomerDto,
   UpdateCustomerSchema,
 } from './dtos/update-customer.dto';
@@ -70,6 +74,15 @@ export class CustomerController {
   @HttpCode(HttpStatus.OK)
   async getStats() {
     const data = await this.customerService.getStats();
+    return apiResponse({ data });
+  }
+
+  @Get('search')
+  @HttpCode(HttpStatus.OK)
+  async search(
+    @Query(new ValidationPipe(SearchCustomersSchema)) query: SearchCustomersDto,
+  ) {
+    const data = await this.customerService.search(query.q);
     return apiResponse({ data });
   }
 

@@ -1,5 +1,18 @@
 import { Category, UserRole } from '../../types';
 
+export type StaffCategory = Category;
+
+export type StaffItem = {
+  id: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  category: StaffCategory;
+  isActive: boolean;
+  createdAt: string;
+  lastLogin: string;
+};
+
 export type Staff = {
   id: string;
   fullName: string;
@@ -14,39 +27,14 @@ export type Staff = {
 
 export type StaffList = Staff;
 
-export type StaffDetails = {
-  id: string;
-  fullName: string;
-  email: string;
-  phone: string;
-  role: UserRole;
-  isActive: boolean;
-  lastLoginAt: Date | null;
-  createdAt: Date | null;
-  updatedAt: Date | null;
-  staff: {
-    id: string;
-    fatherName: string;
-    motherName: string;
-    idProofNumber: string;
-    qualification: string;
-    experience: string;
-    category: Category;
-    emergencyContact: string;
-    address: string;
-    createdAt: Date | null;
-    updatedAt: Date | null;
-    idProofImage: {
-      id: string;
-      fileId: string;
-      altText: string | null;
-    } | null;
-    signatureImage: {
-      id: string;
-      fileId: string;
-      altText: string | null;
-    } | null;
-  } | null;
+export type StaffDetail = StaffItem & {
+  address: string;
+  fatherName: string;
+  motherName: string;
+  idProofNumber: string;
+  qualification: string;
+  experience: string;
+  emergencyContact: string;
 };
 
 export type Housekeeper = {

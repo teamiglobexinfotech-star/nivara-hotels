@@ -38,11 +38,44 @@ export type RoomDetails = {
     isActive: boolean;
 
     amenities: {
-      amenity: {
-        id: string;
-        iconKey: string | null;
-        name: string;
-      };
+      id: string;
+      icon: string | null;
+      name: string;
+    }[];
+  };
+};
+
+export type RoomAvailableItem = {
+  id: string;
+  name: string | null;
+  roomNumber: string;
+  roomType: {
+    id: string;
+    name: string;
+    capacity: number;
+    basePrice: number;
+  };
+};
+
+export type BrowseRoomItem = {
+  id: string;
+  name: string | null;
+  roomNumber: string;
+  available: true;
+  roomType: {
+    id: string;
+    name: string;
+    capacity: number;
+    basePrice: number;
+    amenities: {
+      id: string;
+      name: string;
+      icon: string | null;
+    }[];
+    images: {
+      id: string;
+      url: string;
+      altText: string | null;
     }[];
   };
 };

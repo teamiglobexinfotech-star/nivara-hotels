@@ -3,8 +3,9 @@ import type { ApiMessageResponse, ListResponse } from "@/types/api.types";
 import type { KpiItem, ListParams } from "@/types/shared.types";
 
 import type { CreateRoom } from "./schema/createRoom.schema";
+import type { RoomAvailabilityDto } from "./schema/room-availability.schema";
 import type { UpdateRoom } from "./schema/updateRoom.schema";
-import type { RoomDetails, RoomList } from "./room.types";
+import type { RoomAvailableItem, RoomDetails, RoomList } from "./room.types";
 
 export const roomService = {
   create: (data: CreateRoom): Promise<ApiMessageResponse> =>
@@ -19,4 +20,8 @@ export const roomService = {
     apiClient.patch(`/rooms/${id}`, data).then((r) => r.data),
   delete: (id: string): Promise<ApiMessageResponse> =>
     apiClient.delete(`/rooms/${id}`).then((r) => r.data),
+  checkAvailability: (
+    params: RoomAvailabilityDto
+  ): Promise<RoomAvailableItem[]> =>
+    apiClient.get("/rooms/availability", { params }).then((r) => r.data.data),
 };

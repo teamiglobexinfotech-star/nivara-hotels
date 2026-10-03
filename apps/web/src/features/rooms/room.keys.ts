@@ -11,4 +11,5 @@ export const roomMutationKeys = {
   create: ["rooms", "create"] as const,
   update: ["rooms", "update"] as const,
   delete: ["rooms", "delete"] as const,
+  checkAvailability: ["rooms", "check-availability"] as const,
 } as const;

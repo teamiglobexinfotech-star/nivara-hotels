@@ -31,3 +31,10 @@ export type CustomerDetails = {
     address: string;
   } | null;
 };
+
+export type SearchCustomer = {
+  id: string;
+  fullName: string;
+  email: string;
+  phone: string;
+};

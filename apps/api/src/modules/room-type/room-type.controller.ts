@@ -8,8 +8,11 @@ import {
   Param,
   Patch,
   Post,
+  UploadedFiles,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
 
 import { Roles } from '../../common/decorators';
 import { AuthGuard, RoleGuard } from '../../common/guards';
@@ -33,12 +36,14 @@ export class RoomTypeController {
   constructor(private readonly roomTypeService: RoomTypeService) {}
 
   @Roles('ADMIN')
+  @UseInterceptors(AnyFilesInterceptor())
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(
     @Body(new ValidationPipe(CreateRoomTypeSchema)) body: CreateRoomTypeDto,
+    @UploadedFiles() files,
   ) {
-    const data = await this.roomTypeService.create(body);
+    const data = await this.roomTypeService.create(files, body);
     return apiResponse({
       data,
       message: ROOM_TYPE_SUCCESS_MSG.CREATED,

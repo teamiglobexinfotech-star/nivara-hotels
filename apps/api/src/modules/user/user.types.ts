@@ -9,7 +9,7 @@ export type User = {
   category?: Category;
   profileImage: {
     id: string;
-    fileId: string;
+    url: string;
     altText: string | null;
   } | null;
 };

@@ -1,6 +1,6 @@
 import type { KpiItem } from "@/types/shared.types";
 
-import type { BookingList, CustomerList } from "./booking.types";
+import type { BookingList } from "./booking.types";
 
 export const dummyBookingKpiData: KpiItem[] = [
   {
@@ -203,68 +203,5 @@ export const dummyBookingList: BookingList = [
     checkOutDate: "2026-10-03",
     totalAmount: 84000,
     status: "CONFIRMED",
-  },
-];
-
-export const dummyCustomerList: CustomerList = [
-  {
-    id: "customer-001",
-    fullName: "John Doe",
-    email: "john.doe@example.com",
-    phone: "+91 98765 43210",
-  },
-  {
-    id: "customer-002",
-    fullName: "Sarah Wilson",
-    email: "sarah.wilson@example.com",
-    phone: "+91 98765 43211",
-  },
-  {
-    id: "customer-003",
-    fullName: "Michael Brown",
-    email: "michael.brown@example.com",
-    phone: "+91 98765 43212",
-  },
-  {
-    id: "customer-004",
-    fullName: "Emily Johnson",
-    email: "emily.johnson@example.com",
-    phone: "+91 98765 43213",
-  },
-  {
-    id: "customer-005",
-    fullName: "David Miller",
-    email: "david.miller@example.com",
-    phone: "+91 98765 43214",
-  },
-  {
-    id: "customer-006",
-    fullName: "Olivia Davis",
-    email: "olivia.davis@example.com",
-    phone: "+91 98765 43215",
-  },
-  {
-    id: "customer-007",
-    fullName: "James Anderson",
-    email: "james.anderson@example.com",
-    phone: "+91 98765 43216",
-  },
-  {
-    id: "customer-008",
-    fullName: "Sophia Martinez",
-    email: "sophia.martinez@example.com",
-    phone: "+91 98765 43217",
-  },
-  {
-    id: "customer-009",
-    fullName: "Daniel Taylor",
-    email: "daniel.taylor@example.com",
-    phone: "+91 98765 43218",
-  },
-  {
-    id: "customer-010",
-    fullName: "Emma Thomas",
-    email: "emma.thomas@example.com",
-    phone: "+91 98765 43219",
   },
 ];

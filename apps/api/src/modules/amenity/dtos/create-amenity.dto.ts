@@ -11,7 +11,7 @@ export const CreateAmenitySchema = z
       .string('Description must be a string')
       .max(500, 'Description must be 500 characters or less')
       .optional(),
-    iconKey: z
+    icon: z
       .string('Icon must be a string')
       .max(255, 'Icon must be 255 characters or less'),
     isActive: z.boolean('IsActive must be a boolean').default(true).optional(),
