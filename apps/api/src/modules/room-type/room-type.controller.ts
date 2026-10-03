@@ -14,10 +14,11 @@ import {
 } from '@nestjs/common';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 
+import { MAX_FILE_SIZE, MAX_FILES } from '../../common/constants';
 import { Roles } from '../../common/decorators';
 import { AuthGuard, RoleGuard } from '../../common/guards';
 import { apiResponse } from '../../common/helpers';
-import { ValidationPipe } from '../../common/pipes';
+import { fileValidationPipe, ValidationPipe } from '../../common/pipes';
 
 import {
   CreateRoomTypeDto,
@@ -30,13 +31,15 @@ import {
 import { ROOM_TYPE_SUCCESS_MSG } from './room-type.constants';
 import { RoomTypeService } from './room-type.service';
 
-@UseGuards(AuthGuard, RoleGuard)
 @Controller('room-types')
 export class RoomTypeController {
   constructor(private readonly roomTypeService: RoomTypeService) {}
 
+  @UseGuards(AuthGuard, RoleGuard)
   @Roles('ADMIN')
-  @UseInterceptors(AnyFilesInterceptor())
+  @UseInterceptors(
+    AnyFilesInterceptor(fileValidationPipe(MAX_FILE_SIZE, MAX_FILES)),
+  )
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(
@@ -44,10 +47,7 @@ export class RoomTypeController {
     @UploadedFiles() files,
   ) {
     const data = await this.roomTypeService.create(files, body);
-    return apiResponse({
-      data,
-      message: ROOM_TYPE_SUCCESS_MSG.CREATED,
-    });
+    return apiResponse({ data, message: ROOM_TYPE_SUCCESS_MSG.CREATED });
   }
 
   @Get()
@@ -57,6 +57,14 @@ export class RoomTypeController {
     return apiResponse({ data });
   }
 
+  @Get(':id')
+  @HttpCode(HttpStatus.OK)
+  async getOne(@Param('id') id: string) {
+    const data = await this.roomTypeService.getOne(id);
+    return apiResponse({ data });
+  }
+
+  @UseGuards(AuthGuard, RoleGuard)
   @Roles('ADMIN')
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
@@ -68,6 +76,7 @@ export class RoomTypeController {
     return apiResponse({ data, message: ROOM_TYPE_SUCCESS_MSG.UPDATED });
   }
 
+  @UseGuards(AuthGuard, RoleGuard)
   @Roles('ADMIN')
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)

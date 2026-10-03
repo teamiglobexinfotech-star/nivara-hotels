@@ -10,13 +10,17 @@ import { PrismaService } from '../../db/prisma/prisma.service';
 import { CreateRoomTypeDto } from './dtos/create-room-type.dto';
 import { UpdateRoomTypeDto } from './dtos/update-room-type.dto';
 import { ROOM_TYPE_ERROR_MSG } from './room-type.constants';
-import { RoomType } from './room-type.types';
+import {
+  RoomTypeCreate,
+  RoomTypeDetails,
+  RoomTypeList,
+} from './room-type.types';
 
 @Injectable()
 export class RoomTypeService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(files, dto: CreateRoomTypeDto): Promise<RoomType> {
+  async create(files, dto: CreateRoomTypeDto): Promise<RoomTypeCreate> {
     const existingRoomType = await this.prismaService.roomType.findFirst({
       where: {
         name: {
@@ -75,7 +79,7 @@ export class RoomTypeService {
     });
   }
 
-  async getAll(): Promise<RoomType[]> {
+  async getAll(): Promise<RoomTypeList[]> {
     const roomTypes = await this.prismaService.roomType.findMany({
       select: {
         id: true,
@@ -108,6 +112,33 @@ export class RoomTypeService {
       image: roomType.images[0],
       images: undefined,
     }));
+  }
+
+  async getOne(id: string): Promise<RoomTypeDetails> {
+    const roomType = await this.prismaService.roomType.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        capacity: true,
+        basePrice: true,
+        isActive: true,
+        images: {
+          select: {
+            id: true,
+            url: true,
+            altText: true,
+            isPrimary: true,
+            sortOrder: true,
+          },
+        },
+      },
+    });
+    if (!roomType) {
+      throw new NotFoundException(ROOM_TYPE_ERROR_MSG.ROOM_NOT_FOUND);
+    }
+    return roomType;
   }
 
   async update(id: string, dto: UpdateRoomTypeDto): Promise<{ id: string }> {

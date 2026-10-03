@@ -23,8 +23,20 @@ export const UpdateRoomTypeSchema = z
       .number('Base price is required')
       .positive('Base price must be greater than 0')
       .optional(),
-    isActive: z.boolean('IsActive must be a boolean').default(true).optional(),
+    isActive: z.boolean('IsActive must be a boolean').optional(),
   })
+  .refine(
+    (data) =>
+      data.name ||
+      data.description ||
+      data.capacity ||
+      data.basePrice ||
+      data.isActive,
+    {
+      message: 'At least one field must be provided for update',
+      path: ['name', 'description', 'capacity', 'basePrice', 'isActive'],
+    },
+  )
   .strict();
 
 export class UpdateRoomTypeDto extends createZodDto(UpdateRoomTypeSchema) {}
